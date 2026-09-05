@@ -100,29 +100,40 @@ h1,h2,h3,h4,p{margin:0}
 .mark.lg{width:46px;height:46px}
 .mark.lg.tile i{font-size:14px}
 
-/* ---- team chips ---------------------------------------------------------- */
-.divs{display:grid;gap:22px}
-.dvl{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
- text-transform:uppercase;color:var(--mut);padding-bottom:8px;border-bottom:1px solid var(--hr)}
-.tms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:11px}
-.tm{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
- grid-template-areas:"d c" "d n";gap:0 9px;align-items:center;text-align:left;
- padding:10px 12px;border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
- transition:background 180ms var(--e-out),box-shadow 180ms var(--e-out),
-            transform 110ms var(--e-out)}
-.tm>.mark{grid-area:d;align-self:center;opacity:.9;transition:opacity .15s}
-.tm.on>.mark{opacity:1}
-.tct{grid-area:c;font-size:11.5px;color:var(--mut);line-height:1.25;
+/* ---- ranking a division ---------------------------------------------------
+   A list that sorts itself. Placed teams rise to the top in order and wear
+   their own colour; the ones still to be placed sit under them on paper. The
+   row keeps its element through the rewrite so the FLIP in divisions.js has
+   something to animate. */
+.divs{display:grid;gap:24px}
+.dvl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+ font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
+ text-transform:uppercase;color:var(--mut);padding-bottom:8px;
+ border-bottom:1px solid var(--hr)}
+.dvl em{font-family:var(--sans);font-style:normal;font-size:11.5px;font-weight:400;
+ letter-spacing:-.005em;text-transform:none;color:var(--fnt);flex:none}
+.rank{display:grid;gap:5px;margin-top:10px}
+.rkr{display:grid;grid-template-columns:26px auto minmax(0,1fr);
+ grid-template-areas:"n m c" "n m t";gap:0 10px;align-items:center;text-align:left;
+ padding:8px 12px;border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
+ transition:background 180ms var(--e-out)}
+.rkn{grid-area:n;display:grid;place-items:center;width:26px;height:26px;
+ border-radius:50%;font-style:normal;font-size:13px;font-weight:700;
+ background:rgba(25,25,23,.07);color:var(--fnt);
+ transition:background 180ms var(--e-out),color 180ms var(--e-out)}
+.rkr>.mark{grid-area:m}
+.rkc{grid-area:c;font-size:11.5px;color:var(--mut);line-height:1.25;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tnm{grid-area:n;font-size:15.5px;font-weight:600;letter-spacing:-.018em;line-height:1.2;
+.rkt{grid-area:t;font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.2;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm:active{transform:scale(.97)}
-.tm.on{background:var(--tc);box-shadow:var(--cardsh)}
-.tm.on .tnm{font-weight:700;color:var(--tf)}
-.tm.on .tct{color:var(--tf);opacity:.7}
-.tm.on .mark.tile{background:var(--tf)}
-.tm.on .mark.tile i{color:var(--tc)}
-.pool{margin-top:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.rkr:active{transform:scale(.99)}
+.rkr.on{background:var(--tc)}
+.rkr.on .rkt{color:var(--tf);font-weight:700}
+.rkr.on .rkc{color:var(--tf);opacity:.72}
+.rkr.on .rkn{background:var(--tf);color:var(--tc)}
+.rkr.on .mark.tile{background:var(--tf)}
+.rkr.on .mark.tile i{color:var(--tc)}
+.rkr.on[data-pick]:first-child .rkn{box-shadow:0 0 0 3px rgba(255,232,107,.6)}
 
 /* ---- seeding --------------------------------------------------------------
    The top four are placed rather than picked, so the row is a thing you move
@@ -309,7 +320,7 @@ h1,h2,h3,h4,p{margin:0}
 @media(min-width:601px){
  .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
  .pool{grid-template-columns:repeat(4,minmax(0,1fr))}
- .divs{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 24px}
+ .divs{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 26px}
  .bkt{--bgap:40px}
  .bsl{grid-template-columns:18px auto minmax(0,1fr);min-height:44px;gap:8px}
  .bnm{font-size:15px}

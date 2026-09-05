@@ -102,6 +102,28 @@ keeps its cell and only redraws the columns downstream of it, which fade rather
 than travel. `-webkit-tap-highlight-color` is off, because the browser was
 painting its own blue over a chip before ours arrived.
 
+## Ranking a division
+
+Step one asks for all four places, not just the winner, and it is tap-to-rank
+rather than drag.
+
+That is against the reflex, so it is worth saying why. Karth's comparison of
+ranking questions found drag-and-drop scored **no better on usability** than
+entering the order, and was no faster; the guidance for short lists on a phone
+is click-to-rank, with drag kept for *adjusting* an order that already exists —
+which is exactly what the seeding step is. Four items is also comfortably
+inside the three-to-seven a ranking question is meant to stay within.
+
+What drag genuinely has over a bare tap-to-rank is that you can see the order
+you are building. So the row moves: tapping a team lifts it into the placed
+group and everything else slides, animated with FLIP — measure, rewrite, put
+each row back where it was, release. Same feedback, no gesture.
+
+Nothing is randomised. Ranking guidance says to shuffle the initial order to
+dodge a primacy effect, and it is wrong here: these are teams with a
+conventional order, and shuffling them would read as a bug rather than as
+neutrality.
+
 ## The seeding drag
 
 Pointer events, so mouse, touch and pen are one path. The rows are never

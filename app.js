@@ -58,6 +58,12 @@ function lum(hex){const n=parseInt(hex.slice(1),16),f=v=>{v/=255;
    not carry at all. Nick's call, and they are the colours those teams are
    actually known by — it also stops four AFC teams all fielding near-black. */
 TEAMS.forEach(t=>{t.f=lum(t.c)>.42?'#191917':'#FFFFFF'});
+/* Two exceptions, on Nick's call. Both fill with a gold light enough that the
+   measurement says ink, and both look wrong that way beside thirty other cards
+   set in white. Contrast suffers for it — white on Steelers gold is about
+   1.7:1 — so this is a deliberate trade of legibility for consistency, not an
+   oversight in the calculation above. */
+['NO','PIT'].forEach(k=>{const t=TEAMS.find(x=>x.k===k);if(t)t.f='#FFFFFF'});
 
 const T=Object.fromEntries(TEAMS.map(t=>[t.k,t]));
 
@@ -101,7 +107,7 @@ const KEY='nflpicks.2026';
    picking another — reconcile could not tell a stale winner from a wild card
    and cleared the lot. Changing your mind about one division should not cost
    you three wild cards. */
-const blank=()=>({name:'',div:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
+const blank=()=>({name:'',fin:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
  win:{},award:{mvp:{},opoy:{},dpoy:{}}});
 let S=blank();
 
@@ -110,7 +116,10 @@ function load(){try{const r=localStorage.getItem(KEY);if(!r)return;
  /* sheets written before the split still open */
  if(j.seed&&!j.ord){j.ord={};j.wild={};
   CONFS.forEach(c=>{const a=j.seed[c]||[];j.ord[c]=a.slice(0,4);j.wild[c]=a.slice(4)})}
- S=Object.assign(blank(),j);delete S.seed}
+ /* sheets that only recorded a division winner keep it as first place */
+ if(j.div&&!j.fin){j.fin={};
+  Object.keys(j.div).forEach(k=>{if(j.div[k])j.fin[k]=[j.div[k]]})}
+ S=Object.assign(blank(),j);delete S.seed;delete S.div}
  catch(e){/* a private window, or cleared data. A blank sheet is the right answer. */}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -120,7 +129,12 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
    played game. A pick that is no longer legal — a division winner swapped out
    from under a seed — is dropped rather than left to render as a ghost. */
 const divKey=(conf,div)=>conf+' '+div;
-const winnersOf=conf=>DIVS.map(d=>S.div[divKey(conf,d)]).filter(Boolean);
+/* A division is predicted in full — first through fourth — not just at the top.
+   The winner is simply whoever you put first, so there is no second place to
+   keep in step with anything. */
+const finOf=(conf,div)=>(S.fin[divKey(conf,div)]||[]).filter(Boolean);
+const finDone=(conf,div)=>finOf(conf,div).length===4;
+const winnersOf=conf=>DIVS.map(d=>finOf(conf,d)[0]).filter(Boolean);
 /* the winners in the order you put them, and the wild cards in the order you
    added them; the seeding is the two concatenated, and only once all four
    divisions are decided */
@@ -136,6 +150,9 @@ const seededAll=conf=>seedsOf(conf).length===7;
 /* Seeds 1-4 are the division winners by rule, so a changed division winner
    invalidates the seeding it was part of. */
 function reconcile(){
+ /* a team can only place once in its own division */
+ Object.keys(S.fin).forEach(k=>{
+  S.fin[k]=(S.fin[k]||[]).filter((t,i,a)=>t&&a.indexOf(t)===i).slice(0,4)});
  CONFS.forEach(conf=>{
   const w=winnersOf(conf);
   /* the order keeps whatever is still a winner and picks up any that are new,
@@ -208,7 +225,7 @@ function roadOf(k){
    read from one place rather than each re-deriving what "done" means. */
 const STEPS=[['divisions','Divisions'],['seeds','Seeding'],['bracket','Bracket'],
  ['awards','Awards'],['share','Share']];
-const doneDiv=()=>CONFS.every(c=>winnersOf(c).length===4);
+const doneDiv=()=>CONFS.every(c=>DIVS.every(d=>finDone(c,d)));
 const doneSeed=()=>doneDiv()&&CONFS.every(seededAll);
 const doneBracket=()=>doneSeed()&&!!champion();
 const doneAward=()=>['mvp','opoy','dpoy'].every(k=>(S.award[k]||{}).player);
@@ -394,49 +411,88 @@ dpoy:[
 const board=k=>(BOARD[k]||[]).map(([n,t,p,o])=>({n,t,p,o}));
 
 /* ===== divisions.js ===== */
-/* Step one: the eight division winners. Everything else in the sheet is
-   downstream of these, so they are picked first and on their own screen. */
+/* Step one: how each division finishes, first through fourth.
+
+   Tap to place, and the list physically reorders as you do.
+
+   The research is against drag here. Karth's comparison of ranking questions
+   found drag-and-drop scored no better on usability than entering the order,
+   and was no faster; the guidance for small lists on a phone is click-to-rank,
+   with drag reserved as the thing you reach for to *adjust* an order that
+   already exists — which is what the seeding step is. Four items is also well
+   inside the 3-7 that ranking questions are meant to stay within.
+
+   What drag does have over a bare tap-to-rank is that you can see the order
+   you are building. So the row moves: tapping a team lifts it into the ranked
+   group and everything slides, which is the same feedback without the gesture.
+   Nothing is randomised — these are teams with a conventional order, and
+   shuffling them to dodge a primacy effect would just read as broken. */
 (()=>{
-const chip=(t,on)=>`<button class="tm${on?' on':''}" data-pick="${t.k}"
- style="--tc:${t.c};--tf:${t.f}" aria-pressed="${on}">
-${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`;
+const ORD=['1st','2nd','3rd','4th'];
+
+const rowOf=(t,rank)=>`<button class="rkr${rank?' on':''}" data-pick="${t.k}"
+ data-team="${t.k}" style="--tc:${t.c};--tf:${t.f}" aria-pressed="${!!rank}"
+ aria-label="${esc(t.city)} ${esc(t.name)}${rank?', '+ORD[rank-1]:', not placed'}">
+<i class="rkn">${rank||''}</i>${mark(t,'sm')}
+<span class="rkc">${esc(t.city)}</span><span class="rkt">${esc(t.name)}</span></button>`;
+
+function listHTML(conf,div){
+ const fin=finOf(conf,div);
+ const rest=divTeams(conf,div).filter(t=>!fin.includes(t.k));
+ return fin.map((k,i)=>rowOf(T[k],i+1)).join('')+rest.map(t=>rowOf(t,0)).join('')}
+
+const division=(conf,div)=>{
+ const fin=finOf(conf,div),key=divKey(conf,div);
+ return `<div class="dv" data-div="${esc(key)}" data-conf="${conf}" data-name="${esc(div)}">
+<p class="dvl">${esc(div)}<em>${fin.length<4?ORD[fin.length]+' next':'set'}</em></p>
+<div class="rank">${listHTML(conf,div)}</div></div>`};
 
 SEC.divisions={render(){
- const blocks=CONFS.map(conf=>`<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${winnersOf(conf).length} of 4</span></div>
-<div class="divs">${DIVS.map(div=>{
-  const key=divKey(conf,div),pick=S.div[key];
-  return `<div class="dv">
-<p class="dvl">${esc(div)}</p>
-<div class="tms">${divTeams(conf,div).map(t=>chip(t,pick===t.k)).join('')}</div>
-</div>`}).join('')}</div></section>`).join('');
  return `<div class="sheet">
 <header class="phx">
 <p class="kick">Step one</p>
-<h1>Who wins each division?</h1>
-<p class="lede">Eight picks. These become the top four seeds in each conference,
-so they decide the shape of your bracket.</p>
+<h1>How does each division finish?</h1>
+<p class="lede">Tap the teams in the order you think they will finish, first to
+fourth. Whoever you put first wins the division and takes a top-four seed, so
+this is the shape of your bracket as well as your table.</p>
 </header>
-${blocks}
+${CONFS.map(conf=>`<section class="sect">
+<div class="sh"><h4>${conf}</h4><span>${DIVS.filter(d=>finDone(conf,d)).length} of 4 set</span></div>
+<div class="divs">${DIVS.map(d=>division(conf,d)).join('')}</div></section>`).join('')}
 ${nextBar('divisions','Seed the conferences','#seeds')}
 </div>`},
-after(root){
- /* Nothing is re-rendered here. The chip that was tapped keeps its element, so
-    the background transition in the stylesheet actually runs from the old
-    colour to the new one instead of appearing already finished. */
- root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
-  const t=T[b.dataset.pick],key=divKey(t.conf,t.div);
-  const was=S.div[key];
-  S.div[key]=was===t.k?undefined:t.k;
-  if(!S.div[key])delete S.div[key];
-  const now=S.div[key];
-  b.closest('.tms').querySelectorAll('[data-pick]').forEach(x=>{
-   const on=x.dataset.pick===now;
-   x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});
-  const sect=b.closest('.sect'),conf=t.conf;
-  const count=sect.querySelector('.sh>span');
-  if(count)count.textContent=winnersOf(conf).length+' of 4';
-  reconcile();save();syncChrome()})}};
+after(root){wireRank(root)}};
+
+function wireRank(root){
+ root.querySelectorAll('.dv [data-pick]').forEach(b=>b.onclick=()=>{
+  const box=b.closest('.dv'),key=box.dataset.div,k=b.dataset.pick;
+  const list=box.querySelector('.rank');
+  const fin=(S.fin[key]||[]).slice(),at=fin.indexOf(k);
+  if(at>=0)fin.splice(at,1); else if(fin.length<4)fin.push(k); else return;
+  S.fin[key]=fin;reconcile();save();
+  flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
+   wireRank(box)});
+  const lab=box.querySelector('.dvl em');
+  if(lab)lab.textContent=fin.length<4?ORD[fin.length]+' next':'set';
+  const conf=box.dataset.conf;
+  const count=box.closest('.sect').querySelector('.sh>span');
+  if(count)count.textContent=DIVS.filter(d=>finDone(conf,d)).length+' of 4 set';
+  syncChrome()})}
+
+/* First, Last, Invert, Play. Measure where every row is, let the list rewrite
+   itself, then put each row back where it was and release it — so the rows
+   travel to their new places instead of teleporting. */
+function flip(list,mutate){
+ const before=new Map([...list.children].map(r=>[r.dataset.team,r.getBoundingClientRect().top]));
+ mutate();
+ if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ [...list.children].forEach(r=>{
+  const was=before.get(r.dataset.team);if(was==null)return;
+  const dy=was-r.getBoundingClientRect().top;
+  if(!dy)return;
+  r.style.transition='none';r.style.transform=`translateY(${dy}px)`;
+  requestAnimationFrame(()=>{
+   r.style.transition='transform 280ms cubic-bezier(.2,.7,.3,1)';r.style.transform=''})})}
 })();
 
 /* ===== seeds.js ===== */
