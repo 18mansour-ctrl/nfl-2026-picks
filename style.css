@@ -1,0 +1,221 @@
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Buch.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Kraftig.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Halbfett.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Dreiviertelfett.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Sohne Schmal';src:url('fonts/SohneSchmal-Dreiviertelfett.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Tiempos Text';src:url('fonts/TiemposText-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+
+/* The house palette, carried over whole. Paper rather than white, ink rather
+   than black, and one highlight that means "this is yours". */
+:root{
+ --paper:#FAFAF6;--card:#FFFDF7;--ink:#191917;--body:#26251F;
+ --mut:#605F58;--mut2:#4C4A43;--fnt:#9C9B92;
+ --hr:rgba(25,25,23,.09);--hr2:rgba(25,25,23,.2);
+ --hl:#FFE86B;--hls:#FFD84D;--acc:#2451B3;
+ --sans:'Sohne',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+ --serif:'Tiempos Text',Georgia,serif;
+ --cond:'Sohne Schmal','Sohne',sans-serif;
+ --cardsh:0 1px 1px rgba(25,25,23,.04),0 6px 16px -10px rgba(25,25,23,.3);
+ --pad:20px;
+ --e-out:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper)}
+body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;
+ font-size:16px;line-height:1.45;padding-bottom:60px}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4,p{margin:0}
+
+/* ---- masthead ----------------------------------------------------------- */
+.mast{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:11px;
+ padding:14px var(--pad);background:rgba(250,250,246,.9);
+ -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+ border-bottom:1px solid var(--hr)}
+.wm{width:15px;height:15px;border-radius:4px;background:var(--ink);flex:none}
+.mt{font-family:var(--cond);font-size:19px;font-weight:700;letter-spacing:.02em;
+ text-transform:uppercase}
+
+/* ---- the sheet and its rhythm ------------------------------------------- */
+.sheet{padding:0 var(--pad) 40px;max-width:760px;margin:0 auto}
+.sect{margin-top:42px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.sh h4{font-size:21px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
+.sh>span{font-size:12.5px;color:var(--mut);flex:none}
+.sh+*{margin-top:14px}
+
+.phx{padding-top:30px}
+.kick{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.07em;
+ text-transform:uppercase;color:var(--mut)}
+.phx h1{font-size:31px;font-weight:700;letter-spacing:-.032em;line-height:1.08;
+ margin-top:9px;text-wrap:balance}
+.lede{font-family:var(--serif);font-size:16px;line-height:1.5;color:var(--mut2);
+ margin-top:12px;max-width:46ch;text-wrap:pretty}
+.hint{font-family:var(--serif);font-size:14.5px;line-height:1.5;color:var(--mut2);
+ margin-top:12px;max-width:52ch}
+.hint.done{color:var(--fnt)}
+
+/* ---- progress rail ------------------------------------------------------- */
+.rail{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;
+ padding:14px var(--pad) 0;max-width:760px;margin:0 auto}
+.rl{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 2px 9px;
+ border-radius:7px;transition:background .14s}
+.rl i{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;
+ font-style:normal;font-size:11.5px;font-weight:700;
+ background:rgba(25,25,23,.07);color:var(--mut);transition:background .16s,color .16s}
+.rl span{font-size:10.5px;font-weight:500;color:var(--fnt);letter-spacing:-.005em;
+ white-space:nowrap}
+.rl.ok i{background:var(--ink);color:var(--paper)}
+.rl.on i{background:var(--hl);color:var(--ink);box-shadow:0 1px 3px rgba(25,25,23,.18)}
+.rl.on span{color:var(--ink);font-weight:600}
+.rl[disabled]{cursor:default}
+.rl[disabled] i{background:rgba(25,25,23,.04);color:#C6C5BC}
+.rl[disabled] span{color:#C6C5BC}
+
+/* ---- the team's mark ------------------------------------------------------
+   One object at four sizes. A real logo sits on the paper unboxed; a team
+   with no file on disk gets a tile in its own colour carrying its
+   abbreviation, which is a designed stand-in rather than a guess at a
+   trademark. Both occupy the same square, so a mixed set still lines up. */
+.mark{display:grid;place-items:center;flex:none;width:26px;height:26px;position:relative}
+.mark img{width:100%;height:100%;object-fit:contain;display:block}
+.mark.tile{border-radius:5px;background:var(--tc)}
+.mark.tile i{font-style:normal;font-size:8.5px;font-weight:700;letter-spacing:.02em;
+ color:#fff;line-height:1}
+.mark.none{width:0}
+.mark.sm{width:22px;height:22px}
+.mark.sm.tile i{font-size:7.5px}
+.mark.bg{width:38px;height:38px;margin:0 auto 6px}
+.mark.bg.tile i{font-size:12px}
+.mark.lg{width:46px;height:46px}
+.mark.lg.tile i{font-size:14px}
+
+/* ---- team chips ---------------------------------------------------------- */
+.divs{display:grid;gap:22px}
+.dvl{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
+ text-transform:uppercase;color:var(--mut);padding-bottom:8px;border-bottom:1px solid var(--hr)}
+.tms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:11px}
+.tm{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
+ grid-template-areas:"d c" "d n";gap:0 9px;align-items:center;text-align:left;
+ padding:10px 12px;border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
+ transition:background .15s var(--e-out),transform .12s var(--e-out)}
+.tm>.mark{grid-area:d;align-self:center;opacity:.9;transition:opacity .15s}
+.tm.on>.mark{opacity:1}
+.tct{grid-area:c;font-size:11.5px;color:var(--mut);line-height:1.25;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tnm{grid-area:n;font-size:15.5px;font-weight:600;letter-spacing:-.018em;line-height:1.2;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm:active{transform:scale(.985)}
+.tm.on{background:color-mix(in srgb,var(--tc) 15%,var(--card))}
+.tm.on .tnm{font-weight:700}
+.pool{margin-top:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* ---- seeding ------------------------------------------------------------- */
+.seeds{display:grid;gap:6px}
+.sd{display:flex;align-items:center;gap:11px;min-height:54px;padding:0 13px;
+ border-radius:8px;background:var(--card);box-shadow:var(--cardsh)}
+.sd.full{background:color-mix(in srgb,var(--tc) 13%,var(--card))}
+.sdn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;flex:none;
+ font-style:normal;font-size:12px;font-weight:700;
+ background:rgba(25,25,23,.07);color:var(--mut)}
+.sd.full .sdn{background:var(--tc);color:#fff}
+.sd.next{background:rgba(255,232,107,.3);box-shadow:none}
+.sd.next .sdn{background:var(--hls);color:var(--ink)}
+.sdt{flex:1;min-width:0;text-align:left;font-size:16px;font-weight:600;
+ letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sdt.empty{font-weight:400;color:var(--fnt);cursor:default}
+.sdb{flex:none;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--mut);background:rgba(25,25,23,.06);
+ padding:3px 7px;border-radius:3px}
+
+/* ---- the bracket --------------------------------------------------------- */
+.rnd{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--mut);margin:26px 0 11px}
+.gms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gms.one{grid-template-columns:minmax(0,1fr)}
+.gm{min-width:0}
+.gduo{display:grid;grid-template-columns:1fr 1fr;border-radius:10px;overflow:hidden;
+ background:var(--card);box-shadow:var(--cardsh)}
+.gh{padding:13px 6px 14px;text-align:center;min-width:0;
+ transition:background .16s var(--e-out)}
+.gh+.gh{border-left:1px solid var(--hr)}
+.gh.empty{cursor:default}
+.ghc{display:block;font-size:11px;color:var(--mut);white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis}
+.ghn{display:block;font-size:16.5px;font-weight:600;letter-spacing:-.022em;
+ margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gh.empty .ghn{font-weight:400;color:var(--fnt);font-size:13.5px}
+.ghs{display:block;font-style:normal;font-size:10.5px;color:var(--fnt);margin-top:5px}
+.gh.w{background:color-mix(in srgb,var(--tc) 17%,var(--card))}
+.gh.w .ghn{font-weight:700;box-shadow:inset 0 -.14em 0 var(--tc)}
+.gh.w .ghc,.gh.w .ghs{color:var(--mut2)}
+.gm.big .gh{padding:20px 10px 22px}
+.gm.big .ghn{font-size:23px}
+.gm.big .ghc{font-size:13px}
+.champ{display:flex;align-items:center;gap:14px;margin-top:12px;padding:17px 18px;
+ border-radius:10px;background:color-mix(in srgb,var(--tc) 22%,var(--card));
+ box-shadow:var(--cardsh)}
+.champ span{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+ color:var(--mut2);flex:none}
+.champ b{font-size:22px;font-weight:700;letter-spacing:-.028em;margin-left:auto;
+ text-align:right;line-height:1.15}
+
+/* ---- awards -------------------------------------------------------------- */
+.awd{display:grid;gap:12px}
+.awin{width:100%;padding:12px 14px;border-radius:8px;border:0;background:var(--card);
+ box-shadow:var(--cardsh);font-size:17px;font-weight:600;letter-spacing:-.018em;
+ outline:0;transition:box-shadow .15s}
+.awin::placeholder{font-weight:400;color:var(--fnt)}
+.awin:focus{box-shadow:var(--cardsh),0 0 0 2px var(--hls)}
+.awin.wide{margin-top:14px}
+.awd.has .awin{background:color-mix(in srgb,var(--tc) 12%,var(--card))}
+.awt{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}
+.tmini{display:grid;place-items:center;min-height:40px;border-radius:6px;
+ background:rgba(25,25,23,.04);transition:background .14s,transform .12s var(--e-out)}
+.tmini .mark{opacity:.5;transition:opacity .14s}
+.tmini:hover .mark{opacity:.85}
+.tmini.on{background:color-mix(in srgb,var(--tc) 20%,var(--paper))}
+.tmini.on .mark{opacity:1}
+.tmini:active{transform:scale(.95)}
+.mark.xs{width:24px;height:24px}
+.mark.xs.tile i{font-size:7px}
+
+/* ---- the card and the buttons ------------------------------------------- */
+.cardwrap{border-radius:10px;overflow:hidden;box-shadow:var(--cardsh);background:var(--card)}
+#card{display:block;width:100%;height:auto}
+.acts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.nextbar{margin-top:42px}
+.next{display:inline-grid;place-items:center;min-height:50px;padding:0 24px;
+ border-radius:9px;background:var(--ink);color:var(--paper);
+ font-size:15.5px;font-weight:600;letter-spacing:-.012em;
+ box-shadow:0 1px 3px rgba(25,25,23,.2);transition:transform .12s var(--e-out)}
+.next:active{transform:scale(.99)}
+.next.off{background:rgba(25,25,23,.09);color:var(--fnt);box-shadow:none;cursor:default}
+.ghost{display:inline-grid;place-items:center;min-height:50px;padding:0 20px;
+ border-radius:9px;font-size:15px;font-weight:500;color:var(--mut)}
+.ghost:hover{color:var(--ink)}
+.nextbar .next{width:100%}
+
+/* ---- the page settles in on a step change ------------------------------- */
+#root>.sheet>*{animation:blockIn 300ms var(--e-out) backwards}
+#root>.sheet>*:nth-child(2){animation-delay:45ms}
+#root>.sheet>*:nth-child(3){animation-delay:80ms}
+#root>.sheet>*:nth-child(n+4){animation-delay:105ms}
+@keyframes blockIn{from{opacity:0;transform:translateY(8px)}}
+
+@media(min-width:601px){
+ .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .pool{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .divs{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 24px}
+ .phx h1{font-size:38px}
+ .rl span{font-size:11.5px}
+ .nextbar .next{width:auto;min-width:280px}
+}
+@media(max-width:400px){
+ .rl span{font-size:9.5px}
+ .awt{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ *{animation-duration:0s!important;transition-duration:0s!important}
+}
