@@ -15,11 +15,11 @@ const TEAMS=[
  {k:'NYJ',city:'New York',name:'Jets',conf:'AFC',div:'East',c:'#115740',c2:'#FFFFFF'},
  {k:'BAL',city:'Baltimore',name:'Ravens',conf:'AFC',div:'North',c:'#24125F',c2:'#9A7611'},
  {k:'CIN',city:'Cincinnati',name:'Bengals',conf:'AFC',div:'North',c:'#FB4F14',c2:'#000000'},
- {k:'CLE',city:'Cleveland',name:'Browns',conf:'AFC',div:'North',c:'#EB3300',c2:'#311D00'},
- {k:'PIT',city:'Pittsburgh',name:'Steelers',conf:'AFC',div:'North',c:'#010101',c2:'#FFB81C'},
- {k:'HOU',city:'Houston',name:'Texans',conf:'AFC',div:'South',c:'#1D1F2A',c2:'#E4002B'},
+ {k:'CLE',city:'Cleveland',name:'Browns',conf:'AFC',div:'North',c:'#311D00',c2:'#EB3300'},
+ {k:'PIT',city:'Pittsburgh',name:'Steelers',conf:'AFC',div:'North',c:'#FFB81C',c2:'#010101'},
+ {k:'HOU',city:'Houston',name:'Texans',conf:'AFC',div:'South',c:'#E4002B',c2:'#1D1F2A'},
  {k:'IND',city:'Indianapolis',name:'Colts',conf:'AFC',div:'South',c:'#002C5F',c2:'#A2AAAD'},
- {k:'JAX',city:'Jacksonville',name:'Jaguars',conf:'AFC',div:'South',c:'#101820',c2:'#D7A22A'},
+ {k:'JAX',city:'Jacksonville',name:'Jaguars',conf:'AFC',div:'South',c:'#006778',c2:'#D7A22A'},
  {k:'TEN',city:'Tennessee',name:'Titans',conf:'AFC',div:'South',c:'#418FDE',c2:'#C8102E'},
  {k:'DEN',city:'Denver',name:'Broncos',conf:'AFC',div:'West',c:'#FB4F14',c2:'#002244'},
  {k:'KC',city:'Kansas City',name:'Chiefs',conf:'AFC',div:'West',c:'#C8102E',c2:'#FFB81C'},
@@ -49,6 +49,11 @@ const TEAMS=[
 function lum(hex){const n=parseInt(hex.slice(1),16),f=v=>{v/=255;
  return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
  return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)}
+/* Four of these lead with a colour the reference sheet files as secondary:
+   Cleveland's brown over its orange, Pittsburgh's gold over its black,
+   Houston's red over its navy, and Jacksonville's teal, which the sheet does
+   not carry at all. Nick's call, and they are the colours those teams are
+   actually known by — it also stops four AFC teams all fielding near-black. */
 TEAMS.forEach(t=>{t.f=lum(t.c)>.42?'#191917':'#FFFFFF'});
 
 const T=Object.fromEntries(TEAMS.map(t=>[t.k,t]));
