@@ -89,6 +89,16 @@ phone screen and a story both are, so it arrives in a group chat at full height
 rather than letterboxed. It is drawn rather than screenshotted, so it is
 identical on every device and needs nothing loaded from anywhere.
 
+**One loud move, then restraint.** The champion is a full-bleed band in that
+team's own colour, because it is the claim the card is making and it has to
+survive being a thumbnail in a chat list. Text on it flips between white and
+ink on the measured luminance of the colour, so the gold teams and the navy
+ones both read. Everything under the band is on paper and quiet by comparison.
+
+The division winners are not on it. They are seeds one to four and already in
+the bracket; printing them a second time is what made the first version read as
+a spreadsheet.
+
 Two things must be resident before the first stroke or they fail silently: the
 type (a font that has not loaded falls back to the system sans) and the logos
 (`drawImage` on a half-loaded image draws nothing and reports no error). Both
