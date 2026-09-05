@@ -82,19 +82,30 @@ const divKey=(conf,div)=>conf+' '+div;
 const winnersOf=conf=>DIVS.map(d=>S.div[divKey(conf,d)]).filter(Boolean);
 const seedsOf=conf=>(S.seed[conf]||[]).filter(Boolean);
 const seededAll=conf=>seedsOf(conf).length===7;
+/* A division winner can never fall below the fourth seed and a wild card can
+   never rise above the fifth. That is the actual rule, so it is the only
+   constraint the arrows need. */
+const bandOf=i=>i<4?0:1;
+function moveSeed(conf,i,dir){
+ const s=S.seed[conf]||[],j=i+dir;
+ if(j<0||j>=s.length||bandOf(i)!==bandOf(j))return;
+ const t=s[i];s[i]=s[j];s[j]=t;repaint()}
 
 /* Seeds 1-4 are the division winners by rule, so a changed division winner
    invalidates the seeding it was part of. */
 function reconcile(){
  CONFS.forEach(conf=>{
-  const w=new Set(winnersOf(conf));
-  const s=S.seed[conf]||[];
-  const top=s.slice(0,4);
-  if(top.length&&(top.some(k=>!w.has(k))||w.size!==4))S.seed[conf]=[];
-  else{
-   /* a wild card that has since become a division winner cannot also be one */
-   S.seed[conf]=s.filter((k,i)=>i<4||!w.has(k));
-  }});
+  const w=winnersOf(conf),s=S.seed[conf]||[];
+  if(w.length!==4){S.seed[conf]=[];return}
+  /* Seeds one to four ARE the division winners, so there is nothing to choose
+     there — only an order. They are placed the moment all four are known, in
+     the order the divisions were picked, and any order already set is kept.
+     Swapping a division winner heals the one slot rather than wiping the
+     conference, which is what made this feel punitive. */
+  const keep=s.slice(0,4).filter(k=>w.includes(k));
+  const top=keep.concat(w.filter(k=>!keep.includes(k)));
+  const wild=s.slice(4).filter(k=>!w.includes(k)&&T[k]&&T[k].conf===conf).slice(0,3);
+  S.seed[conf]=top.concat(wild)});
  /* every game whose participants are no longer determined loses its winner */
  const live=new Set(Object.keys(bracket()).flatMap(id=>{const g=bracket()[id];
   return [g.home,g.away].filter(Boolean)}));
@@ -118,9 +129,12 @@ function bracket(){
   const seedOf=k=>s.indexOf(k)+1;
   const alive=ok&&wcw.length===3
    ? [at(1),...wcw].sort((a,b)=>seedOf(a)-seedOf(b)) : null;
-  /* 1 plays the lowest survivor; the middle two meet */
+  /* 1 plays the lowest survivor; the middle two meet. The top seed is known
+     the moment the conference is seeded, so it sits in the divisional waiting
+     for an opponent rather than showing as a blank. */
   B[conf+'-dv0']=alive?{round:'Divisional',conf,home:alive[0],away:alive[3],
-   hs:seedOf(alive[0]),as:seedOf(alive[3])}:{round:'Divisional',conf,home:null,away:null};
+   hs:seedOf(alive[0]),as:seedOf(alive[3])}
+   :{round:'Divisional',conf,home:ok?at(1):null,away:null,hs:ok?1:null};
   B[conf+'-dv1']=alive?{round:'Divisional',conf,home:alive[1],away:alive[2],
    hs:seedOf(alive[1]),as:seedOf(alive[2])}:{round:'Divisional',conf,home:null,away:null};
   const d0=S.win[conf+'-dv0'],d1=S.win[conf+'-dv1'];

@@ -23,7 +23,7 @@ It must be served over HTTP. The logos are fetched relatively, so opening
 `app.js` is **generated** — do not edit it. It is `src/*.js` concatenated in the
 order set by `ORDER`, with `boot()` appended:
 
-    core  logos  divisions  seeds  bracket  awards  share
+    core  logos  players  divisions  seeds  bracket  awards  share
 
 `src/logos.js` is generated too, from whatever is in `logos/`. Drop a file in,
 rebuild, and it is picked up. `build.sh` also stamps content hashes onto the
@@ -44,14 +44,43 @@ card round — the top seed left plays the lowest seed left — so the divisiona
 matchups genuinely cannot be written down in advance, which is why they are
 computed rather than kept.
 
-**Illegal state is dropped rather than rendered.** `reconcile()` runs before
-every paint. Seeds one to four have to be the division winners, so changing a
-division winner clears that conference's seeding; a game whose participants are
-no longer determined loses its winner. The alternative is a sheet that shows a
-team in a round it can no longer reach.
+**Illegal state heals rather than being wiped.** `reconcile()` runs before every
+paint. Seeds one to four *are* the division winners — that is the rule, not a
+choice — so they are placed automatically the moment all four are known, and
+swapping one heals that slot rather than clearing the conference. A game whose
+participants are no longer determined loses its winner. The alternative is a
+sheet that shows a team in a round it can no longer reach.
 
 **Steps unlock in order.** Each step reports its own completeness and the rail
 reads from that one place, so there is no second definition of "done" to drift.
+
+## The bracket
+
+Three columns a conference — wild card, divisional, championship — each holding
+fewer games than the last, so the shape converges. The games distribute with
+`space-around` inside a shared height, which is what makes a column of two sit
+between a column of three without anything being positioned by hand.
+
+**The connecting lines are drawn after layout, not faked in CSS.** `lines()`
+measures where each game actually ended up and draws into an SVG underneath.
+They gather rather than fork, and that is deliberate: the NFL reseeds, so the
+three wild card winners are pooled and redrawn against the bye. Fixed elbows
+would claim a feeder that does not exist.
+
+The top seed sits in the divisional round from the moment its conference is
+seeded, greyed and un-tappable until it has an opponent. It cannot win a game
+with nobody on the other side of it, but it is not a blank either.
+
+## The awards board
+
+Fifty candidates an award, ranked by an **indicative preseason price**. The odds
+are there to order the field and give a pick some context — they are not a live
+market and the page says so. Anyone can be written in.
+
+An empty text box is the worst version of this: it asks you to remember fifty
+names and spell them. The list filters as you type rather than re-rendering, so
+the caret survives the first keystroke, and once a pick is made it collapses to
+the pick, because the decision is done.
 
 ## The card
 

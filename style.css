@@ -111,49 +111,92 @@ h1,h2,h3,h4,p{margin:0}
 .tm.on .tnm{font-weight:700}
 .pool{margin-top:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
 
-/* ---- seeding ------------------------------------------------------------- */
+/* ---- seeding --------------------------------------------------------------
+   The top four are placed rather than picked, so the row is a thing you move
+   rather than a thing you fill. Arrows instead of drag: a drag handle on a
+   phone competes with the page scroll, and the whole interaction here is
+   four small moves. */
+.bandl{font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--mut);margin:20px 0 9px}
+.bandl em{font-family:var(--sans);font-style:normal;font-size:11.5px;font-weight:400;
+ letter-spacing:-.005em;text-transform:none;color:var(--fnt);margin-left:8px}
+.bandl.wc{margin-top:22px}
+.sh+.bandl{margin-top:16px}
 .seeds{display:grid;gap:6px}
-.sd{display:flex;align-items:center;gap:11px;min-height:54px;padding:0 13px;
+.sd{display:flex;align-items:center;gap:10px;min-height:54px;padding:0 8px 0 12px;
  border-radius:8px;background:var(--card);box-shadow:var(--cardsh)}
 .sd.full{background:color-mix(in srgb,var(--tc) 13%,var(--card))}
+.sd.open{background:rgba(25,25,23,.035);box-shadow:none}
 .sdn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;flex:none;
  font-style:normal;font-size:12px;font-weight:700;
- background:rgba(25,25,23,.07);color:var(--mut)}
+ background:rgba(25,25,23,.08);color:var(--mut)}
 .sd.full .sdn{background:var(--tc);color:#fff}
-.sd.next{background:rgba(255,232,107,.3);box-shadow:none}
-.sd.next .sdn{background:var(--hls);color:var(--ink)}
-.sdt{flex:1;min-width:0;text-align:left;font-size:16px;font-weight:600;
+.sdt{flex:1;min-width:0;text-align:left;font-size:15.5px;font-weight:600;
  letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sdt.empty{font-weight:400;color:var(--fnt);cursor:default}
-.sdb{flex:none;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;
- text-transform:uppercase;color:var(--mut);background:rgba(25,25,23,.06);
- padding:3px 7px;border-radius:3px}
+.sdt.empty{font-weight:400;color:var(--fnt);font-size:14px}
+.sdb{flex:none;font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--mut2);background:rgba(255,255,255,.6);
+ padding:3px 6px;border-radius:3px}
+.sdx{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+ font-size:12px;color:var(--mut);background:rgba(25,25,23,.06)}
+.sdx:hover{background:rgba(25,25,23,.12);color:var(--ink)}
+.sdmv{flex:none;display:grid;gap:2px}
+.sar{width:26px;height:22px;display:grid;place-items:center;border-radius:4px;
+ font-size:11px;color:var(--mut);background:rgba(25,25,23,.06)}
+.sar:hover:not([disabled]){background:rgba(25,25,23,.14);color:var(--ink)}
+.sar[disabled]{opacity:.28;cursor:default}
 
-/* ---- the bracket --------------------------------------------------------- */
-.rnd{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:.06em;
- text-transform:uppercase;color:var(--mut);margin:26px 0 11px}
-.gms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.gms.one{grid-template-columns:minmax(0,1fr)}
-.gm{min-width:0}
-.gduo{display:grid;grid-template-columns:1fr 1fr;border-radius:10px;overflow:hidden;
- background:var(--card);box-shadow:var(--cardsh)}
-.gh{padding:13px 6px 14px;text-align:center;min-width:0;
+/* ---- the bracket ---------------------------------------------------------
+   Three columns a conference, each with fewer games than the last, so the
+   shape converges. The games distribute with space-around inside a common
+   height, which is what makes a column of two sit between a column of three
+   without anything being positioned by hand. The connecting lines are drawn
+   into the SVG underneath after layout — see lines() — because where a game
+   ends up depends on the width the column got. */
+.bkt{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:0 var(--bgap,26px);align-items:stretch}
+.blines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.bcol{display:flex;flex-direction:column;min-width:0;position:relative;z-index:1}
+.bch{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--fnt);text-align:center;margin-bottom:12px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bgs{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:14px}
+.bgm{display:grid;border-radius:8px;background:var(--card);overflow:hidden;
+ box-shadow:var(--cardsh);min-width:0}
+.bsl{display:grid;grid-template-columns:15px auto minmax(0,1fr);align-items:center;gap:6px;
+ min-height:42px;padding:0 9px;text-align:left;min-width:0;
+ transition:background .15s var(--e-out)}
+.bsl+.bsl{border-top:1px solid var(--hr)}
+.bsl.held{cursor:default}
+.bsl.held .bnm,.bsl.held .bsd{color:var(--mut)}
+.bsl.held .mark{opacity:.55}
+.bsd{font-style:normal;font-size:10px;font-weight:600;color:var(--fnt);text-align:center}
+.bnm{font-size:13.5px;font-weight:600;letter-spacing:-.01em;min-width:0;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bsl .mark{opacity:.8}
+.bsl.empty{cursor:default}
+.bsl.empty .bnm{color:var(--fnt);font-weight:400}
+.bsl.w{background:color-mix(in srgb,var(--tc) 20%,var(--card))}
+.bsl.w .bnm{font-weight:700}
+.bsl.w .bsd{color:var(--mut2)}
+.bsl.w .mark{opacity:1}
+.bsl:active{background:rgba(25,25,23,.05)}
+
+/* the final is not a bracket cell — it is the one game everything led to */
+.sbw{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.sbh{padding:16px 8px 18px;border-radius:10px;background:var(--card);
+ box-shadow:var(--cardsh);text-align:center;min-width:0;
  transition:background .16s var(--e-out)}
-.gh+.gh{border-left:1px solid var(--hr)}
-.gh.empty{cursor:default}
-.ghc{display:block;font-size:11px;color:var(--mut);white-space:nowrap;
+.sbc{display:block;font-size:11.5px;color:var(--mut);white-space:nowrap;
  overflow:hidden;text-overflow:ellipsis}
-.ghn{display:block;font-size:16.5px;font-weight:600;letter-spacing:-.022em;
- margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gh.empty .ghn{font-weight:400;color:var(--fnt);font-size:13.5px}
-.ghs{display:block;font-style:normal;font-size:10.5px;color:var(--fnt);margin-top:5px}
-.gh.w{background:color-mix(in srgb,var(--tc) 17%,var(--card))}
-.gh.w .ghn{font-weight:700;box-shadow:inset 0 -.14em 0 var(--tc)}
-.gh.w .ghc,.gh.w .ghs{color:var(--mut2)}
-.gm.big .gh{padding:20px 10px 22px}
-.gm.big .ghn{font-size:23px}
-.gm.big .ghc{font-size:13px}
-.champ{display:flex;align-items:center;gap:14px;margin-top:12px;padding:17px 18px;
+.sbn{display:block;font-size:19px;font-weight:600;letter-spacing:-.024em;margin-top:2px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbh.empty{cursor:default;box-shadow:none;background:rgba(25,25,23,.03)}
+.sbh.empty .sbn{font-weight:400;color:var(--fnt);font-size:14px}
+.sbh.w{background:color-mix(in srgb,var(--tc) 20%,var(--card))}
+.sbh.w .sbn{font-weight:700;box-shadow:inset 0 -.14em 0 var(--tc)}
+.sbv{font-size:12px;color:var(--fnt);flex:none}
+.champ{display:flex;align-items:center;gap:14px;margin-top:14px;padding:17px 18px;
  border-radius:10px;background:color-mix(in srgb,var(--tc) 22%,var(--card));
  box-shadow:var(--cardsh)}
 .champ span{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
@@ -178,7 +221,8 @@ h1,h2,h3,h4,p{margin:0}
 .tmini.on{background:color-mix(in srgb,var(--tc) 20%,var(--paper))}
 .tmini.on .mark{opacity:1}
 .tmini:active{transform:scale(.95)}
-.mark.xs{width:24px;height:24px}
+.mark.xs{width:22px;height:22px}
+.bsl .mark.xs{width:19px;height:19px}
 .mark.xs.tile i{font-size:7px}
 
 /* ---- the card and the buttons ------------------------------------------- */
@@ -208,14 +252,58 @@ h1,h2,h3,h4,p{margin:0}
  .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
  .pool{grid-template-columns:repeat(4,minmax(0,1fr))}
  .divs{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 24px}
+ .bkt{--bgap:40px}
+ .bsl{grid-template-columns:18px auto minmax(0,1fr);min-height:44px;gap:8px}
+ .bnm{font-size:15px}
+ .bch{font-size:12px}
  .phx h1{font-size:38px}
  .rl span{font-size:11.5px}
  .nextbar .next{width:auto;min-width:280px}
 }
 @media(max-width:400px){
  .rl span{font-size:9.5px}
+ .bkt{--bgap:16px}
+ .bsl{grid-template-columns:12px auto minmax(0,1fr);gap:4px;padding:0 4px}
+ .bnm{font-size:12.5px}
  .awt{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){
  *{animation-duration:0s!important;transition-duration:0s!important}
 }
+
+/* ---- the award board ------------------------------------------------------
+   Fifty names is too many for a text box and too many for a grid, so it is a
+   filtered list: search at the top, the field ranked by price underneath, and
+   a write-in at the bottom for anyone the board has missed. Once a pick is
+   made the list collapses to the pick, because the decision is done. */
+.finder{margin-top:14px}
+.fsearch{width:100%;padding:11px 14px;border-radius:8px;border:0;background:var(--card);
+ box-shadow:var(--cardsh);font-size:15.5px;outline:0;transition:box-shadow .15s}
+.fsearch::placeholder{color:var(--fnt)}
+.fsearch:focus{box-shadow:var(--cardsh),0 0 0 2px var(--hls)}
+.cnds{margin-top:10px;max-height:330px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+ border-radius:8px;background:var(--card);box-shadow:var(--cardsh)}
+.cnd{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;
+ gap:10px;width:100%;min-height:48px;padding:0 13px;text-align:left;
+ transition:background .13s}
+.cnd+.cnd{border-top:1px solid var(--hr)}
+.cnd:hover{background:rgba(25,25,23,.035)}
+.cnd .mark{opacity:.9}
+.cnn{font-size:15px;font-weight:600;letter-spacing:-.018em;min-width:0;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cnt{font-size:11.5px;color:var(--mut);white-space:nowrap}
+.cno{font-size:13px;font-weight:600;color:var(--mut2);min-width:52px;text-align:right;
+ font-variant-numeric:tabular-nums}
+.cnone{font-family:var(--serif);font-size:14.5px;color:var(--mut2);margin-top:12px}
+.writein{margin-top:12px}
+.pick{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+ grid-template-areas:"m n x" "m s x";gap:1px 13px;align-items:center;
+ margin-top:14px;padding:14px 14px 15px;border-radius:9px;box-shadow:var(--cardsh);
+ background:color-mix(in srgb,var(--tc,#fff) 15%,var(--card))}
+.pick .mark{grid-area:m}
+.pkn{grid-area:n;font-size:19px;font-weight:700;letter-spacing:-.026em;align-self:end;
+ min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pkm{grid-area:s;font-size:12.5px;color:var(--mut2);align-self:start}
+.pkx{grid-area:x;font-size:13px;font-weight:500;color:var(--mut);
+ padding:7px 10px;border-radius:6px;background:rgba(25,25,23,.06)}
+.pkx:hover{color:var(--ink);background:rgba(25,25,23,.12)}

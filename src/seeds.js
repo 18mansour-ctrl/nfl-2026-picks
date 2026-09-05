@@ -1,30 +1,38 @@
-/* Step two: the seven, in order. Seeds one to four are the division winners by
-   rule, so the screen only offers those until the fourth is placed and only
-   the rest afterwards — the format is taught by what is tappable rather than
-   by a paragraph explaining it. */
+/* Step two: the order, not the teams.
+   The four division winners are already decided, so asking you to tap them
+   again was data entry rather than a decision. They are placed for you and you
+   move them; the only thing left to choose is the three wild cards. */
 (()=>{
-const ordinal=n=>n+(n===1?'st':n===2?'nd':n===3?'rd':'th');
+const arrows=(conf,i,n)=>`<span class="sdmv">
+<button class="sar" data-mv="${conf}" data-i="${i}" data-d="-1"
+ ${i===0||bandOf(i-1)!==bandOf(i)?'disabled':''} aria-label="Move up">↑</button>
+<button class="sar" data-mv="${conf}" data-i="${i}" data-d="1"
+ ${i>=n-1||bandOf(i+1)!==bandOf(i)?'disabled':''} aria-label="Move down">↓</button></span>`;
+
+function slot(conf,seeds,i){
+ const k=seeds[i],t=k?T[k]:null,n=seeds.length;
+ if(!t)return `<div class="sd open"><i class="sdn">${i+1}</i>
+<span class="sdt empty">Wild card — tap a team below</span></div>`;
+ return `<div class="sd full" style="--tc:${t.c}">
+<i class="sdn">${i+1}</i>${mark(t,'sm')}
+<span class="sdt">${esc(t.city)} ${esc(t.name)}</span>
+${i===0?'<em class="sdb">bye</em>':''}
+${i>=4?`<button class="sdx" data-drop="${esc(k)}" aria-label="Remove ${esc(t.name)}">✕</button>`:''}
+${arrows(conf,i,n)}</div>`}
 
 function conference(conf){
- const seeds=seedsOf(conf),n=seeds.length,w=new Set(winnersOf(conf));
- const stage=n<4?'winners':'wild';
- const pool=confTeams(conf).filter(t=>!seeds.includes(t.k)
-  &&(stage==='winners'?w.has(t.k):!w.has(t.k)));
- const slot=(i)=>{const k=seeds[i];const t=k?T[k]:null;
-  return `<div class="sd${t?' full':''}${!t&&i===n?' next':''}"${t?` style="--tc:${t.c}"`:''}>
-<i class="sdn">${i+1}</i>${t?mark(t,"sm"):''}
-${t?`<button class="sdt" data-drop="${esc(k)}"><span>${esc(t.city)} ${esc(t.name)}</span></button>`
-   :`<span class="sdt empty">${i<4?'Division winner':'Wild card'}</span>`}
-${t&&i===0?'<em class="sdb">bye</em>':''}</div>`};
+ const seeds=seedsOf(conf),n=seeds.length;
+ const w=new Set(winnersOf(conf));
+ const left=3-Math.max(0,n-4);
+ const pool=confTeams(conf).filter(t=>!seeds.includes(t.k)&&!w.has(t.k));
  return `<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${n} of 7</span></div>
-<div class="seeds">${[0,1,2,3,4,5,6].map(slot).join('')}</div>
-${n<7?`<p class="hint">${stage==='winners'
-  ? `Tap your ${ordinal(n+1)} seed — the division winners, best first.`
-  : `Tap your ${ordinal(n+1)} seed — three wild cards from the rest of the ${conf}.`}</p>
-<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
- style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`
- :'<p class="hint done">Seeded. Tap a team to take it back out.</p>'}
+<div class="sh"><h4>${conf}</h4><span>${left?left+' wild card'+(left===1?'':'s')+' to add':'seeded'}</span></div>
+<p class="bandl">Division winners <em>already in — order them</em></p>
+<div class="seeds">${[0,1,2,3].map(i=>slot(conf,seeds,i)).join('')}</div>
+<p class="bandl wc">Wild cards <em>your three picks</em></p>
+<div class="seeds">${[4,5,6].map(i=>slot(conf,seeds,i)).join('')}</div>
+${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
+ style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
 </section>`}
 
 SEC.seeds={render(){
@@ -32,15 +40,19 @@ SEC.seeds={render(){
 <header class="phx">
 <p class="kick">Step two</p>
 <h1>Seed the conferences</h1>
-<p class="lede">Order matters. The one seed sits out the first round; everyone
-else is drawn against it from the bottom up.</p>
+<p class="lede">Your four division winners take the top four seeds — that part
+is the rule, not a choice, so they are already in. Put them in order and add
+three wild cards. The one seed sits out the first round.</p>
 </header>
 ${CONFS.map(conference).join('')}
 ${nextBar('seeds','Play the bracket','#bracket')}
 </div>`},
 after(root){
  root.querySelectorAll('[data-seed]').forEach(b=>b.onclick=()=>{
-  const conf=b.dataset.seed;(S.seed[conf]=S.seed[conf]||[]).push(b.dataset.k);repaint()});
+  const conf=b.dataset.seed,s=S.seed[conf]||[];
+  if(s.length<7){s.push(b.dataset.k);S.seed[conf]=s;repaint()}});
  root.querySelectorAll('[data-drop]').forEach(b=>b.onclick=()=>{
-  CONFS.forEach(c=>{S.seed[c]=(S.seed[c]||[]).filter(k=>k!==b.dataset.drop)});repaint()})}};
+  CONFS.forEach(c=>{S.seed[c]=(S.seed[c]||[]).filter(k=>k!==b.dataset.drop)});repaint()});
+ root.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{
+  moveSeed(b.dataset.mv,+b.dataset.i,+b.dataset.d)})}};
 })();

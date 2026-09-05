@@ -1,56 +1,75 @@
-/* Step four: three names. A player list would mean inventing a roster for a
-   season that has not been played, so the name is typed and the team is
-   picked — which is also what gives the award its colour on the export. */
+/* Step four: three names, chosen off a board.
+   An empty text box is the worst version of this: it asks you to remember
+   fifty names and spell them. A ranked field puts the likely ones in front of
+   you, orders them the way the market does, and still takes a write-in for
+   anyone it has missed. The list filters as you type rather than re-rendering,
+   so the caret survives the first keystroke. */
 (()=>{
-const AWARDS=[['mvp','Most Valuable Player','The best player in the league, on the best story.'],
- ['opoy','Offensive Player of the Year','Not always the MVP. Often the one who broke a number.'],
- ['dpoy','Defensive Player of the Year','The one an offence has to plan around.']];
+const AWARDS=[['mvp','Most Valuable Player','Nearly always a quarterback. Nearly.'],
+ ['opoy','Offensive Player of the Year','The one who broke a number, which is not always the MVP.'],
+ ['dpoy','Defensive Player of the Year','The one an offence has to build a plan around.']];
+
+const row=(k,c,on)=>{const t=T[c.t];
+ return `<button class="cnd${on?' on':''}" data-pick="${k}" data-n="${esc(c.n.toLowerCase())}"
+  data-name="${esc(c.n)}" data-team="${esc(c.t)}" data-pos="${esc(c.p)}" data-odds="${esc(c.o)}"
+  ${t?`style="--tc:${t.c}"`:''} aria-pressed="${on}">
+${mark(t,'xs')}<span class="cnn">${esc(c.n)}</span>
+<span class="cnt">${esc(c.t)} · ${esc(c.p)}</span><span class="cno">${esc(c.o)}</span></button>`};
+
+const chosen=(k,a)=>{const t=a.team?T[a.team]:null;
+ return `<div class="pick"${t?` style="--tc:${t.c}"`:''}>
+${mark(t,'bg')}
+<span class="pkn">${esc(a.player)}</span>
+<span class="pkm">${a.team?esc(a.team):'no team'}${a.pos?' · '+esc(a.pos):''}${a.odds?' · '+esc(a.odds):''}</span>
+<button class="pkx" data-clear="${k}">Change</button></div>`};
 
 const block=([k,title,note])=>{
- const a=S.award[k]||{},t=a.team?T[a.team]:null;
+ const a=S.award[k]||{},list=board(k);
+ if(a.player)return `<section class="sect">
+<div class="sh"><h4>${esc(title)}</h4></div>${chosen(k,a)}</section>`;
  return `<section class="sect">
-<div class="sh"><h4>${esc(title)}</h4></div>
+<div class="sh"><h4>${esc(title)}</h4><span>${list.length} on the board</span></div>
 <p class="hint">${esc(note)}</p>
-<div class="awd${t?' has':''}"${t?` style="--tc:${t.c}"`:''}>
-<input class="awin" type="text" data-aw="${k}" value="${esc(a.player||'')}"
- placeholder="Player" autocomplete="off" spellcheck="false" aria-label="${esc(title)} pick">
-<div class="awt" role="group" aria-label="Team">
-${TEAMS.map(x=>`<button class="tmini${a.team===x.k?' on':''}" data-awt="${k}" data-k="${x.k}"
- style="--tc:${x.c}" title="${esc(x.city)} ${esc(x.name)}" aria-label="${esc(x.city)} ${esc(x.name)}">${mark(x,'xs')}</button>`).join('')}
-</div></div></section>`};
+<div class="finder">
+<input class="fsearch" type="search" data-search="${k}" placeholder="Search the board"
+ autocomplete="off" spellcheck="false" aria-label="Search ${esc(title)} candidates">
+<div class="cnds" data-list="${k}">${list.map(c=>row(k,c,false)).join('')}</div>
+<p class="cnone" data-none="${k}" hidden>Nobody by that name on the board.</p>
+<div class="writein">
+<input class="awin" type="text" data-write="${k}" placeholder="Someone else — type a name"
+ autocomplete="off" spellcheck="false" aria-label="Write in a ${esc(title)} pick">
+</div>
+</div></section>`};
 
 SEC.awards={render(){
  return `<div class="sheet">
 <header class="phx">
 <p class="kick">Step four</p>
 <h1>Three awards</h1>
-<p class="lede">Type the name, tap the team. The team is what gives each pick
-its colour on the card you share.</p>
+<p class="lede">Pick off the board or write anyone in. The prices are an
+indicative preseason line — they are here to order the field, not because
+anyone is taking the bet.</p>
 </header>
 ${AWARDS.map(block).join('')}
 ${nextBar('awards','See your card','#share')}
 </div>`},
 after(root){
- root.querySelectorAll('[data-aw]').forEach(inp=>{
-  /* typed in place: re-rendering on every keystroke would drop the caret */
-  inp.oninput=()=>{const k=inp.dataset.aw;
-   S.award[k]=Object.assign({},S.award[k],{player:inp.value});save();
-   const bar=root.querySelector('.nextbar');if(bar)gate(root)};
-  inp.onblur=()=>repaint()});
- root.querySelectorAll('[data-awt]').forEach(b=>b.onclick=()=>{
-  const k=b.dataset.awt,cur=(S.award[k]||{}).team;
-  S.award[k]=Object.assign({},S.award[k],{team:cur===b.dataset.k?undefined:b.dataset.k});
+ root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
+  S.award[b.dataset.pick]={player:b.dataset.name,team:b.dataset.team,
+   pos:b.dataset.pos,odds:b.dataset.odds};
   repaint()});
- gate(root)}};
-
-/* the onward button follows the typing without a full re-render */
-function gate(root){
- const bar=root.querySelector('.nextbar');if(!bar)return;
- bar.innerHTML=doneAward()
-  ? `<a class="next" href="#share">See your card</a>`
-  : `<span class="next off">See your card</span>`;
- root.querySelectorAll('.rl').forEach(b=>{
-  const k=b.dataset.step;b.disabled=!stepOpen(k);
-  b.classList.toggle('ok',stepDone(k)&&k!==STEP)});
-}
+ root.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{
+  S.award[b.dataset.clear]={};repaint()});
+ /* filtered in place: a re-render would replace the input and drop the caret */
+ root.querySelectorAll('[data-search]').forEach(inp=>{inp.oninput=()=>{
+  const k=inp.dataset.search,q=inp.value.trim().toLowerCase();
+  const list=root.querySelector(`[data-list="${k}"]`);let n=0;
+  list.querySelectorAll('.cnd').forEach(r=>{
+   const hit=!q||r.dataset.n.includes(q);r.hidden=!hit;if(hit)n++});
+  const none=root.querySelector(`[data-none="${k}"]`);if(none)none.hidden=!!n}});
+ root.querySelectorAll('[data-write]').forEach(inp=>{
+  const commit=()=>{const v=inp.value.trim();if(!v)return;
+   S.award[inp.dataset.write]={player:v};repaint()};
+  inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit()}};
+  inp.onblur=commit})}};
 })();
