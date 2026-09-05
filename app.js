@@ -45,6 +45,15 @@ const TEAMS=[
  {k:'SF',city:'San Francisco',name:'49ers',conf:'NFC',div:'West',c:'#A6192E',c2:'#AF8C5C'},
  {k:'SEA',city:'Seattle',name:'Seahawks',conf:'NFC',div:'West',c:'#0C2340',c2:'#78BE21'}];
 
+/* Whether ink or paper reads on a team's colour, measured rather than guessed:
+   Steelers gold and Texans navy cannot take the same text. Worked out once at
+   load and carried on the team, so both the page and the canvas use the same
+   answer. */
+function lum(hex){const n=parseInt(hex.slice(1),16),f=v=>{v/=255;
+ return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
+ return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)}
+TEAMS.forEach(t=>{t.f=lum(t.c)>.42?'#191917':'#FFFFFF'});
+
 const T=Object.fromEntries(TEAMS.map(t=>[t.k,t]));
 
 /* The team's mark. A real logo when the file is there, and a tile in the
@@ -69,10 +78,23 @@ const confTeams=conf=>TEAMS.filter(t=>t.conf===conf);
    One object, saved on every change. There is no server: each person fills
    their own sheet on their own device and shares the picture. */
 const KEY='nflpicks.2026';
-const blank=()=>({name:'',div:{},seed:{AFC:[],NFC:[]},win:{},award:{mvp:{},opoy:{},dpoy:{}}});
+/* The order of the division winners and the wild cards are two different
+   decisions, so they are two different keys. They used to share one array of
+   seven with the winners pinned to the front, which meant every moment a
+   division sat empty mid-edit — the instant between un-picking one team and
+   picking another — reconcile could not tell a stale winner from a wild card
+   and cleared the lot. Changing your mind about one division should not cost
+   you three wild cards. */
+const blank=()=>({name:'',div:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
+ win:{},award:{mvp:{},opoy:{},dpoy:{}}});
 let S=blank();
 
-function load(){try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}
+function load(){try{const r=localStorage.getItem(KEY);if(!r)return;
+ const j=JSON.parse(r);
+ /* sheets written before the split still open */
+ if(j.seed&&!j.ord){j.ord={};j.wild={};
+  CONFS.forEach(c=>{const a=j.seed[c]||[];j.ord[c]=a.slice(0,4);j.wild[c]=a.slice(4)})}
+ S=Object.assign(blank(),j);delete S.seed}
  catch(e){/* a private window, or cleared data. A blank sheet is the right answer. */}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -83,32 +105,31 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
    from under a seed — is dropped rather than left to render as a ghost. */
 const divKey=(conf,div)=>conf+' '+div;
 const winnersOf=conf=>DIVS.map(d=>S.div[divKey(conf,d)]).filter(Boolean);
-const seedsOf=conf=>(S.seed[conf]||[]).filter(Boolean);
+/* the winners in the order you put them, and the wild cards in the order you
+   added them; the seeding is the two concatenated, and only once all four
+   divisions are decided */
+const ordOf=conf=>(S.ord[conf]||[]).filter(Boolean);
+const wildOf=conf=>(S.wild[conf]||[]).filter(Boolean);
+const seedsOf=conf=>winnersOf(conf).length===4?ordOf(conf).concat(wildOf(conf)):[];
 const seededAll=conf=>seedsOf(conf).length===7;
 /* A division winner can never fall below the fourth seed and a wild card can
    never rise above the fifth. That is the actual rule, so it is the only
    constraint the arrows need. */
-const bandOf=i=>i<4?0:1;
-function moveSeed(conf,i,dir){
- const s=S.seed[conf]||[],j=i+dir;
- if(j<0||j>=s.length||bandOf(i)!==bandOf(j))return;
- const t=s[i];s[i]=s[j];s[j]=t;repaint()}
+
 
 /* Seeds 1-4 are the division winners by rule, so a changed division winner
    invalidates the seeding it was part of. */
 function reconcile(){
  CONFS.forEach(conf=>{
-  const w=winnersOf(conf),s=S.seed[conf]||[];
-  if(w.length!==4){S.seed[conf]=[];return}
-  /* Seeds one to four ARE the division winners, so there is nothing to choose
-     there — only an order. They are placed the moment all four are known, in
-     the order the divisions were picked, and any order already set is kept.
-     Swapping a division winner heals the one slot rather than wiping the
-     conference, which is what made this feel punitive. */
-  const keep=s.slice(0,4).filter(k=>w.includes(k));
-  const top=keep.concat(w.filter(k=>!keep.includes(k)));
-  const wild=s.slice(4).filter(k=>!w.includes(k)&&T[k]&&T[k].conf===conf).slice(0,3);
-  S.seed[conf]=top.concat(wild)});
+  const w=winnersOf(conf);
+  /* the order keeps whatever is still a winner and picks up any that are new,
+     so swapping one division moves one row rather than resetting four */
+  const keep=(S.ord[conf]||[]).filter(k=>w.includes(k));
+  S.ord[conf]=keep.concat(w.filter(k=>!keep.includes(k)));
+  /* a wild card that has since won its division is not also a wild card */
+  S.wild[conf]=(S.wild[conf]||[])
+   .filter((k,i,a)=>T[k]&&T[k].conf===conf&&!w.includes(k)&&a.indexOf(k)===i)
+   .slice(0,3)});
  /* every game whose participants are no longer determined loses its winner */
  const live=new Set(Object.keys(bracket()).flatMap(id=>{const g=bracket()[id];
   return [g.home,g.away].filter(Boolean)}));
@@ -195,23 +216,55 @@ function rail(){
    data-step="${k}" aria-current="${on?'step':'false'}">
 <i>${ok&&!on?'✓':i+1}</i><span>${esc(l)}</span></button>`}).join('')}</nav>`}
 
+/* A step change is the only thing that replaces the page, and it is the only
+   thing that plays the entrance. Everything else — every pick, every drag —
+   changes the DOM that is already there, so a tap reads as the one control
+   responding rather than as the page reloading. That distinction is the whole
+   difference between motion that feels designed and motion that feels like a
+   refresh. */
 function render(){
  STEP=route();
  reconcile();save();
  const root=$('#root');
  root.innerHTML=rail()+SEC[STEP].render();
- root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
- if(SEC[STEP].after)SEC[STEP].after(root);
+ wire(root);
+ const sheet=root.querySelector('.sheet');
+ if(sheet){sheet.classList.remove('enter');void sheet.offsetWidth;sheet.classList.add('enter')}
  window.scrollTo(0,0);
 }
-/* Not a full re-render: the pick screens re-render themselves in place so a
-   tap does not throw away scroll position halfway down a list of eight. */
+function wire(root){
+ root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
+ if(SEC[STEP].after)SEC[STEP].after(root)}
+
+/* Re-render one region and nothing else, with no entrance. Used where a pick
+   genuinely changes what is downstream of it — the bracket past the game you
+   just decided — and never for the control you actually touched, which keeps
+   its own element so its CSS transition can run. */
+function patch(sel,html){
+ const el=$(sel);if(!el)return null;
+ el.innerHTML=html;return el}
+
+/* The two things every screen has to keep honest after a pick. */
+function syncChrome(){
+ const root=$('#root');if(!root)return;
+ root.querySelectorAll('.rl').forEach(b=>{const k=b.dataset.step;
+  b.disabled=!stepOpen(k);
+  b.classList.toggle('ok',stepDone(k)&&k!==STEP);
+  const i=b.querySelector('i');const idx=STEPS.findIndex(x=>x[0]===k);
+  if(i)i.textContent=(stepDone(k)&&k!==STEP)?'✓':String(idx+1)});
+ const bar=root.querySelector('.nextbar');
+ if(bar&&bar.dataset.for){const k=bar.dataset.for;
+  const ok=stepDone(k),a=bar.firstElementChild;
+  if(a){a.className=ok?'next':'next off';
+   if(ok)a.setAttribute('href',bar.dataset.href);else a.removeAttribute('href')}}}
+
+/* Kept for the places a whole-screen redraw is genuinely the simplest correct
+   thing — collapsing the award finder onto its pick. It skips the entrance. */
 function repaint(){
  reconcile();save();
  const root=$('#root'),y=scrollY;
  root.innerHTML=rail()+SEC[STEP].render();
- root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
- if(SEC[STEP].after)SEC[STEP].after(root);
+ wire(root);
  scrollTo(0,y);
 }
 window.addEventListener('hashchange',render);
@@ -219,9 +272,8 @@ window.addEventListener('hashchange',render);
 /* the button that carries you on, and says what is left when it cannot */
 function nextBar(k,label,href){
  const ok=stepDone(k);
- return `<div class="nextbar">
-${ok?`<a class="next" href="${href}">${esc(label)}</a>`
-   :`<span class="next off">${esc(label)}</span>`}
+ return `<div class="nextbar" data-for="${k}" data-href="${href}">
+<a class="${ok?'next':'next off'}"${ok?` href="${href}"`:''}>${esc(label)}</a>
 </div>`}
 
 function boot(){load();reconcile();render()}
@@ -349,47 +401,63 @@ ${blocks}
 ${nextBar('divisions','Seed the conferences','#seeds')}
 </div>`},
 after(root){
+ /* Nothing is re-rendered here. The chip that was tapped keeps its element, so
+    the background transition in the stylesheet actually runs from the old
+    colour to the new one instead of appearing already finished. */
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
   const t=T[b.dataset.pick],key=divKey(t.conf,t.div);
-  S.div[key]=S.div[key]===t.k?undefined:t.k;
+  const was=S.div[key];
+  S.div[key]=was===t.k?undefined:t.k;
   if(!S.div[key])delete S.div[key];
-  repaint()})}};
+  const now=S.div[key];
+  b.closest('.tms').querySelectorAll('[data-pick]').forEach(x=>{
+   const on=x.dataset.pick===now;
+   x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});
+  const sect=b.closest('.sect'),conf=t.conf;
+  const count=sect.querySelector('.sh>span');
+  if(count)count.textContent=winnersOf(conf).length+' of 4';
+  reconcile();save();syncChrome()})}};
 })();
 
 /* ===== seeds.js ===== */
 /* Step two: the order, not the teams.
    The four division winners are already decided, so asking you to tap them
    again was data entry rather than a decision. They are placed for you and you
-   move them; the only thing left to choose is the three wild cards. */
-(()=>{
-const arrows=(conf,i,n)=>`<span class="sdmv">
-<button class="sar" data-mv="${conf}" data-i="${i}" data-d="-1"
- ${i===0||bandOf(i-1)!==bandOf(i)?'disabled':''} aria-label="Move up">↑</button>
-<button class="sar" data-mv="${conf}" data-i="${i}" data-d="1"
- ${i>=n-1||bandOf(i+1)!==bandOf(i)?'disabled':''} aria-label="Move down">↓</button></span>`;
+   drag them; the only thing left to choose is the three wild cards.
 
-function slot(conf,seeds,i){
- const k=seeds[i],t=k?T[k]:null,n=seeds.length;
- if(!t)return `<div class="sd open"><i class="sdn">${i+1}</i>
-<span class="sdt empty">Wild card — tap a team below</span></div>`;
- return `<div class="sd full" style="--tc:${t.c}">
+   Two separate lists rather than one of seven, because a division winner can
+   never fall below the fourth seed and a wild card can never rise above the
+   fifth. Making that structural means the drag has no illegal move to reject —
+   there is nowhere wrong to drop. */
+(()=>{
+const GRIP='<span class="gripd"></span><span class="gripd"></span><span class="gripd"></span>'
+ +'<span class="gripd"></span><span class="gripd"></span><span class="gripd"></span>';
+
+function row(conf,k,i){
+ const t=T[k];
+ return `<div class="sd full" style="--tc:${t.c}" data-row="${i}" data-team="${esc(k)}">
 <i class="sdn">${i+1}</i>${mark(t,'sm')}
 <span class="sdt">${esc(t.city)} ${esc(t.name)}</span>
 ${i===0?'<em class="sdb">bye</em>':''}
 ${i>=4?`<button class="sdx" data-drop="${esc(k)}" aria-label="Remove ${esc(t.name)}">✕</button>`:''}
-${arrows(conf,i,n)}</div>`}
+<button class="grip" data-grip aria-label="Reorder ${esc(t.name)}"
+ aria-describedby="griphelp">${GRIP}</button></div>`}
+
+const hole=(i,txt)=>`<div class="sd open" data-row="${i}"><i class="sdn">${i+1}</i>
+<span class="sdt empty">${esc(txt||'Wild card — tap a team below')}</span></div>`;
 
 function conference(conf){
- const seeds=seedsOf(conf),n=seeds.length;
+ const ord=ordOf(conf),wild=wildOf(conf);
  const w=new Set(winnersOf(conf));
- const left=3-Math.max(0,n-4);
- const pool=confTeams(conf).filter(t=>!seeds.includes(t.k)&&!w.has(t.k));
+ const left=3-wild.length;
+ const taken=new Set(ord.concat(wild));
+ const pool=confTeams(conf).filter(t=>!taken.has(t.k)&&!w.has(t.k));
  return `<section class="sect">
 <div class="sh"><h4>${conf}</h4><span>${left?left+' wild card'+(left===1?'':'s')+' to add':'seeded'}</span></div>
-<p class="bandl">Division winners <em>already in — order them</em></p>
-<div class="seeds">${[0,1,2,3].map(i=>slot(conf,seeds,i)).join('')}</div>
+<p class="bandl">Division winners <em>already in — drag to order</em></p>
+<div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first')).join('')}</div>
 <p class="bandl wc">Wild cards <em>your three picks</em></p>
-<div class="seeds">${[4,5,6].map(i=>slot(conf,seeds,i)).join('')}</div>
+<div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4)).join('')}</div>
 ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
  style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
 </section>`}
@@ -400,20 +468,129 @@ SEC.seeds={render(){
 <p class="kick">Step two</p>
 <h1>Seed the conferences</h1>
 <p class="lede">Your four division winners take the top four seeds — that part
-is the rule, not a choice, so they are already in. Put them in order and add
+is the rule, not a choice, so they are already in. Drag them into order and add
 three wild cards. The one seed sits out the first round.</p>
+<p class="sr" id="griphelp">Press space to lift a team, then use the arrow keys
+to move it, and space again to drop it.</p>
 </header>
 ${CONFS.map(conference).join('')}
 ${nextBar('seeds','Play the bracket','#bracket')}
 </div>`},
 after(root){
  root.querySelectorAll('[data-seed]').forEach(b=>b.onclick=()=>{
-  const conf=b.dataset.seed,s=S.seed[conf]||[];
-  if(s.length<7){s.push(b.dataset.k);S.seed[conf]=s;repaint()}});
+  const conf=b.dataset.seed,wl=S.wild[conf]||[];
+  if(wl.length<3){wl.push(b.dataset.k);S.wild[conf]=wl;repaint()}});
  root.querySelectorAll('[data-drop]').forEach(b=>b.onclick=()=>{
-  CONFS.forEach(c=>{S.seed[c]=(S.seed[c]||[]).filter(k=>k!==b.dataset.drop)});repaint()});
- root.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{
-  moveSeed(b.dataset.mv,+b.dataset.i,+b.dataset.d)})}};
+  CONFS.forEach(c=>{S.wild[c]=(S.wild[c]||[]).filter(k=>k!==b.dataset.drop)});repaint()});
+ root.querySelectorAll('.seeds[data-band]').forEach(sortable)}};
+
+/* ---- the drag ------------------------------------------------------------
+   Pointer events, so one code path covers mouse, touch and pen. The rows are
+   never reordered in the DOM while you are dragging: the one under your finger
+   is translated to follow it and the others are translated out of its way, so
+   nothing reflows mid-gesture and the whole thing stays on the compositor. The
+   DOM is put in its new order once, on drop, at the moment the transforms
+   already have everything in that position — so there is nothing to see. */
+function sortable(list){
+ const [conf,which]=list.dataset.band.split(':');
+ const off=which==='wild'?4:0;
+
+ const rows=()=>[...list.children].filter(r=>r.dataset.team);
+ const commit=order=>{
+  S[which][conf]=order.slice();
+  reconcile();save();
+  [...list.children].forEach((r,i)=>{const n=r.querySelector('.sdn');
+   if(n)n.textContent=off+i+1;r.dataset.row=off+i;
+   /* the bye follows the one seed rather than the element that started there */
+   const b=r.querySelector('.sdb');
+   if(off===0&&i===0&&!b)r.querySelector('.sdt')
+     .insertAdjacentHTML('afterend','<em class="sdb">bye</em>');
+   if(b&&!(off===0&&i===0))b.remove()});
+  syncChrome()};
+
+ list.querySelectorAll('[data-grip]').forEach(grip=>{
+  grip.addEventListener('pointerdown',e=>{
+   if(e.button)return;
+   const row=grip.closest('.sd'),items=rows();
+   if(items.length<2)return;
+   e.preventDefault();
+   grip.setPointerCapture(e.pointerId);
+
+   const rects=items.map(r=>r.getBoundingClientRect());
+   const h=rects[0].height+(rects[1]?rects[1].top-rects[0].bottom:0);
+   let from=items.indexOf(row),to=from;
+   const startY=e.clientY;
+   list.classList.add('dragging');
+   row.classList.add('lift');
+   items.forEach(r=>{if(r!==row)r.classList.add('slide')});
+
+   let raf=0,edge=0;
+   const place=dy=>{
+    row.style.transform=`translateY(${dy}px)`;
+    const next=Math.max(0,Math.min(items.length-1,from+Math.round(dy/h)));
+    if(next!==to){to=next;
+     items.forEach((r,i)=>{if(r===row)return;
+      let shift=0;
+      if(from<to&&i>from&&i<=to)shift=-h;
+      else if(from>to&&i>=to&&i<from)shift=h;
+      r.style.transform=shift?`translateY(${shift}px)`:''})}};
+
+   const move=ev=>{
+    const dy=ev.clientY-startY+edge;
+    place(dy);
+    /* walk the page when the finger reaches the top or bottom of it */
+    const m=90,vy=ev.clientY;
+    const speed=vy<m?-(m-vy)/6:vy>innerHeight-m?(vy-(innerHeight-m))/6:0;
+    if(speed&&!raf){const step=()=>{
+      const before=scrollY;scrollBy(0,speed);edge+=scrollY-before;
+      place(ev.clientY-startY+edge);
+      raf=speed?requestAnimationFrame(step):0};raf=requestAnimationFrame(step)}
+    else if(!speed&&raf){cancelAnimationFrame(raf);raf=0}};
+
+   const up=()=>{
+    if(raf){cancelAnimationFrame(raf);raf=0}
+    grip.removeEventListener('pointermove',move);
+    grip.removeEventListener('pointerup',up);
+    grip.removeEventListener('pointercancel',up);
+    /* Settle into the slot rather than snapping to it. The timer is not a
+       belt-and-braces on transitionend, it is the only reliable trigger: drop
+       a row exactly where the settle would put it and the transform never
+       changes, so transitionend never fires and the drop never commits. */
+    row.style.transition='transform 180ms cubic-bezier(.2,.7,.3,1)';
+    row.style.transform=`translateY(${(to-from)*h}px)`;
+    let settled=false;
+    const done=()=>{
+     if(settled)return;settled=true;
+     clearTimeout(timer);
+     row.removeEventListener('transitionend',done);
+     const order=items.map(r=>r.dataset.team);
+     const [moved]=order.splice(from,1);order.splice(to,0,moved);
+     items.forEach(r=>{r.style.transition='';r.style.transform='';
+      r.classList.remove('lift','slide')});
+     list.classList.remove('dragging');
+     order.forEach(k=>{const el=items.find(r=>r.dataset.team===k);list.appendChild(el)});
+     commit(order)};
+    const timer=setTimeout(done,200);
+    row.addEventListener('transitionend',done)};
+
+   grip.addEventListener('pointermove',move);
+   grip.addEventListener('pointerup',up);
+   grip.addEventListener('pointercancel',up)});
+
+  /* the same move, for anyone not using a pointer */
+  grip.addEventListener('keydown',e=>{
+   const items=rows(),row=grip.closest('.sd'),i=items.indexOf(row);
+   if(e.key===' '||e.key==='Enter'){e.preventDefault();
+    row.classList.toggle('held');return}
+   if(!row.classList.contains('held'))return;
+   const d=e.key==='ArrowUp'?-1:e.key==='ArrowDown'?1:0;
+   if(!d)return;e.preventDefault();
+   const j=i+d;if(j<0||j>=items.length)return;
+   const order=items.map(r=>r.dataset.team);
+   const [m]=order.splice(i,1);order.splice(j,0,m);
+   order.forEach(k=>{list.appendChild(items.find(r=>r.dataset.team===k))});
+   commit(order);grip.focus()})});
+}
 })();
 
 /* ===== bracket.js ===== */
@@ -434,17 +611,34 @@ const slot=(g,side,id)=>{
  const k=g[side],t=k?T[k]:null,won=S.win[id]===k;
  const seed=side==='home'?g.hs:g.as;
  const ready=!!(g.home&&g.away);
+ /* once a game is decided the side that did not survive steps back rather than
+    disappearing: you still want to read who you beat */
+ const lost=!!S.win[id]&&!won;
  if(!t)return `<span class="bsl empty"><i class="bsd"></i><span class="bnm">Waiting</span></span>`;
  /* a team can sit in a round before it has an opponent — the top seed is in
     the divisional the moment the conference is seeded — but it cannot win a
     game that has nobody on the other side of it */
- if(!ready)return `<span class="bsl held" style="--tc:${t.c}">
+ if(!ready)return `<span class="bsl held" style="--tc:${t.c};--tf:${t.f}">
 <i class="bsd">${seed||''}</i>${mark(t,'xs')}<span class="bnm">${esc(t.k)}</span></span>`;
- return `<button class="bsl${won?' w':''}" data-game="${esc(id)}" data-team="${esc(k)}"
-  style="--tc:${t.c}" aria-pressed="${won}" aria-label="${esc(t.city)} ${esc(t.name)}">
+ return `<button class="bsl${won?' w':''}${lost?' lost':''}" data-game="${esc(id)}" data-team="${esc(k)}"
+  style="--tc:${t.c};--tf:${t.f}" aria-pressed="${won}" aria-label="${esc(t.city)} ${esc(t.name)}">
 <i class="bsd">${seed||''}</i>${mark(t,'xs')}<span class="bnm">${esc(t.k)}</span></button>`};
 
 const game=(id,g)=>`<div class="bgm">${slot(g,'home',id)}${slot(g,'away',id)}</div>`;
+
+const champHTML=()=>{const ch=champion();
+ return ch?`<div class="champ" style="--tc:${T[ch].c}">
+${mark(T[ch],'lg')}<span>Your champion</span><b>${esc(T[ch].city)} ${esc(T[ch].name)}</b></div>`:''};
+function finalHTML(B){
+ const g=B['sb'];
+ const side=k=>{const t=k?T[k]:null,won=S.win['sb']===k;
+  if(!t)return `<span class="sbh empty"><span class="sbn">Waiting</span></span>`;
+  const lost=!!S.win['sb']&&!won;
+  return `<button class="sbh${won?' w':''}${lost?' lost':''}" data-game="sb" data-team="${esc(k)}"
+   style="--tc:${t.c};--tf:${t.f}" aria-pressed="${won}">${mark(t,'bg')}
+<span class="sbc">${esc(t.city)}</span><span class="sbn">${esc(t.name)}</span></button>`};
+ return `<div class="sbw">${side(g.home)}<span class="sbv">v</span>${side(g.away)}</div>
+<div id="champline">${champHTML()}</div>`}
 
 function conference(B,conf){
  const bye=seedsOf(conf)[0];
@@ -452,14 +646,14 @@ function conference(B,conf){
 <div class="sh"><h4>${conf}</h4><span>${bye?T[bye].name+' on the bye':'seven to seed'}</span></div>
 <div class="bkt" data-conf="${conf}">
 <svg class="blines" aria-hidden="true"></svg>
-${ROUNDS.map(([label,ids])=>`<div class="bcol">
+${ROUNDS.map(([label,ids],ci)=>`<div class="bcol" data-col="${ci}">
 <p class="bch">${esc(label)}</p>
 <div class="bgs">${ids(conf).map(id=>game(id,B[id])).join('')}</div>
 </div>`).join('')}
 </div></section>`}
 
 SEC.bracket={render(){
- const B=bracket(),ch=champion();
+ const B=bracket();
  return `<div class="sheet">
 <header class="phx">
 <p class="kick">Step three</p>
@@ -471,28 +665,56 @@ wild card winners pool before they are redrawn.</p>
 ${CONFS.map(c=>conference(B,c)).join('')}
 <section class="sect">
 <div class="sh"><h4>Super Bowl</h4></div>
-<div class="sbw">${(()=>{const g=B['sb'];
- const side=k=>{const t=k?T[k]:null,won=S.win['sb']===k;
-  if(!t)return `<span class="sbh empty"><span class="sbn">Waiting</span></span>`;
-  return `<button class="sbh${won?' w':''}" data-game="sb" data-team="${esc(k)}"
-   style="--tc:${t.c}" aria-pressed="${won}">${mark(t,'bg')}
-<span class="sbc">${esc(t.city)}</span><span class="sbn">${esc(t.name)}</span></button>`};
- return side(g.home)+'<span class="sbv">v</span>'+side(g.away)})()}</div>
-${ch?`<div class="champ" style="--tc:${T[ch].c}">
-${mark(T[ch],'lg')}<span>Your champion</span><b>${esc(T[ch].city)} ${esc(T[ch].name)}</b></div>`:''}
+<div id="final">${finalHTML(B)}</div>
 </section>
 ${nextBar('bracket','Pick the awards','#awards')}
 </div>`},
 after(root){
- root.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{
-  const id=b.dataset.game,k=b.dataset.team;
-  S.win[id]=S.win[id]===k?undefined:k;
-  if(!S.win[id])delete S.win[id];
-  repaint()});
+ wireGames(root);
  lines(root);
  if(!SEC.bracket._wired){SEC.bracket._wired=true;
   let t=null;addEventListener('resize',()=>{clearTimeout(t);
    t=setTimeout(()=>{const r=$('#root');if(STEP==='bracket')lines(r)},120)})}}};
+
+/* A pick changes two things: the game you tapped, and whatever is downstream
+   of it. The tapped game keeps its own elements so the tint transitions in
+   under your finger; only the later columns are redrawn, and they fade rather
+   than travel. Re-rendering the page here is what made every tap look like a
+   reload. */
+function wireGames(root){
+ root.querySelectorAll('[data-game]').forEach(b=>{b.onclick=()=>{
+  const id=b.dataset.game,k=b.dataset.team;
+  S.win[id]=S.win[id]===k?undefined:k;
+  if(!S.win[id])delete S.win[id];
+  reconcile();save();
+  /* the final lives outside the columns, so it is its own case rather than a
+     null .bgm — which is what it used to be */
+  const scope=b.closest('.bgm')||b.closest('.sbw');
+  const decided=!!S.win[id];
+  scope.querySelectorAll('[data-team]').forEach(x=>{
+   const on=S.win[id]===x.dataset.team;
+   x.classList.toggle('w',on);
+   x.classList.toggle('lost',decided&&!on);
+   x.setAttribute('aria-pressed',on)});
+  const bkt=b.closest('.bkt');
+  if(bkt){
+   const conf=bkt.dataset.conf,B=bracket(),from=+b.closest('.bcol').dataset.col;
+   ROUNDS.forEach(([label,ids],ci)=>{
+    if(ci<=from)return;
+    const gs=bkt.querySelector(`.bcol[data-col="${ci}"] .bgs`);
+    if(!gs)return;
+    gs.innerHTML=ids(conf).map(id2=>game(id2,B[id2])).join('');
+    gs.classList.remove('fadein');void gs.offsetWidth;gs.classList.add('fadein')});
+   const fin=root.querySelector('#final');
+   if(fin){fin.innerHTML=finalHTML(bracket());
+    fin.classList.remove('fadein');void fin.offsetWidth;fin.classList.add('fadein')}}
+  else{
+   /* the final was the thing tapped: it keeps its elements so the fill
+      transitions, and only the champion line underneath is redrawn */
+   const cl=root.querySelector('#champline');
+   if(cl){cl.innerHTML=champHTML();
+    cl.classList.remove('fadein');void cl.offsetWidth;cl.classList.add('fadein')}}
+  wireGames(root);lines(root);syncChrome()}})}
 
 /* Measured, not guessed: the columns distribute their games with space-around,
    so where a game actually sits depends on the width it ended up with. */
@@ -502,21 +724,21 @@ function lines(root){
   const box=bkt.getBoundingClientRect();
   svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
   svg.setAttribute('width',box.width);svg.setAttribute('height',box.height);
-  const cols=[...bkt.querySelectorAll('.bcol')].map(c=>
-   [...c.querySelectorAll('.bgm')].map(g=>{const r=g.getBoundingClientRect();
-    return {x1:r.left-box.left,x2:r.right-box.left,y:r.top-box.top+r.height/2}}));
+  const cols=[...bkt.querySelectorAll('.bcol')];
+  const R=el=>{const r=el.getBoundingClientRect();
+   return {l:r.left-box.left,r:r.right-box.left,y:r.top-box.top+r.height/2}};
   const d=[];
-  for(let i=0;i<cols.length-1;i++){
-   const from=cols[i],to=cols[i+1];
-   if(!from.length||!to.length)continue;
-   const gapL=Math.max(...from.map(g=>g.x2)),gapR=Math.min(...to.map(g=>g.x1));
-   const spine=(gapL+gapR)/2;
-   const ys=[...from.map(g=>g.y),...to.map(g=>g.y)];
-   d.push(`M${spine} ${Math.min(...ys)}V${Math.max(...ys)}`);
-   from.forEach(g=>d.push(`M${g.x2} ${g.y}H${spine}`));
-   to.forEach(g=>d.push(`M${spine} ${g.y}H${g.x1}`));
-  }
-  svg.innerHTML=`<path d="${d.join(' ')}" fill="none" stroke="rgba(25,25,23,.18)" stroke-width="1"/>`});
+  /* One line per team that advanced, from the row it won in to the row it
+     turns up in — not a shared spine. The reseeding is already expressed by
+     where the names land, so the lines can simply be true. */
+  for(let i=1;i<cols.length;i++){
+   const prev=[...cols[i-1].querySelectorAll('.bsl.w')];
+   cols[i].querySelectorAll('.bsl[data-team]').forEach(row=>{
+    const src=prev.find(p=>p.dataset.team===row.dataset.team);
+    if(!src)return;
+    const a=R(src),b=R(row),mid=(a.r+b.l)/2;
+    d.push(`M${a.r} ${a.y}H${mid}V${b.y}H${b.l}`)})}
+  svg.innerHTML=d.length?`<path d="${d.join(' ')}" fill="none" stroke="rgba(25,25,23,.26)" stroke-width="1.5" stroke-linejoin="round"/>`:''});
 }
 })();
 
@@ -546,6 +768,7 @@ ${mark(t,'bg')}
 <span class="pkm">${a.team?esc(a.team):'no team'}${a.pos?' · '+esc(a.pos):''}${a.odds?' · '+esc(a.odds):''}</span>
 <button class="pkx" data-clear="${k}">Change</button></div>`};
 
+const AW=Object.fromEntries(AWARDS.map(a=>[a[0],a]));
 const block=([k,title,note])=>{
  const a=S.award[k]||{},list=board(k);
  if(a.player)return `<section class="sect">
@@ -577,12 +800,19 @@ ${AWARDS.map(block).join('')}
 ${nextBar('awards','See your card','#share')}
 </div>`},
 after(root){
+ /* only the award that changed is redrawn, and it fades rather than the page
+    re-entering around it */
+ const swap=(k,el)=>{const sect=el.closest('.sect');
+  sect.outerHTML=block(AW[k]);save();
+  const fresh=[...root.querySelectorAll('.sect')].find(x=>x.querySelector(`[data-search="${k}"],[data-clear="${k}"]`));
+  if(fresh){fresh.classList.add('fadein')}
+  SEC.awards.after(root);syncChrome()};
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
   S.award[b.dataset.pick]={player:b.dataset.name,team:b.dataset.team,
    pos:b.dataset.pos,odds:b.dataset.odds};
-  repaint()});
+  swap(b.dataset.pick,b)});
  root.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{
-  S.award[b.dataset.clear]={};repaint()});
+  const k=b.dataset.clear;S.award[k]={};swap(k,b)});
  /* filtered in place: a re-render would replace the input and drop the caret */
  root.querySelectorAll('[data-search]').forEach(inp=>{inp.oninput=()=>{
   const k=inp.dataset.search,q=inp.value.trim().toLowerCase();
@@ -592,7 +822,7 @@ after(root){
   const none=root.querySelector(`[data-none="${k}"]`);if(none)none.hidden=!!n}});
  root.querySelectorAll('[data-write]').forEach(inp=>{
   const commit=()=>{const v=inp.value.trim();if(!v)return;
-   S.award[inp.dataset.write]={player:v};repaint()};
+   S.award[inp.dataset.write]={player:v};swap(inp.dataset.write,inp)};
   inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit()}};
   inp.onblur=commit})}};
 })();
@@ -634,57 +864,70 @@ const label=(c,s,y)=>{tx(c,s.toUpperCase(),PAD,y,{size:17,weight:700,color:MUT,t
    and quiet by comparison. The division winners came off: they are seeds one
    to four, already in the bracket, and printing them twice was what made this
    read as a spreadsheet. */
-const SLOT=42,GAME=SLOT*2,GGAP=22;
+const SLOT=46,GAME=SLOT*2,GGAP=24;
 
-/* white or ink, depending on what the team's colour can carry */
-function lum(hex){const n=parseInt(hex.slice(1),16),f=v=>{v/=255;
- return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
- return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)}
+/* white or ink, depending on what the team's colour can carry — the same
+   answer core.js works out once and hangs on the team */
 const onDark=hex=>lum(hex)>.42;
 const over=(hex,a)=>onDark(hex)?`rgba(25,25,23,${a})`:`rgba(255,255,255,${a})`;
 
+/* One bracket cell: two rows in a rounded box. The side that advanced is
+   filled with its own colour rather than washed with a tint of it, so the
+   path through the bracket is the first thing the eye follows. */
 function cell(c,g,id,x,y,w){
- c.save();rrect(c,x,y,w,GAME,8);c.fillStyle='#FFFDF7';c.fill();
- c.shadowColor='rgba(25,25,23,.14)';c.shadowBlur=12;c.shadowOffsetY=3;c.fill();c.restore();
+ c.save();rrect(c,x,y,w,GAME,9);c.fillStyle='#FFFDF7';c.fill();
+ c.shadowColor='rgba(25,25,23,.13)';c.shadowBlur=14;c.shadowOffsetY=4;c.fill();c.restore();
  ['home','away'].forEach((side,i)=>{
   const k=g[side],t=k?T[k]:null,won=S.win[id]===k;
   const sy=y+i*SLOT,seed=side==='home'?g.hs:g.as;
   if(won){c.save();c.beginPath();c.rect(x,sy,w,SLOT);c.clip();
-   rrect(c,x,y,w,GAME,8);c.fillStyle=tint(t.c,.22);c.fill();c.restore()}
-  if(i){c.fillStyle=LINE;c.fillRect(x+10,sy,w-20,1)}
-  if(!t){tx(c,'—',x+18,sy+SLOT/2+6,{size:16,weight:400,color:FNT});return}
-  if(seed)tx(c,String(seed),x+18,sy+SLOT/2+5,{size:12,weight:600,color:won?MUT:FNT,align:'center'});
-  logo(c,t,x+32,sy+(SLOT-26)/2,26);
-  tx(c,t.k,x+68,sy+SLOT/2+7,{size:19,weight:won?700:600,color:won?INK:MUT,track:-.3,max:w-80});
-  if(won){const wd=c.measureText(t.k).width;c.fillStyle=t.c;
-   c.fillRect(x+68,sy+SLOT/2+12,wd,2)}});
+   rrect(c,x,y,w,GAME,9);c.fillStyle=t.c;c.fill();c.restore()}
+  if(i&&!won&&!(S.win[id]===g.home)){c.fillStyle=LINE;c.fillRect(x+12,sy,w-24,1)}
+  if(!t){tx(c,'—',x+20,sy+SLOT/2+6,{size:17,weight:400,color:FNT});return}
+  const lost=!!S.win[id]&&!won;
+  if(lost){c.save();c.globalAlpha=.44}
+  const fg=won?t.f:INK,dim=won?over(t.c,.62):FNT;
+  if(seed)tx(c,String(seed),x+20,sy+SLOT/2+5,{size:12.5,weight:600,color:dim,align:'center'});
+  logo(c,t,x+34,sy+(SLOT-28)/2,28);
+  tx(c,t.name,x+74,sy+SLOT/2+7,{size:21,weight:won?700:500,color:won?fg:MUT,
+   track:-.4,max:w-88});
+  if(lost)c.restore()});
 }
-/* the same gather-and-redraw the screen draws: three onto a spine, two off it */
-function joins(c,fromYs,toYs,x1,x2){
- const sp=(x1+x2)/2,ys=fromYs.concat(toYs);
- c.save();c.strokeStyle='rgba(25,25,23,.2)';c.lineWidth=1.2;c.beginPath();
- c.moveTo(sp,Math.min(...ys));c.lineTo(sp,Math.max(...ys));
- fromYs.forEach(y=>{c.moveTo(x1,y);c.lineTo(sp,y)});
- toYs.forEach(y=>{c.moveTo(sp,y);c.lineTo(x2,y)});
- c.stroke();c.restore()}
+/* One line per team that advanced, from the row it won in to the row it turns
+   up in. The reseeding is already expressed by where the names land, so the
+   lines can simply be true. */
+function elbow(c,a,b){
+ const mid=(a.r+b.l)/2;
+ c.beginPath();c.moveTo(a.r,a.y);c.lineTo(mid,a.y);
+ c.lineTo(mid,b.y);c.lineTo(b.l,b.y);c.stroke()}
 
 function drawConf(c,B,conf,y){
- const inner=W-PAD*2,colW=(inner-44)/3,sw=colW-8;
- const xs=[PAD,PAD+colW+22,PAD+(colW+22)*2];
- tx(c,conf,PAD,y,{size:22,weight:700,color:INK,track:.2});
+ const inner=W-PAD*2,colW=(inner-52)/3,sw=colW-10;
+ const xs=[PAD,PAD+colW+26,PAD+(colW+26)*2];
+ tx(c,conf,PAD,y,{size:23,weight:700,color:INK,track:.2});
  const bye=seedsOf(conf)[0];
  if(bye)tx(c,T[bye].name+' on the bye',W-PAD,y,{size:16,weight:400,color:FNT,align:'right'});
- const top=y+46;
+ const top=y+48;
  const ids=[[conf+'-wc0',conf+'-wc1',conf+'-wc2'],[conf+'-dv0',conf+'-dv1'],[conf+'-cc']];
  const span=3*GAME+2*GGAP;
- const centres=ids.map(col=>{
+ /* positions first, so the connectors can be drawn underneath the cells */
+ const cols=ids.map((col,ci)=>{
   const h=col.length*GAME+(col.length-1)*GGAP,off=(span-h)/2;
-  return col.map((_,i)=>top+off+i*(GAME+GGAP)+GAME/2)});
- ids.forEach((col,ci)=>{
-  tx(c,['Wild Card','Divisional','Championship'][ci],xs[ci]+sw/2,top-16,
-   {size:13,weight:700,color:FNT,track:1.4,align:'center'});
-  col.forEach((id,i)=>cell(c,B[id],id,xs[ci],centres[ci][i]-GAME/2,sw))});
- for(let i=0;i<2;i++)joins(c,centres[i],centres[i+1],xs[i]+sw,xs[i+1]);
+  return col.map((id,i)=>{
+   const gy=top+off+i*(GAME+GGAP),g=B[id];
+   return {id,g,x:xs[ci],y:gy,
+    rows:['home','away'].map((side,j)=>({team:g[side],won:S.win[id]===g[side],
+     l:xs[ci],r:xs[ci]+sw,y:gy+j*SLOT+SLOT/2}))}})});
+ c.save();c.strokeStyle='rgba(25,25,23,.26)';c.lineWidth=1.6;c.lineJoin='round';
+ for(let ci=1;ci<cols.length;ci++){
+  const prev=cols[ci-1].flatMap(g=>g.rows).filter(r=>r.won);
+  cols[ci].forEach(g=>g.rows.forEach(r=>{
+   if(!r.team)return;const src=prev.find(p=>p.team===r.team);
+   if(src)elbow(c,src,r)}))}
+ c.restore();
+ ids.forEach((col,ci)=>tx(c,['Wild Card','Divisional','Championship'][ci],xs[ci]+sw/2,top-16,
+  {size:13,weight:700,color:FNT,track:1.4,align:'center'}));
+ cols.forEach(col=>col.forEach(g=>cell(c,g.g,g.id,g.x,g.y,sw)));
  return top+span}
 
 function draw(c){
@@ -712,7 +955,7 @@ function draw(c){
  /* the bracket, given the room to be the body of the card */
  let y=556;
  y=drawConf(c,B,'AFC',y)+72;
- y=drawConf(c,B,'NFC',y)+64;
+ y=drawConf(c,B,'NFC',y)+56;
 
  /* the final, one row */
  const sb=B['sb'],half=(W-PAD*2-70)/2;
@@ -720,14 +963,17 @@ function draw(c){
  y+=18;
  [['home',PAD],['away',PAD+half+70]].forEach(([side,x])=>{
   const k=sb[side],t=k?T[k]:null,won=S.win['sb']===k;
-  c.save();rrect(c,x,y,half,86,10);c.fillStyle=t&&won?tint(t.c,.22):'#FFFDF7';c.fill();
+  c.save();rrect(c,x,y,half,86,10);c.fillStyle=t&&won?t.c:'#FFFDF7';c.fill();
   c.shadowColor='rgba(25,25,23,.14)';c.shadowBlur=12;c.shadowOffsetY=3;c.fill();c.restore();
   if(!t){tx(c,'—',x+half/2,y+52,{size:22,weight:400,color:FNT,align:'center'});return}
+  const lost=!!S.win['sb']&&!won;
+  if(lost)c.globalAlpha=.5;
   logo(c,t,x+20,y+21,44);
-  tx(c,t.city,x+80,y+40,{size:16,weight:400,color:MUT,max:half-96});
-  tx(c,t.name,x+80,y+68,{size:25,weight:won?700:600,color:INK,track:-.5,max:half-96})});
+  tx(c,t.city,x+80,y+40,{size:16,weight:400,color:won?over(t.c,.7):MUT,max:half-96});
+  tx(c,t.name,x+80,y+68,{size:25,weight:won?700:600,color:won?t.f:INK,track:-.5,max:half-96});
+  c.globalAlpha=1});
  tx(c,'v',W/2,y+52,{size:16,weight:400,color:FNT,align:'center'});
- y+=86+72;
+ y+=86+60;
 
  /* three names, given a row each rather than a table line */
  label(c,'Awards',y);

@@ -25,9 +25,20 @@ ${blocks}
 ${nextBar('divisions','Seed the conferences','#seeds')}
 </div>`},
 after(root){
+ /* Nothing is re-rendered here. The chip that was tapped keeps its element, so
+    the background transition in the stylesheet actually runs from the old
+    colour to the new one instead of appearing already finished. */
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
   const t=T[b.dataset.pick],key=divKey(t.conf,t.div);
-  S.div[key]=S.div[key]===t.k?undefined:t.k;
+  const was=S.div[key];
+  S.div[key]=was===t.k?undefined:t.k;
   if(!S.div[key])delete S.div[key];
-  repaint()})}};
+  const now=S.div[key];
+  b.closest('.tms').querySelectorAll('[data-pick]').forEach(x=>{
+   const on=x.dataset.pick===now;
+   x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});
+  const sect=b.closest('.sect'),conf=t.conf;
+  const count=sect.querySelector('.sh>span');
+  if(count)count.textContent=winnersOf(conf).length+' of 4';
+  reconcile();save();syncChrome()})}};
 })();

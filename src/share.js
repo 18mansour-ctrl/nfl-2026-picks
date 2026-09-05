@@ -34,57 +34,70 @@ const label=(c,s,y)=>{tx(c,s.toUpperCase(),PAD,y,{size:17,weight:700,color:MUT,t
    and quiet by comparison. The division winners came off: they are seeds one
    to four, already in the bracket, and printing them twice was what made this
    read as a spreadsheet. */
-const SLOT=42,GAME=SLOT*2,GGAP=22;
+const SLOT=46,GAME=SLOT*2,GGAP=24;
 
-/* white or ink, depending on what the team's colour can carry */
-function lum(hex){const n=parseInt(hex.slice(1),16),f=v=>{v/=255;
- return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
- return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)}
+/* white or ink, depending on what the team's colour can carry — the same
+   answer core.js works out once and hangs on the team */
 const onDark=hex=>lum(hex)>.42;
 const over=(hex,a)=>onDark(hex)?`rgba(25,25,23,${a})`:`rgba(255,255,255,${a})`;
 
+/* One bracket cell: two rows in a rounded box. The side that advanced is
+   filled with its own colour rather than washed with a tint of it, so the
+   path through the bracket is the first thing the eye follows. */
 function cell(c,g,id,x,y,w){
- c.save();rrect(c,x,y,w,GAME,8);c.fillStyle='#FFFDF7';c.fill();
- c.shadowColor='rgba(25,25,23,.14)';c.shadowBlur=12;c.shadowOffsetY=3;c.fill();c.restore();
+ c.save();rrect(c,x,y,w,GAME,9);c.fillStyle='#FFFDF7';c.fill();
+ c.shadowColor='rgba(25,25,23,.13)';c.shadowBlur=14;c.shadowOffsetY=4;c.fill();c.restore();
  ['home','away'].forEach((side,i)=>{
   const k=g[side],t=k?T[k]:null,won=S.win[id]===k;
   const sy=y+i*SLOT,seed=side==='home'?g.hs:g.as;
   if(won){c.save();c.beginPath();c.rect(x,sy,w,SLOT);c.clip();
-   rrect(c,x,y,w,GAME,8);c.fillStyle=tint(t.c,.22);c.fill();c.restore()}
-  if(i){c.fillStyle=LINE;c.fillRect(x+10,sy,w-20,1)}
-  if(!t){tx(c,'—',x+18,sy+SLOT/2+6,{size:16,weight:400,color:FNT});return}
-  if(seed)tx(c,String(seed),x+18,sy+SLOT/2+5,{size:12,weight:600,color:won?MUT:FNT,align:'center'});
-  logo(c,t,x+32,sy+(SLOT-26)/2,26);
-  tx(c,t.k,x+68,sy+SLOT/2+7,{size:19,weight:won?700:600,color:won?INK:MUT,track:-.3,max:w-80});
-  if(won){const wd=c.measureText(t.k).width;c.fillStyle=t.c;
-   c.fillRect(x+68,sy+SLOT/2+12,wd,2)}});
+   rrect(c,x,y,w,GAME,9);c.fillStyle=t.c;c.fill();c.restore()}
+  if(i&&!won&&!(S.win[id]===g.home)){c.fillStyle=LINE;c.fillRect(x+12,sy,w-24,1)}
+  if(!t){tx(c,'—',x+20,sy+SLOT/2+6,{size:17,weight:400,color:FNT});return}
+  const lost=!!S.win[id]&&!won;
+  if(lost){c.save();c.globalAlpha=.44}
+  const fg=won?t.f:INK,dim=won?over(t.c,.62):FNT;
+  if(seed)tx(c,String(seed),x+20,sy+SLOT/2+5,{size:12.5,weight:600,color:dim,align:'center'});
+  logo(c,t,x+34,sy+(SLOT-28)/2,28);
+  tx(c,t.name,x+74,sy+SLOT/2+7,{size:21,weight:won?700:500,color:won?fg:MUT,
+   track:-.4,max:w-88});
+  if(lost)c.restore()});
 }
-/* the same gather-and-redraw the screen draws: three onto a spine, two off it */
-function joins(c,fromYs,toYs,x1,x2){
- const sp=(x1+x2)/2,ys=fromYs.concat(toYs);
- c.save();c.strokeStyle='rgba(25,25,23,.2)';c.lineWidth=1.2;c.beginPath();
- c.moveTo(sp,Math.min(...ys));c.lineTo(sp,Math.max(...ys));
- fromYs.forEach(y=>{c.moveTo(x1,y);c.lineTo(sp,y)});
- toYs.forEach(y=>{c.moveTo(sp,y);c.lineTo(x2,y)});
- c.stroke();c.restore()}
+/* One line per team that advanced, from the row it won in to the row it turns
+   up in. The reseeding is already expressed by where the names land, so the
+   lines can simply be true. */
+function elbow(c,a,b){
+ const mid=(a.r+b.l)/2;
+ c.beginPath();c.moveTo(a.r,a.y);c.lineTo(mid,a.y);
+ c.lineTo(mid,b.y);c.lineTo(b.l,b.y);c.stroke()}
 
 function drawConf(c,B,conf,y){
- const inner=W-PAD*2,colW=(inner-44)/3,sw=colW-8;
- const xs=[PAD,PAD+colW+22,PAD+(colW+22)*2];
- tx(c,conf,PAD,y,{size:22,weight:700,color:INK,track:.2});
+ const inner=W-PAD*2,colW=(inner-52)/3,sw=colW-10;
+ const xs=[PAD,PAD+colW+26,PAD+(colW+26)*2];
+ tx(c,conf,PAD,y,{size:23,weight:700,color:INK,track:.2});
  const bye=seedsOf(conf)[0];
  if(bye)tx(c,T[bye].name+' on the bye',W-PAD,y,{size:16,weight:400,color:FNT,align:'right'});
- const top=y+46;
+ const top=y+48;
  const ids=[[conf+'-wc0',conf+'-wc1',conf+'-wc2'],[conf+'-dv0',conf+'-dv1'],[conf+'-cc']];
  const span=3*GAME+2*GGAP;
- const centres=ids.map(col=>{
+ /* positions first, so the connectors can be drawn underneath the cells */
+ const cols=ids.map((col,ci)=>{
   const h=col.length*GAME+(col.length-1)*GGAP,off=(span-h)/2;
-  return col.map((_,i)=>top+off+i*(GAME+GGAP)+GAME/2)});
- ids.forEach((col,ci)=>{
-  tx(c,['Wild Card','Divisional','Championship'][ci],xs[ci]+sw/2,top-16,
-   {size:13,weight:700,color:FNT,track:1.4,align:'center'});
-  col.forEach((id,i)=>cell(c,B[id],id,xs[ci],centres[ci][i]-GAME/2,sw))});
- for(let i=0;i<2;i++)joins(c,centres[i],centres[i+1],xs[i]+sw,xs[i+1]);
+  return col.map((id,i)=>{
+   const gy=top+off+i*(GAME+GGAP),g=B[id];
+   return {id,g,x:xs[ci],y:gy,
+    rows:['home','away'].map((side,j)=>({team:g[side],won:S.win[id]===g[side],
+     l:xs[ci],r:xs[ci]+sw,y:gy+j*SLOT+SLOT/2}))}})});
+ c.save();c.strokeStyle='rgba(25,25,23,.26)';c.lineWidth=1.6;c.lineJoin='round';
+ for(let ci=1;ci<cols.length;ci++){
+  const prev=cols[ci-1].flatMap(g=>g.rows).filter(r=>r.won);
+  cols[ci].forEach(g=>g.rows.forEach(r=>{
+   if(!r.team)return;const src=prev.find(p=>p.team===r.team);
+   if(src)elbow(c,src,r)}))}
+ c.restore();
+ ids.forEach((col,ci)=>tx(c,['Wild Card','Divisional','Championship'][ci],xs[ci]+sw/2,top-16,
+  {size:13,weight:700,color:FNT,track:1.4,align:'center'}));
+ cols.forEach(col=>col.forEach(g=>cell(c,g.g,g.id,g.x,g.y,sw)));
  return top+span}
 
 function draw(c){
@@ -112,7 +125,7 @@ function draw(c){
  /* the bracket, given the room to be the body of the card */
  let y=556;
  y=drawConf(c,B,'AFC',y)+72;
- y=drawConf(c,B,'NFC',y)+64;
+ y=drawConf(c,B,'NFC',y)+56;
 
  /* the final, one row */
  const sb=B['sb'],half=(W-PAD*2-70)/2;
@@ -120,14 +133,17 @@ function draw(c){
  y+=18;
  [['home',PAD],['away',PAD+half+70]].forEach(([side,x])=>{
   const k=sb[side],t=k?T[k]:null,won=S.win['sb']===k;
-  c.save();rrect(c,x,y,half,86,10);c.fillStyle=t&&won?tint(t.c,.22):'#FFFDF7';c.fill();
+  c.save();rrect(c,x,y,half,86,10);c.fillStyle=t&&won?t.c:'#FFFDF7';c.fill();
   c.shadowColor='rgba(25,25,23,.14)';c.shadowBlur=12;c.shadowOffsetY=3;c.fill();c.restore();
   if(!t){tx(c,'—',x+half/2,y+52,{size:22,weight:400,color:FNT,align:'center'});return}
+  const lost=!!S.win['sb']&&!won;
+  if(lost)c.globalAlpha=.5;
   logo(c,t,x+20,y+21,44);
-  tx(c,t.city,x+80,y+40,{size:16,weight:400,color:MUT,max:half-96});
-  tx(c,t.name,x+80,y+68,{size:25,weight:won?700:600,color:INK,track:-.5,max:half-96})});
+  tx(c,t.city,x+80,y+40,{size:16,weight:400,color:won?over(t.c,.7):MUT,max:half-96});
+  tx(c,t.name,x+80,y+68,{size:25,weight:won?700:600,color:won?t.f:INK,track:-.5,max:half-96});
+  c.globalAlpha=1});
  tx(c,'v',W/2,y+52,{size:16,weight:400,color:FNT,align:'center'});
- y+=86+72;
+ y+=86+60;
 
  /* three names, given a row each rather than a table line */
  label(c,'Awards',y);

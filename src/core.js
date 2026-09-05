@@ -42,6 +42,15 @@ const TEAMS=[
  {k:'SF',city:'San Francisco',name:'49ers',conf:'NFC',div:'West',c:'#A6192E',c2:'#AF8C5C'},
  {k:'SEA',city:'Seattle',name:'Seahawks',conf:'NFC',div:'West',c:'#0C2340',c2:'#78BE21'}];
 
+/* Whether ink or paper reads on a team's colour, measured rather than guessed:
+   Steelers gold and Texans navy cannot take the same text. Worked out once at
+   load and carried on the team, so both the page and the canvas use the same
+   answer. */
+function lum(hex){const n=parseInt(hex.slice(1),16),f=v=>{v/=255;
+ return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
+ return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)}
+TEAMS.forEach(t=>{t.f=lum(t.c)>.42?'#191917':'#FFFFFF'});
+
 const T=Object.fromEntries(TEAMS.map(t=>[t.k,t]));
 
 /* The team's mark. A real logo when the file is there, and a tile in the
@@ -66,10 +75,23 @@ const confTeams=conf=>TEAMS.filter(t=>t.conf===conf);
    One object, saved on every change. There is no server: each person fills
    their own sheet on their own device and shares the picture. */
 const KEY='nflpicks.2026';
-const blank=()=>({name:'',div:{},seed:{AFC:[],NFC:[]},win:{},award:{mvp:{},opoy:{},dpoy:{}}});
+/* The order of the division winners and the wild cards are two different
+   decisions, so they are two different keys. They used to share one array of
+   seven with the winners pinned to the front, which meant every moment a
+   division sat empty mid-edit — the instant between un-picking one team and
+   picking another — reconcile could not tell a stale winner from a wild card
+   and cleared the lot. Changing your mind about one division should not cost
+   you three wild cards. */
+const blank=()=>({name:'',div:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
+ win:{},award:{mvp:{},opoy:{},dpoy:{}}});
 let S=blank();
 
-function load(){try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}
+function load(){try{const r=localStorage.getItem(KEY);if(!r)return;
+ const j=JSON.parse(r);
+ /* sheets written before the split still open */
+ if(j.seed&&!j.ord){j.ord={};j.wild={};
+  CONFS.forEach(c=>{const a=j.seed[c]||[];j.ord[c]=a.slice(0,4);j.wild[c]=a.slice(4)})}
+ S=Object.assign(blank(),j);delete S.seed}
  catch(e){/* a private window, or cleared data. A blank sheet is the right answer. */}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -80,32 +102,31 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
    from under a seed — is dropped rather than left to render as a ghost. */
 const divKey=(conf,div)=>conf+' '+div;
 const winnersOf=conf=>DIVS.map(d=>S.div[divKey(conf,d)]).filter(Boolean);
-const seedsOf=conf=>(S.seed[conf]||[]).filter(Boolean);
+/* the winners in the order you put them, and the wild cards in the order you
+   added them; the seeding is the two concatenated, and only once all four
+   divisions are decided */
+const ordOf=conf=>(S.ord[conf]||[]).filter(Boolean);
+const wildOf=conf=>(S.wild[conf]||[]).filter(Boolean);
+const seedsOf=conf=>winnersOf(conf).length===4?ordOf(conf).concat(wildOf(conf)):[];
 const seededAll=conf=>seedsOf(conf).length===7;
 /* A division winner can never fall below the fourth seed and a wild card can
    never rise above the fifth. That is the actual rule, so it is the only
    constraint the arrows need. */
-const bandOf=i=>i<4?0:1;
-function moveSeed(conf,i,dir){
- const s=S.seed[conf]||[],j=i+dir;
- if(j<0||j>=s.length||bandOf(i)!==bandOf(j))return;
- const t=s[i];s[i]=s[j];s[j]=t;repaint()}
+
 
 /* Seeds 1-4 are the division winners by rule, so a changed division winner
    invalidates the seeding it was part of. */
 function reconcile(){
  CONFS.forEach(conf=>{
-  const w=winnersOf(conf),s=S.seed[conf]||[];
-  if(w.length!==4){S.seed[conf]=[];return}
-  /* Seeds one to four ARE the division winners, so there is nothing to choose
-     there — only an order. They are placed the moment all four are known, in
-     the order the divisions were picked, and any order already set is kept.
-     Swapping a division winner heals the one slot rather than wiping the
-     conference, which is what made this feel punitive. */
-  const keep=s.slice(0,4).filter(k=>w.includes(k));
-  const top=keep.concat(w.filter(k=>!keep.includes(k)));
-  const wild=s.slice(4).filter(k=>!w.includes(k)&&T[k]&&T[k].conf===conf).slice(0,3);
-  S.seed[conf]=top.concat(wild)});
+  const w=winnersOf(conf);
+  /* the order keeps whatever is still a winner and picks up any that are new,
+     so swapping one division moves one row rather than resetting four */
+  const keep=(S.ord[conf]||[]).filter(k=>w.includes(k));
+  S.ord[conf]=keep.concat(w.filter(k=>!keep.includes(k)));
+  /* a wild card that has since won its division is not also a wild card */
+  S.wild[conf]=(S.wild[conf]||[])
+   .filter((k,i,a)=>T[k]&&T[k].conf===conf&&!w.includes(k)&&a.indexOf(k)===i)
+   .slice(0,3)});
  /* every game whose participants are no longer determined loses its winner */
  const live=new Set(Object.keys(bracket()).flatMap(id=>{const g=bracket()[id];
   return [g.home,g.away].filter(Boolean)}));
@@ -192,23 +213,55 @@ function rail(){
    data-step="${k}" aria-current="${on?'step':'false'}">
 <i>${ok&&!on?'✓':i+1}</i><span>${esc(l)}</span></button>`}).join('')}</nav>`}
 
+/* A step change is the only thing that replaces the page, and it is the only
+   thing that plays the entrance. Everything else — every pick, every drag —
+   changes the DOM that is already there, so a tap reads as the one control
+   responding rather than as the page reloading. That distinction is the whole
+   difference between motion that feels designed and motion that feels like a
+   refresh. */
 function render(){
  STEP=route();
  reconcile();save();
  const root=$('#root');
  root.innerHTML=rail()+SEC[STEP].render();
- root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
- if(SEC[STEP].after)SEC[STEP].after(root);
+ wire(root);
+ const sheet=root.querySelector('.sheet');
+ if(sheet){sheet.classList.remove('enter');void sheet.offsetWidth;sheet.classList.add('enter')}
  window.scrollTo(0,0);
 }
-/* Not a full re-render: the pick screens re-render themselves in place so a
-   tap does not throw away scroll position halfway down a list of eight. */
+function wire(root){
+ root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
+ if(SEC[STEP].after)SEC[STEP].after(root)}
+
+/* Re-render one region and nothing else, with no entrance. Used where a pick
+   genuinely changes what is downstream of it — the bracket past the game you
+   just decided — and never for the control you actually touched, which keeps
+   its own element so its CSS transition can run. */
+function patch(sel,html){
+ const el=$(sel);if(!el)return null;
+ el.innerHTML=html;return el}
+
+/* The two things every screen has to keep honest after a pick. */
+function syncChrome(){
+ const root=$('#root');if(!root)return;
+ root.querySelectorAll('.rl').forEach(b=>{const k=b.dataset.step;
+  b.disabled=!stepOpen(k);
+  b.classList.toggle('ok',stepDone(k)&&k!==STEP);
+  const i=b.querySelector('i');const idx=STEPS.findIndex(x=>x[0]===k);
+  if(i)i.textContent=(stepDone(k)&&k!==STEP)?'✓':String(idx+1)});
+ const bar=root.querySelector('.nextbar');
+ if(bar&&bar.dataset.for){const k=bar.dataset.for;
+  const ok=stepDone(k),a=bar.firstElementChild;
+  if(a){a.className=ok?'next':'next off';
+   if(ok)a.setAttribute('href',bar.dataset.href);else a.removeAttribute('href')}}}
+
+/* Kept for the places a whole-screen redraw is genuinely the simplest correct
+   thing — collapsing the award finder onto its pick. It skips the entrance. */
 function repaint(){
  reconcile();save();
  const root=$('#root'),y=scrollY;
  root.innerHTML=rail()+SEC[STEP].render();
- root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
- if(SEC[STEP].after)SEC[STEP].after(root);
+ wire(root);
  scrollTo(0,y);
 }
 window.addEventListener('hashchange',render);
@@ -216,9 +269,8 @@ window.addEventListener('hashchange',render);
 /* the button that carries you on, and says what is left when it cannot */
 function nextBar(k,label,href){
  const ok=stepDone(k);
- return `<div class="nextbar">
-${ok?`<a class="next" href="${href}">${esc(label)}</a>`
-   :`<span class="next off">${esc(label)}</span>`}
+ return `<div class="nextbar" data-for="${k}" data-href="${href}">
+<a class="${ok?'next':'next off'}"${ok?` href="${href}"`:''}>${esc(label)}</a>
 </div>`}
 
 function boot(){load();reconcile();render()}

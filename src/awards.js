@@ -23,6 +23,7 @@ ${mark(t,'bg')}
 <span class="pkm">${a.team?esc(a.team):'no team'}${a.pos?' · '+esc(a.pos):''}${a.odds?' · '+esc(a.odds):''}</span>
 <button class="pkx" data-clear="${k}">Change</button></div>`};
 
+const AW=Object.fromEntries(AWARDS.map(a=>[a[0],a]));
 const block=([k,title,note])=>{
  const a=S.award[k]||{},list=board(k);
  if(a.player)return `<section class="sect">
@@ -54,12 +55,19 @@ ${AWARDS.map(block).join('')}
 ${nextBar('awards','See your card','#share')}
 </div>`},
 after(root){
+ /* only the award that changed is redrawn, and it fades rather than the page
+    re-entering around it */
+ const swap=(k,el)=>{const sect=el.closest('.sect');
+  sect.outerHTML=block(AW[k]);save();
+  const fresh=[...root.querySelectorAll('.sect')].find(x=>x.querySelector(`[data-search="${k}"],[data-clear="${k}"]`));
+  if(fresh){fresh.classList.add('fadein')}
+  SEC.awards.after(root);syncChrome()};
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
   S.award[b.dataset.pick]={player:b.dataset.name,team:b.dataset.team,
    pos:b.dataset.pos,odds:b.dataset.odds};
-  repaint()});
+  swap(b.dataset.pick,b)});
  root.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{
-  S.award[b.dataset.clear]={};repaint()});
+  const k=b.dataset.clear;S.award[k]={};swap(k,b)});
  /* filtered in place: a re-render would replace the input and drop the caret */
  root.querySelectorAll('[data-search]').forEach(inp=>{inp.oninput=()=>{
   const k=inp.dataset.search,q=inp.value.trim().toLowerCase();
@@ -69,7 +77,7 @@ after(root){
   const none=root.querySelector(`[data-none="${k}"]`);if(none)none.hidden=!!n}});
  root.querySelectorAll('[data-write]').forEach(inp=>{
   const commit=()=>{const v=inp.value.trim();if(!v)return;
-   S.award[inp.dataset.write]={player:v};repaint()};
+   S.award[inp.dataset.write]={player:v};swap(inp.dataset.write,inp)};
   inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit()}};
   inp.onblur=commit})}};
 })();

@@ -21,6 +21,14 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--paper)}
+/* The browser paints its own colour over a tapped control before ours arrives —
+   a blue wash on iOS and a blue ring in Chrome — so a team chip flashed blue on
+   the way to its own colour. Selection feedback is the stylesheet's job here,
+   and the keyboard ring below is the only outline anything gets. */
+html{-webkit-tap-highlight-color:transparent}
+button,a,input,[tabindex]{-webkit-tap-highlight-color:transparent}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;
  font-size:16px;line-height:1.45;padding-bottom:60px}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -99,15 +107,17 @@ h1,h2,h3,h4,p{margin:0}
 .tm{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
  grid-template-areas:"d c" "d n";gap:0 9px;align-items:center;text-align:left;
  padding:10px 12px;border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
- transition:background .15s var(--e-out),transform .12s var(--e-out)}
+ transition:background 180ms var(--e-out),box-shadow 180ms var(--e-out),
+            transform 110ms var(--e-out)}
 .tm>.mark{grid-area:d;align-self:center;opacity:.9;transition:opacity .15s}
 .tm.on>.mark{opacity:1}
 .tct{grid-area:c;font-size:11.5px;color:var(--mut);line-height:1.25;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tnm{grid-area:n;font-size:15.5px;font-weight:600;letter-spacing:-.018em;line-height:1.2;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm:active{transform:scale(.985)}
-.tm.on{background:color-mix(in srgb,var(--tc) 15%,var(--card))}
+.tm:active{transform:scale(.97)}
+.tm.on{background:color-mix(in srgb,var(--tc) 15%,var(--card));
+ box-shadow:var(--cardsh),inset 0 0 0 1.5px color-mix(in srgb,var(--tc) 55%,transparent)}
 .tm.on .tnm{font-weight:700}
 .pool{margin-top:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
 
@@ -123,8 +133,9 @@ h1,h2,h3,h4,p{margin:0}
 .bandl.wc{margin-top:22px}
 .sh+.bandl{margin-top:16px}
 .seeds{display:grid;gap:6px}
-.sd{display:flex;align-items:center;gap:10px;min-height:54px;padding:0 8px 0 12px;
- border-radius:8px;background:var(--card);box-shadow:var(--cardsh)}
+.sd{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 4px 0 12px;
+ border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
+ will-change:transform}
 .sd.full{background:color-mix(in srgb,var(--tc) 13%,var(--card))}
 .sd.open{background:rgba(25,25,23,.035);box-shadow:none}
 .sdn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;flex:none;
@@ -140,11 +151,27 @@ h1,h2,h3,h4,p{margin:0}
 .sdx{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
  font-size:12px;color:var(--mut);background:rgba(25,25,23,.06)}
 .sdx:hover{background:rgba(25,25,23,.12);color:var(--ink)}
-.sdmv{flex:none;display:grid;gap:2px}
-.sar{width:26px;height:22px;display:grid;place-items:center;border-radius:4px;
- font-size:11px;color:var(--mut);background:rgba(25,25,23,.06)}
-.sar:hover:not([disabled]){background:rgba(25,25,23,.14);color:var(--ink)}
-.sar[disabled]{opacity:.28;cursor:default}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+ white-space:nowrap}
+
+/* the grip, and the two states a drag puts a row into */
+.grip{flex:none;display:grid;grid-template-columns:repeat(2,4px);gap:3px;
+ justify-content:center;align-content:center;width:34px;height:38px;border-radius:6px;
+ cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;
+ transition:background .15s var(--e-out)}
+.gripd{width:4px;height:4px;border-radius:50%;background:rgba(25,25,23,.3)}
+.grip:hover{background:rgba(25,25,23,.07)}
+.grip:hover .gripd{background:rgba(25,25,23,.5)}
+.grip:active{cursor:grabbing}
+.grip:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.seeds.dragging{-webkit-user-select:none;user-select:none;cursor:grabbing}
+.sd.slide{transition:transform 190ms cubic-bezier(.2,.7,.3,1)}
+.sd.lift{position:relative;z-index:5;cursor:grabbing;
+ box-shadow:0 2px 6px rgba(25,25,23,.14),0 16px 34px -12px rgba(25,25,23,.5);
+ transform-origin:50% 50%}
+.sd.lift .grip .gripd{background:rgba(25,25,23,.55)}
+.sd.held{box-shadow:var(--cardsh),0 0 0 2px var(--hls)}
+@media(prefers-reduced-motion:reduce){.sd.slide{transition:none}}
 
 /* ---- the bracket ---------------------------------------------------------
    Three columns a conference, each with fewer games than the last, so the
@@ -165,7 +192,7 @@ h1,h2,h3,h4,p{margin:0}
  box-shadow:var(--cardsh);min-width:0}
 .bsl{display:grid;grid-template-columns:15px auto minmax(0,1fr);align-items:center;gap:6px;
  min-height:42px;padding:0 9px;text-align:left;min-width:0;
- transition:background .15s var(--e-out)}
+ transition:background 180ms var(--e-out),opacity 180ms var(--e-out)}
 .bsl+.bsl{border-top:1px solid var(--hr)}
 .bsl.held{cursor:default}
 .bsl.held .bnm,.bsl.held .bsd{color:var(--mut)}
@@ -176,10 +203,14 @@ h1,h2,h3,h4,p{margin:0}
 .bsl .mark{opacity:.8}
 .bsl.empty{cursor:default}
 .bsl.empty .bnm{color:var(--fnt);font-weight:400}
-.bsl.w{background:color-mix(in srgb,var(--tc) 20%,var(--card))}
-.bsl.w .bnm{font-weight:700}
-.bsl.w .bsd{color:var(--mut2)}
+.bsl.lost{opacity:.44}
+.bsl.lost:hover{opacity:.7}
+.bsl.w{background:var(--tc)}
+.bsl.w .bnm{font-weight:700;color:var(--tf)}
+.bsl.w .bsd{color:var(--tf);opacity:.65}
 .bsl.w .mark{opacity:1}
+.bsl.w .mark.tile{background:var(--tf)}
+.bsl.w .mark.tile i{color:var(--tc)}
 .bsl:active{background:rgba(25,25,23,.05)}
 
 /* the final is not a bracket cell — it is the one game everything led to */
@@ -193,8 +224,10 @@ h1,h2,h3,h4,p{margin:0}
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sbh.empty{cursor:default;box-shadow:none;background:rgba(25,25,23,.03)}
 .sbh.empty .sbn{font-weight:400;color:var(--fnt);font-size:14px}
-.sbh.w{background:color-mix(in srgb,var(--tc) 20%,var(--card))}
-.sbh.w .sbn{font-weight:700;box-shadow:inset 0 -.14em 0 var(--tc)}
+.sbh.lost{opacity:.5}
+.sbh.w{background:var(--tc)}
+.sbh.w .sbn{font-weight:700;color:var(--tf)}
+.sbh.w .sbc{color:var(--tf);opacity:.72}
 .sbv{font-size:12px;color:var(--fnt);flex:none}
 .champ{display:flex;align-items:center;gap:14px;margin-top:14px;padding:17px 18px;
  border-radius:10px;background:color-mix(in srgb,var(--tc) 22%,var(--card));
@@ -241,12 +274,25 @@ h1,h2,h3,h4,p{margin:0}
 .ghost:hover{color:var(--ink)}
 .nextbar .next{width:100%}
 
-/* ---- the page settles in on a step change ------------------------------- */
-#root>.sheet>*{animation:blockIn 300ms var(--e-out) backwards}
-#root>.sheet>*:nth-child(2){animation-delay:45ms}
-#root>.sheet>*:nth-child(3){animation-delay:80ms}
-#root>.sheet>*:nth-child(n+4){animation-delay:105ms}
+/* ---- motion ---------------------------------------------------------------
+   The entrance belongs to the step change and to nothing else. It runs off a
+   class the router adds for one paint, so a pick inside a step cannot trigger
+   it — a whole page re-entering every time you tap a chip is what makes an app
+   feel like it is reloading rather than responding.
+
+   Selection is a transition on the element that was touched, not an animation
+   on the page around it: press feedback under the finger, then colour arriving
+   over 180ms on a decelerating curve. Nothing moves position, because a
+   control that shifts when you choose it is a control you have to re-find. */
+.sheet.enter>*{animation:blockIn 320ms var(--e-out) backwards}
+.sheet.enter>*:nth-child(2){animation-delay:45ms}
+.sheet.enter>*:nth-child(3){animation-delay:80ms}
+.sheet.enter>*:nth-child(n+4){animation-delay:105ms}
 @keyframes blockIn{from{opacity:0;transform:translateY(8px)}}
+
+/* a region redrawn mid-step arrives without travelling */
+.fadein{animation:fadeIn 200ms var(--e-out) backwards}
+@keyframes fadeIn{from{opacity:0}}
 
 @media(min-width:601px){
  .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -285,7 +331,8 @@ h1,h2,h3,h4,p{margin:0}
  border-radius:8px;background:var(--card);box-shadow:var(--cardsh)}
 .cnd{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;
  gap:10px;width:100%;min-height:48px;padding:0 13px;text-align:left;
- transition:background .13s}
+ transition:background 140ms var(--e-out)}
+.cnd:active{background:rgba(25,25,23,.07)}
 .cnd+.cnd{border-top:1px solid var(--hr)}
 .cnd:hover{background:rgba(25,25,23,.035)}
 .cnd .mark{opacity:.9}
