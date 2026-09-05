@@ -423,8 +423,9 @@ const board=k=>(BOARD[k]||[]).map(([n,t,p,o])=>({n,t,p,o}));
    inside the 3-7 that ranking questions are meant to stay within.
 
    What drag does have over a bare tap-to-rank is that you can see the order
-   you are building. So the row moves: tapping a team lifts it into the ranked
-   group and everything slides, which is the same feedback without the gesture.
+   you are building. So the list sorts itself into the finish order — but only
+   once all four are placed, and back to league order if one is taken out. The
+   sort is the confirmation, not a running commentary.
    Nothing is randomised — these are teams with a conventional order, and
    shuffling them to dodge a primacy effect would just read as broken. */
 (()=>{
@@ -436,10 +437,16 @@ const rowOf=(t,rank)=>`<button class="rkr${rank?' on':''}" data-pick="${t.k}"
 <i class="rkn">${rank||''}</i>${mark(t,'sm')}
 <span class="rkc">${esc(t.city)}</span><span class="rkt">${esc(t.name)}</span></button>`;
 
+/* The list holds its league order while you are still deciding — only the
+   badges change — and drops into finish order the moment the fourth place is
+   set. Reordering on every tap meant the rows you had not judged yet kept
+   moving under your finger, which is the opposite of helpful; this way the
+   sort is the thing that tells you the division is done. Take one back out and
+   it returns to league order, because the answer is no longer complete. */
 function listHTML(conf,div){
  const fin=finOf(conf,div);
- const rest=divTeams(conf,div).filter(t=>!fin.includes(t.k));
- return fin.map((k,i)=>rowOf(T[k],i+1)).join('')+rest.map(t=>rowOf(t,0)).join('')}
+ const order=fin.length===4?fin.map(k=>T[k]):divTeams(conf,div);
+ return order.map(t=>rowOf(t,fin.indexOf(t.k)+1)).join('')}
 
 const division=(conf,div)=>{
  const fin=finOf(conf,div),key=divKey(conf,div);
