@@ -18,11 +18,16 @@
 (()=>{
 const ORD=['1st','2nd','3rd','4th'];
 
+/* first place wears a crown rather than a ring on its number: the badge is
+   the place, the crown is what the place wins you */
+const CROWN='<svg class="crown" viewBox="0 0 24 20" aria-hidden="true">'
+ +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
 const rowOf=(t,rank)=>`<button class="rkr${rank?' on':''}" data-pick="${t.k}"
  data-team="${t.k}" style="--tc:${t.c};--tf:${t.f}" aria-pressed="${!!rank}"
- aria-label="${esc(t.city)} ${esc(t.name)}${rank?', '+ORD[rank-1]:', not placed'}">
+ aria-label="${esc(t.city)} ${esc(t.name)}${rank===1?', wins the division':rank?', '+ORD[rank-1]:', not placed'}">
 <i class="rkn">${rank||''}</i>${mark(t,'sm')}
-<span class="rkc">${esc(t.city)}</span><span class="rkt">${esc(t.name)}</span></button>`;
+<span class="rkc">${esc(t.city)}</span><span class="rkt">${esc(t.name)}</span>
+${rank===1?CROWN:''}</button>`;
 
 /* The list holds its league order while you are still deciding — only the
    badges change — and drops into finish order the moment the fourth place is
