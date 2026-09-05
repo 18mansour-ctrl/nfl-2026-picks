@@ -57,7 +57,10 @@ ${nextBar('awards','See your card','#share')}
 after(root){
  /* only the award that changed is redrawn, and it fades rather than the page
     re-entering around it */
- const swap=(k,el)=>{const sect=el.closest('.sect');
+ /* a blur handler can pull the section out from under a click, so the swap
+    falls back to a full redraw rather than throwing on a detached node */
+ const swap=(k,el)=>{const sect=el&&el.closest('.sect');
+  if(!sect||!sect.parentNode){save();repaint();return}
   sect.outerHTML=block(AW[k]);save();
   const fresh=[...root.querySelectorAll('.sect')].find(x=>x.querySelector(`[data-search="${k}"],[data-clear="${k}"]`));
   if(fresh){fresh.classList.add('fadein')}

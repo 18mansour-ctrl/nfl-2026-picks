@@ -2,7 +2,7 @@
    downstream of these, so they are picked first and on their own screen. */
 (()=>{
 const chip=(t,on)=>`<button class="tm${on?' on':''}" data-pick="${t.k}"
- style="--tc:${t.c}" aria-pressed="${on}">
+ style="--tc:${t.c};--tf:${t.f}" aria-pressed="${on}">
 ${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`;
 
 SEC.divisions={render(){

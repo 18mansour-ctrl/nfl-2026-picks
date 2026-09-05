@@ -13,7 +13,7 @@ const GRIP='<span class="gripd"></span><span class="gripd"></span><span class="g
 
 function row(conf,k,i){
  const t=T[k];
- return `<div class="sd full" style="--tc:${t.c}" data-row="${i}" data-team="${esc(k)}">
+ return `<div class="sd full" style="--tc:${t.c};--tf:${t.f}" data-row="${i}" data-team="${esc(k)}">
 <i class="sdn">${i+1}</i>${mark(t,'sm')}
 <span class="sdt">${esc(t.city)} ${esc(t.name)}</span>
 ${i===0?'<em class="sdb">bye</em>':''}

@@ -122,25 +122,45 @@ where the settle would put it and the transform never changes, so
 
 ## The card
 
-`src/share.js` draws it on a canvas at 1080 × 1920, rendered at 2× — the ratio a
-phone screen and a story both are, so it arrives in a group chat at full height
-rather than letterboxed. It is drawn rather than screenshotted, so it is
-identical on every device and needs nothing loaded from anywhere.
+`src/share.js` draws it on a canvas at **1080 × 1080**, rendered at 2×.
 
-**One loud move, then restraint.** The champion is a full-bleed band in that
-team's own colour, because it is the claim the card is making and it has to
-survive being a thumbnail in a chat list. Text on it flips between white and
-ink on the measured luminance of the colour, so the gold teams and the navy
-ones both read. Everything under the band is on paper and quiet by comparison.
+**It is one object.** The real NFL bracket — AFC running in from the left, NFC
+in from the right, the champion in the middle where the trophy goes — a name,
+and the three awards along the foot. Nothing else.
 
-The division winners are not on it. They are seeds one to four and already in
-the bracket; printing them a second time is what made the first version read as
-a spreadsheet.
+Earlier versions had a masthead, a dateline, a champion band, two section
+heads, a Super Bowl block, a leader table and a colophon: fifteen things, each
+with its own label and rule. That is how a card ends up looking like every
+other generated card. A bracket is already a recognisable object and does not
+need a frame around it.
 
-Two things must be resident before the first stroke or they fail silently: the
-type (a font that has not loaded falls back to the system sans) and the logos
-(`drawImage` on a half-loaded image draws nothing and reports no error). Both
-are awaited in `ready()`.
+No drop shadows and no rounded corners anywhere on it. Soft depth on rounded
+boxes is the house style of every share graphic ever made.
+
+It is drawn rather than screenshotted, so it is identical on every device and
+needs nothing loaded from anywhere. Two things must be resident before the
+first stroke or they fail silently: the type, and the images — `drawImage` on a
+half-loaded image draws nothing and reports no error. Both are awaited.
+
+The three award cards fill with the player's team colour, take his headshot
+cropped to the head and bled off the corner, and carry his position and name.
+A player with no headshot on disk gets his initials instead.
+
+## Headshots and logos
+
+`logos/<key>.<ext>` and `headshots/<key>.webp`. Both directories are read by
+`build.sh`, which generates `src/logos.js` and `src/shots.js` — drop a file in,
+rebuild, done.
+
+All 32 logos are present. Headshots are at 79 of the 129 players on the award
+boards, borrowed from the HUB's set, which is a fantasy one: everyone missing
+is a defender, which is why DPOY is the award still showing initials.
+`HEADSHOTS-WANTED.md` lists them with the filename each one needs.
+
+A team or player with no file falls back to a designed stand-in — the team's
+abbreviation on its colour, or the player's initials — rather than a blank, so
+either set can be completed a few files at a time without a row of images and
+holes in between.
 
 ## Logos
 

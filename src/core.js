@@ -60,6 +60,17 @@ const T=Object.fromEntries(TEAMS.map(t=>[t.k,t]));
    which is not true of a half-filled row of logos and blanks. */
 const logoOf=t=>{if(!t)return null;const k=t.k.toLowerCase();
  return LOGOS[k]?`logos/${k}.${LOGOS[k]}`:null};
+
+/* A player's face, keyed on the name stripped to letters and digits with any
+   generational suffix dropped — the feed and the image set disagree about
+   punctuation, and "Brian Thomas" and "Brian Thomas Jr" are one man. Anyone
+   without a file gets his initials instead, which is a designed stand-in
+   rather than a blank. */
+const shotKey=n=>String(n||'').toLowerCase().trim()
+ .replace(/\b(jr|sr|ii|iii|iv|v)\.?$/,'').replace(/[^a-z0-9]/g,'');
+const shotOf=n=>{const k=shotKey(n);return SHOTS.has(k)?`headshots/${k}.webp`:null};
+const initials=n=>String(n||'').trim().split(/\s+/).filter(Boolean)
+ .slice(0,2).map(w=>w[0].toUpperCase()).join('');
 function mark(t,cls){
  if(!t)return `<span class="mark${cls?' '+cls:''} none"></span>`;
  const src=logoOf(t);

@@ -3,6 +3,7 @@
 @font-face{font-family:'Sohne';src:url('fonts/Sohne-Halbfett.woff2') format('woff2');font-weight:600;font-display:swap}
 @font-face{font-family:'Sohne';src:url('fonts/Sohne-Dreiviertelfett.woff2') format('woff2');font-weight:700;font-display:swap}
 @font-face{font-family:'Sohne Schmal';src:url('fonts/SohneSchmal-Dreiviertelfett.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Sohne Schmal';src:url('fonts/SohneSchmal-Halbfett.woff2') format('woff2');font-weight:600;font-display:swap}
 @font-face{font-family:'Tiempos Text';src:url('fonts/TiemposText-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
 
 /* The house palette, carried over whole. Paper rather than white, ink rather
@@ -116,9 +117,11 @@ h1,h2,h3,h4,p{margin:0}
 .tnm{grid-area:n;font-size:15.5px;font-weight:600;letter-spacing:-.018em;line-height:1.2;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tm:active{transform:scale(.97)}
-.tm.on{background:color-mix(in srgb,var(--tc) 15%,var(--card));
- box-shadow:var(--cardsh),inset 0 0 0 1.5px color-mix(in srgb,var(--tc) 55%,transparent)}
-.tm.on .tnm{font-weight:700}
+.tm.on{background:var(--tc);box-shadow:var(--cardsh)}
+.tm.on .tnm{font-weight:700;color:var(--tf)}
+.tm.on .tct{color:var(--tf);opacity:.7}
+.tm.on .mark.tile{background:var(--tf)}
+.tm.on .mark.tile i{color:var(--tc)}
 .pool{margin-top:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
 
 /* ---- seeding --------------------------------------------------------------
@@ -135,13 +138,22 @@ h1,h2,h3,h4,p{margin:0}
 .seeds{display:grid;gap:6px}
 .sd{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 4px 0 12px;
  border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
- will-change:transform}
-.sd.full{background:color-mix(in srgb,var(--tc) 13%,var(--card))}
+ transition:background 180ms var(--e-out);will-change:transform}
+.sd.full{background:var(--tc)}
+.sd.full .sdt{color:var(--tf)}
+.sd.full .sdb{color:var(--tc);background:var(--tf)}
+.sd.full .sdx{color:var(--tf);background:rgba(255,255,255,.16)}
+.sd.full .sdx:hover{background:rgba(255,255,255,.3)}
+.sd.full .gripd{background:var(--tf);opacity:.5}
+.sd.full .grip:hover{background:rgba(255,255,255,.16)}
+.sd.full .grip:hover .gripd{opacity:.85}
+.sd.full .mark.tile{background:var(--tf)}
+.sd.full .mark.tile i{color:var(--tc)}
 .sd.open{background:rgba(25,25,23,.035);box-shadow:none}
 .sdn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;flex:none;
  font-style:normal;font-size:12px;font-weight:700;
  background:rgba(25,25,23,.08);color:var(--mut)}
-.sd.full .sdn{background:var(--tc);color:#fff}
+.sd.full .sdn{background:var(--tf);color:var(--tc)}
 .sdt{flex:1;min-width:0;text-align:left;font-size:15.5px;font-weight:600;
  letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sdt.empty{font-weight:400;color:var(--fnt);font-size:14px}
