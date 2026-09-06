@@ -113,9 +113,14 @@ h1,h2,h3,h4,p{margin:0}
    row keeps its element through the rewrite so the FLIP in divisions.js has
    something to animate. */
 .divs{display:grid;gap:24px}
-.dvl{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
+.dvl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+ font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
  text-transform:uppercase;color:var(--mut);padding-bottom:8px;
  border-bottom:1px solid var(--hr)}
+.dvr{font-family:var(--sans);font-size:11.5px;font-weight:500;letter-spacing:-.005em;
+ text-transform:none;color:var(--fnt);background:none;border:0;padding:0;flex:none;
+ cursor:pointer;transition:color .15s var(--e-out)}
+.dvr:hover{color:var(--ink)}
 .rank{display:grid;gap:5px;margin-top:10px}
 .rkr{display:grid;grid-template-columns:26px auto minmax(0,1fr) auto;
  grid-template-areas:"n m c w" "n m t w";gap:0 10px;align-items:center;text-align:left;

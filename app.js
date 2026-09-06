@@ -486,7 +486,8 @@ function listHTML(conf,div){
 const division=(conf,div)=>{
  const fin=finOf(conf,div),key=divKey(conf,div);
  return `<div class="dv" data-div="${esc(key)}" data-conf="${conf}" data-name="${esc(div)}">
-<p class="dvl">${esc(div)}</p>
+<p class="dvl">${esc(div)}<button class="dvr" type="button"
+ aria-label="Reset ${conf} ${esc(div)}"${fin.length?'':' hidden'}>Reset</button></p>
 <div class="rank">${listHTML(conf,div)}</div></div>`};
 
 SEC.divisions={render(){
@@ -502,7 +503,22 @@ ${CONFS.map(conf=>`<section class="sect">
 <div class="divs">${DIVS.map(d=>division(conf,d)).join('')}</div></section>`).join('')}
 ${nextBar('divisions','Seed the conferences','#seeds')}
 </div>`},
-after(root){wireRank(root)}};
+after(root){wireRank(root);root.querySelectorAll('.dv').forEach(wireReset)}};
+
+/* Per-division reset. Tapping a placed team already removes it, so this is the
+   shortcut for redoing a whole division rather than an undo — it needs no
+   confirm, because it costs four taps at most and sits next to what it clears.
+   The header Clear keeps its two-tap confirm: that one wipes all thirty-two. */
+function wireReset(box){
+ const r=box.querySelector('.dvr');if(!r)return;
+ const key=box.dataset.div;
+ r.hidden=!(S.fin[key]||[]).length;
+ r.onclick=()=>{
+  const list=box.querySelector('.rank');
+  S.fin[key]=[];reconcile();save();
+  flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
+   wireRank(box)});
+  r.hidden=true;syncChrome()}}
 
 function wireRank(root){
  root.querySelectorAll('.dv [data-pick]').forEach(b=>b.onclick=()=>{
@@ -513,7 +529,7 @@ function wireRank(root){
   S.fin[key]=fin;reconcile();save();
   flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
    wireRank(box)});
-  syncChrome()})}
+  wireReset(box);syncChrome()})}
 
 /* First, Last, Invert, Play. Measure where every row is, let the list rewrite
    itself, then put each row back where it was and release it — so the rows
