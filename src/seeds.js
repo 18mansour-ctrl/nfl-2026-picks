@@ -43,7 +43,6 @@ ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${con
 SEC.seeds={render(){
  return `<div class="sheet">
 <header class="phx">
-<p class="kick">Step two</p>
 <h1>Conference seeding</h1>
 <p class="sr" id="griphelp">Press space to lift a team, then use the arrow keys
 to move it, and space again to drop it.</p>

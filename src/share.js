@@ -195,7 +195,6 @@ async function paint(){
 SEC.share={render(){
  return `<div class="sheet">
 <header class="phx">
-<p class="kick">Step five</p>
 <h1>Your card</h1>
 <p class="lede">Put your name on it, then save the picture and send it to the group.</p>
 </header>

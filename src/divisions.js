@@ -57,7 +57,6 @@ SEC.divisions={render(){
  return `<div class="sheet">
 <header class="phx">
 ${clearBtn("divisions")}
-<p class="kick">Step one</p>
 <h1>Division standings</h1>
 <p class="lede">Tap the teams in the order you think they will finish.</p>
 </header>

@@ -313,7 +313,7 @@ window.addEventListener('hashchange',render);
    opening a dialog. The second tap has three seconds, then it forgets. */
 function clearBtn(step){
  return `<button class="clr" type="button" data-clear-step="${step}" hidden
-><span class="clrl">Clear</span><i class="clrb"></i></button>`}
+><span class="clrl">Clear</span></button>`}
 
 /* hidden is what keeps a dead control out of the tab order and off the
    accessibility tree, and display:none cannot transition — so the class
@@ -363,8 +363,9 @@ function wireClear(root){
  let armed=0,t=null;
  const disarm=()=>{armed=0;b.classList.remove('armed');morphLabel(b,'Clear')};
  b.onclick=()=>{
-  /* wiping a whole step is worth a second tap; the bar across the foot of the
-     pill drains for as long as that second tap is still live */
+  /* wiping a whole step is worth a second tap; the arming lapses on its own
+     after three seconds, quietly — a visible countdown made more of it than
+     the moment deserves */
   if(!armed){armed=1;b.classList.add('armed');morphLabel(b,'Confirm?');
    t=setTimeout(disarm,3000);return}
   clearTimeout(t);armed=0;b.classList.remove('armed');b.style.width='';
@@ -538,7 +539,6 @@ SEC.divisions={render(){
  return `<div class="sheet">
 <header class="phx">
 ${clearBtn("divisions")}
-<p class="kick">Step one</p>
 <h1>Division standings</h1>
 <p class="lede">Tap the teams in the order you think they will finish.</p>
 </header>
@@ -644,7 +644,6 @@ ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${con
 SEC.seeds={render(){
  return `<div class="sheet">
 <header class="phx">
-<p class="kick">Step two</p>
 <h1>Conference seeding</h1>
 <p class="sr" id="griphelp">Press space to lift a team, then use the arrow keys
 to move it, and space again to drop it.</p>
@@ -832,7 +831,6 @@ SEC.bracket={render(){
  return `<div class="sheet">
 <header class="phx">
 ${clearBtn("bracket")}
-<p class="kick">Step three</p>
 <h1>Playoff bracket</h1>
 </header>
 ${CONFS.map(c=>conference(B,c)).join('')}
@@ -964,7 +962,6 @@ SEC.awards={render(){
  return `<div class="sheet">
 <header class="phx">
 ${clearBtn("awards")}
-<p class="kick">Step four</p>
 <h1>Three awards</h1>
 <p class="lede">Pick off the board or write anyone in. The prices are an
 indicative preseason line — they are here to order the field, not because
@@ -1202,7 +1199,6 @@ async function paint(){
 SEC.share={render(){
  return `<div class="sheet">
 <header class="phx">
-<p class="kick">Step five</p>
 <h1>Your card</h1>
 <p class="lede">Put your name on it, then save the picture and send it to the group.</p>
 </header>

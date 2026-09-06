@@ -46,7 +46,6 @@ SEC.awards={render(){
  return `<div class="sheet">
 <header class="phx">
 ${clearBtn("awards")}
-<p class="kick">Step four</p>
 <h1>Three awards</h1>
 <p class="lede">Pick off the board or write anyone in. The prices are an
 indicative preseason line — they are here to order the field, not because

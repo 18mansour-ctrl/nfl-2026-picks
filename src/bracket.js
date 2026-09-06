@@ -60,7 +60,6 @@ SEC.bracket={render(){
  return `<div class="sheet">
 <header class="phx">
 ${clearBtn("bracket")}
-<p class="kick">Step three</p>
 <h1>Playoff bracket</h1>
 </header>
 ${CONFS.map(c=>conference(B,c)).join('')}

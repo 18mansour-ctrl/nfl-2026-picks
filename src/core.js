@@ -310,7 +310,7 @@ window.addEventListener('hashchange',render);
    opening a dialog. The second tap has three seconds, then it forgets. */
 function clearBtn(step){
  return `<button class="clr" type="button" data-clear-step="${step}" hidden
-><span class="clrl">Clear</span><i class="clrb"></i></button>`}
+><span class="clrl">Clear</span></button>`}
 
 /* hidden is what keeps a dead control out of the tab order and off the
    accessibility tree, and display:none cannot transition — so the class
@@ -360,8 +360,9 @@ function wireClear(root){
  let armed=0,t=null;
  const disarm=()=>{armed=0;b.classList.remove('armed');morphLabel(b,'Clear')};
  b.onclick=()=>{
-  /* wiping a whole step is worth a second tap; the bar across the foot of the
-     pill drains for as long as that second tap is still live */
+  /* wiping a whole step is worth a second tap; the arming lapses on its own
+     after three seconds, quietly — a visible countdown made more of it than
+     the moment deserves */
   if(!armed){armed=1;b.classList.add('armed');morphLabel(b,'Confirm?');
    t=setTimeout(disarm,3000);return}
   clearTimeout(t);armed=0;b.classList.remove('armed');b.style.width='';

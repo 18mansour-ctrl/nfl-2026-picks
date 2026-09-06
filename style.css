@@ -54,34 +54,36 @@ h1,h2,h3,h4,p{margin:0}
 .sh>span{font-size:12.5px;color:var(--mut);flex:none}
 .sh+*{margin-top:14px}
 
-.phx{position:relative;padding-top:30px}
-/* sits on the kicker's line, out of the headline's way, and is not there at
-   all until there is something to clear */
+/* The rail above already numbers the steps, so the header is the headline and
+   nothing else. Clear rides in a second column beside the headline's first
+   line, and collapses that column to nothing when there is nothing to clear. */
+.phx{position:relative;padding-top:30px;
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+.phx>*{grid-column:1}
 /* Two destructive controls at two scales: the filled pill in the header wipes
    the step and asks twice, the ghost chip on a division redoes just that one.
    Both are absent until there is something to clear, and both arrive and leave
    on the same short rise. */
-.clr{position:absolute;top:22px;right:-7px;overflow:hidden;
+/* Clear keeps a visible box — it is the destructive one, and a chip reads as a
+   thing you press. The box is what aligns to the column here, not the text, so
+   the fill does not hang past the cards the way a bare word would. Reset stays
+   plain text: boxed is the heavier of the two. */
+.clr{grid-column:2;grid-row:1;justify-self:end;margin-top:5px;
+ overflow:hidden;
  font-family:var(--cond);font-size:12.5px;font-weight:700;letter-spacing:.07em;
- text-transform:uppercase;color:var(--fnt);
- padding:5px 10px;border-radius:6px;background:none;
+ text-transform:uppercase;color:var(--mut);
+ padding:6px 9px;border-radius:7px;background:rgba(25,25,23,.055);
  white-space:nowrap;opacity:0;transform:translateY(-4px);
  transition:background .16s var(--e-out),color .16s var(--e-out),
   width .22s var(--e-out),opacity .2s var(--e-out),transform .26s var(--e-out)}
 .clr.in{opacity:1;transform:none}
-.clr:hover{background:rgba(25,25,23,.06);color:var(--mut)}
+.clr:hover{background:rgba(25,25,23,.1);color:var(--ink)}
 .clr.in:active{transform:scale(.95)}
 /* the fill arrives only once it is armed, so the colour itself is the warning */
 .clr.armed,.clr.armed:hover{background:var(--hls);color:var(--ink)}
 .clrl{display:block}
-.clrb{position:absolute;left:0;bottom:0;width:100%;height:2px;border-radius:2px;
- background:rgba(25,25,23,.3);transform:scaleX(0);transform-origin:left}
-.clr.armed .clrb{animation:drain 3s linear forwards}
-@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-.kick{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.07em;
- text-transform:uppercase;color:var(--mut)}
 .phx h1{font-size:31px;font-weight:700;letter-spacing:-.032em;line-height:1.08;
- margin-top:9px;text-wrap:balance}
+ text-wrap:balance}
 .lede{font-family:var(--serif);font-size:16px;line-height:1.5;color:var(--mut2);
  margin-top:12px;max-width:46ch;text-wrap:pretty}
 .hint{font-family:var(--serif);font-size:14.5px;line-height:1.5;color:var(--mut2);
