@@ -20,6 +20,12 @@ const ORD=['1st','2nd','3rd','4th'];
 
 /* first place wears a crown rather than a ring on its number: the badge is
    the place, the crown is what the place wins you */
+/* The arrow is the gesture, not decoration — it turns once, clockwise, when
+   the division is put back. */
+const RESET_ICON='<svg class="dvri" viewBox="0 0 24 24" aria-hidden="true">'
+ +'<path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.9 1 6.7 2.7L21 8"/>'
+ +'<path d="M21 3v5h-5"/></svg>';
+
 const CROWN='<svg class="crown" viewBox="0 0 24 20" aria-hidden="true">'
  +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
 const rowOf=(t,rank)=>`<button class="rkr${rank?' on':''}" data-pick="${t.k}"
@@ -44,7 +50,7 @@ const division=(conf,div)=>{
  const fin=finOf(conf,div),key=divKey(conf,div);
  return `<div class="dv" data-div="${esc(key)}" data-conf="${conf}" data-name="${esc(div)}">
 <p class="dvl">${esc(div)}<button class="dvr" type="button"
- aria-label="Reset ${conf} ${esc(div)}"${fin.length?'':' hidden'}>Reset</button></p>
+ aria-label="Reset ${conf} ${esc(div)}"${fin.length?'':' hidden'}>${RESET_ICON}Reset</button></p>
 <div class="rank">${listHTML(conf,div)}</div></div>`};
 
 SEC.divisions={render(){
@@ -75,7 +81,14 @@ function wireReset(box){
   S.fin[key]=[];reconcile();save();
   flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
    wireRank(box)});
-  toggleCtl(r,false);syncChrome()}}
+  /* Let the arrow finish its turn before the chip leaves — cutting the spin
+     off halfway reads as a glitch. The hide is guarded because a fresh pick
+     inside those 300ms puts something back worth resetting. */
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)toggleCtl(r,false);
+  else{r.classList.add('spin');
+   setTimeout(()=>{if(!(S.fin[key]||[]).length)toggleCtl(r,false)},300);
+   setTimeout(()=>r.classList.remove('spin'),560)}
+  syncChrome()}}
 
 function wireRank(root){
  root.querySelectorAll('.dv [data-pick]').forEach(b=>b.onclick=()=>{

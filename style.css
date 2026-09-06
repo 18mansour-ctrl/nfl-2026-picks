@@ -127,19 +127,28 @@ h1,h2,h3,h4,p{margin:0}
    row keeps its element through the rewrite so the FLIP in divisions.js has
    something to animate. */
 .divs{display:grid;gap:24px}
+/* No rule under the label: every card below carries its own edge, so a hairline
+   here just doubles the line ten pixels above a card boundary. Proximity does
+   the grouping — the label sits close to its four, and .divs keeps 24px between
+   divisions, so the gap itself says where one ends. */
 .dvl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
  font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
- text-transform:uppercase;color:var(--mut);padding-bottom:8px;
- border-bottom:1px solid var(--hr)}
-.dvr{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:-.002em;
- text-transform:none;color:var(--fnt);background:none;border:0;flex:none;cursor:pointer;
- padding:3px 8px;margin:-3px -8px -3px 0;border-radius:999px;
- opacity:0;transform:translateY(-3px);
+ text-transform:uppercase;color:var(--mut);padding-bottom:3px}
+.dvr{display:inline-flex;align-items:center;gap:4px;flex:none;cursor:pointer;
+ font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:-.002em;
+ text-transform:none;color:var(--fnt);border:0;
+ padding:3.5px 9px 3.5px 7px;margin:-3.5px 0;border-radius:999px;
+ background:rgba(25,25,23,.05);opacity:0;transform:translateY(-3px);
  transition:color .15s var(--e-out),background .15s var(--e-out),
   opacity .18s var(--e-out),transform .24s var(--e-out)}
 .dvr.in{opacity:1;transform:none}
-.dvr:hover{color:var(--mut);background:rgba(25,25,23,.06)}
-.dvr.in:active{transform:scale(.94)}
+.dvr:hover{color:var(--mut);background:rgba(25,25,23,.1)}
+.dvr.in:active{transform:scale(.93)}
+.dvri{width:11px;height:11px;flex:none;fill:none;stroke:currentColor;stroke-width:2.6;
+ stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--e-out)}
+.dvr:hover .dvri{transform:rotate(-40deg)}
+.dvr.spin .dvri{animation:respin .52s cubic-bezier(.45,.05,.2,1)}
+@keyframes respin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .rank{display:grid;gap:5px;margin-top:10px}
 .rkr{display:grid;grid-template-columns:26px auto minmax(0,1fr) auto;
  grid-template-areas:"n m c w" "n m t w";gap:0 10px;align-items:center;text-align:left;

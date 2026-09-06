@@ -339,7 +339,12 @@ function morphLabel(b,txt){
  clearTimeout(+b.dataset.w||0);
  b.dataset.w=setTimeout(()=>{b.style.width=''},260)}
 const CLEARERS={
- divisions:()=>{S.fin={}},
+ /* seeding hangs off the division results, so wiping step one has to take the
+    wild cards with it. reconcile only drops a wild card that has since won its
+    division — it would otherwise hold three teams picked against a board that
+    no longer exists, and hand them back as seeds the moment four winners
+    reappear. S.ord is derived from the winners and clears itself. */
+ divisions:()=>{S.fin={};S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
  seeds:()=>{S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
  bracket:()=>{S.win={}},
  awards:()=>{S.award={mvp:{},opoy:{},dpoy:{}}}};
