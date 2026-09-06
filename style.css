@@ -21,6 +21,12 @@
  --e-out:cubic-bezier(.23,1,.32,1);
 }
 *{box-sizing:border-box}
+/* The browser hides [hidden] with display:none from its own stylesheet, which
+   any author rule setting display quietly beats. .cnd is a grid and .dvr an
+   inline-flex, so hiding either did nothing you could see — the award search
+   had been marking rows hidden and painting them anyway. Author it once, here,
+   rather than remembering it at every call site. */
+[hidden]{display:none!important}
 html,body{margin:0;background:var(--paper)}
 /* The browser paints its own colour over a tapped control before ours arrives —
    a blue wash on iOS and a blue ring in Chrome — so a team chip flashed blue on
