@@ -46,7 +46,6 @@ const block=([k,title,note])=>{
 <input class="fsearch" type="search" data-search="${k}" placeholder="Search the board"
  autocomplete="off" spellcheck="false" aria-label="Search ${esc(title)} candidates">
 <div class="cnds" data-list="${k}">${list.map(c=>row(k,c,false)).join('')}
-<p class="cnh" data-head="${k}" hidden>Everyone else</p>
 <span data-pool="${k}"></span></div>
 <p class="cnone" data-none="${k}" hidden>Nobody by that name.</p>
 <div class="writein">
@@ -84,9 +83,11 @@ after(root){
   const k=b.dataset.clear;S.award[k]={};swap(k,b)});
  /* filtered in place: a re-render would replace the input and drop the caret */
  /* The board is what you see; the rest of the league is what you can find.
-    Two thousand rows are never in the DOM at rest — the pool is only rendered
-    once there is something to match it against, and only the first fifty of
-    those, because past that you are better off typing another letter. */
+    Two thousand rows are never in the DOM at rest — they are rendered only
+    once there is something to match them against, and only the first fifty of
+    those, because past that you are better off typing another letter. They
+    arrive in the same list as the board, unannounced: no price beside a name
+    is the only thing that says the market never had an opinion on him. */
  const SIDE={mvp:'',opoy:'O',dpoy:'D'};
  root.querySelectorAll('[data-search]').forEach(inp=>{inp.oninput=()=>{
   const k=inp.dataset.search,q=inp.value.trim().toLowerCase();
@@ -95,8 +96,7 @@ after(root){
   list.querySelectorAll('.cnd[data-board]').forEach(r=>{
    onBoard.push({...nameKey(r.dataset.name),t:r.dataset.team});
    const hit=!q||r.dataset.n.includes(q);r.hidden=!hit;if(hit)n++});
-  const pool=root.querySelector(`[data-pool="${k}"]`),
-        head=root.querySelector(`[data-head="${k}"]`);
+  const pool=root.querySelector(`[data-pool="${k}"]`);
   let extra=[];
   if(q.length>1)extra=rosterFor(SIDE[k])
    .filter(c=>{if(!c.n.toLowerCase().includes(q))return false;
@@ -104,7 +104,6 @@ after(root){
     return !onBoard.some(b=>b.t===k.t&&samePerson(b,k))})
    .slice(0,50);
   pool.innerHTML=extra.map(c=>row(k,c,false)).join('');
-  head.hidden=!extra.length;
   wirePicks(pool);
   const none=root.querySelector(`[data-none="${k}"]`);
   if(none)none.hidden=!!(n+extra.length)}});
