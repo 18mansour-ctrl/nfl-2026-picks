@@ -17,7 +17,7 @@ ${mark(t,'xs')}<span class="cnn">${esc(c.n)}</span>
 <span class="cnt">${esc(c.t)} · ${esc(c.p)}</span><span class="cno">${esc(c.o)}</span></button>`};
 
 const chosen=(k,a)=>{const t=a.team?T[a.team]:null;
- return `<div class="pick"${t?` style="--tc:${t.c}"`:''}>
+ return `<div class="pick"${t?` style="--tc:${t.c};--tf:${t.f}"`:''}>
 ${mark(t,'bg')}
 <span class="pkn">${esc(a.player)}</span>
 <span class="pkm">${a.team?esc(a.team):'no team'}${a.pos?' · '+esc(a.pos):''}${a.odds?' · '+esc(a.odds):''}</span>

@@ -61,6 +61,16 @@ TEAMS.forEach(t=>{t.f=lum(t.c)>.42?'#191917':'#FFFFFF'});
    1.7:1 — so this is a deliberate trade of legibility for consistency, not an
    oversight in the calculation above. */
 ['NO','PIT'].forEach(k=>{const t=TEAMS.find(x=>x.k===k);if(t)t.f='#FFFFFF'});
+/* The same idea against the second colour, for the places that fill with it
+   rather than with the primary — but taking whichever of ink or white actually
+   contrasts better, instead of the fixed cut above. That cut exists so thirty
+   two row fills agree with each other; nothing here needs to agree with them,
+   and it would put white on the mid-tone seconds — Colts grey, Seahawks green,
+   Jaguars gold — at about 2.3:1. */
+const contrast=(a,b)=>{const x=lum(a),y=lum(b),h=Math.max(x,y),l=Math.min(x,y);
+ return (h+.05)/(l+.05)};
+TEAMS.forEach(t=>{t.f2=contrast(t.c2,'#191917')>=contrast(t.c2,'#FFFFFF')
+ ?'#191917':'#FFFFFF'});
 
 const T=Object.fromEntries(TEAMS.map(t=>[t.k,t]));
 

@@ -344,12 +344,11 @@ h1,h2,h3,h4,p{margin:0}
 .sbv{font-family:var(--cond);font-size:12.5px;font-weight:700;letter-spacing:.1em;
  text-transform:uppercase;color:var(--fnt);flex:none;line-height:1}
 .champ{display:flex;align-items:center;gap:14px;margin-top:14px;padding:17px 18px;
- border-radius:10px;background:color-mix(in srgb,var(--tc) 22%,var(--card));
- box-shadow:var(--cardsh)}
+ border-radius:10px;background:var(--ts);box-shadow:var(--cardsh)}
 .champ span{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
- color:var(--mut2);flex:none}
+ color:var(--tsf);opacity:.72;flex:none}
 .champ b{font-size:22px;font-weight:700;letter-spacing:-.028em;margin-left:auto;
- text-align:right;line-height:1.15}
+ text-align:right;line-height:1.15;color:var(--tsf)}
 
 /* ---- awards -------------------------------------------------------------- */
 .awd{display:grid;gap:12px}
@@ -460,11 +459,15 @@ h1,h2,h3,h4,p{margin:0}
 .pick{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
  grid-template-areas:"m n x" "m s x";gap:1px 13px;align-items:center;
  margin-top:14px;padding:14px 14px 15px;border-radius:9px;box-shadow:var(--cardsh);
- background:color-mix(in srgb,var(--tc,#fff) 15%,var(--card))}
+ background:var(--tc,var(--card))}
 .pick .mark{grid-area:m}
 .pkn{grid-area:n;font-size:19px;font-weight:700;letter-spacing:-.026em;align-self:end;
  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pkm{grid-area:s;font-size:12.5px;color:var(--mut2);align-self:start}
-.pkx{grid-area:x;font-size:13px;font-weight:500;color:var(--mut);
- padding:7px 10px;border-radius:6px;background:rgba(25,25,23,.06)}
-.pkx:hover{color:var(--ink);background:rgba(25,25,23,.12)}
+.pkn{color:var(--tf,var(--ink))}
+.pkm{grid-area:s;font-size:12.5px;align-self:start;color:var(--tf,var(--mut2));opacity:.74}
+/* the control sits on the team's colour, so it is tinted from the foreground
+   rather than from ink — a white wash would vanish on the pale fills */
+.pkx{grid-area:x;font-size:13px;font-weight:500;color:var(--tf,var(--mut));
+ padding:7px 10px;border-radius:6px;
+ background:color-mix(in srgb,var(--tf,#191917) 16%,transparent)}
+.pkx:hover{background:color-mix(in srgb,var(--tf,#191917) 28%,transparent)}

@@ -34,7 +34,7 @@ const game=(id,g)=>`<div class="bgm${!g.home&&!g.away?' open':''}"
 >${slot(g,'home',id)}${slot(g,'away',id)}</div>`;
 
 const champHTML=()=>{const ch=champion();
- return ch?`<div class="champ" style="--tc:${T[ch].c}">
+ return ch?`<div class="champ" style="--tc:${T[ch].c};--ts:${T[ch].c2};--tsf:${T[ch].f2}">
 ${mark(T[ch],'lg')}<span>Your champion</span><b>${esc(T[ch].city)} ${esc(T[ch].name)}</b></div>`:''};
 function finalHTML(B){
  const g=B['sb'];
