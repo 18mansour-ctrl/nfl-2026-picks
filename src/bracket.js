@@ -131,16 +131,43 @@ function lines(root){
   const R=el=>{const r=el.getBoundingClientRect();
    return {l:r.left-box.left,r:r.right-box.left,y:r.top-box.top+r.height/2}};
   const d=[],REDUCED=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
   /* One line per team that advanced, from the row it won in to the row it
      turns up in — not a shared spine. The reseeding is already expressed by
-     where the names land, so the lines can simply be true. */
+     where the names land, so the lines can simply be true.
+
+     They cannot all turn in the same place, though. Reseeding sends the top
+     wild card winner to the bottom divisional game and the bottom one to the
+     top, so with a single midpoint their vertical runs land on the same x and
+     read as one crossed spine. Each connector gets its own channel across the
+     gutter instead, ordered by how far it has to travel: the longest turns
+     first, nearest the column it is leaving, so lines nest rather than cross.
+     Corners are rounded, because a right angle at this size reads as a
+     rendering artefact rather than a decision. */
+  const elbow=(a,b,x,r)=>{
+   if(Math.abs(b.y-a.y)<.5)return `M${a.r} ${a.y}H${b.l}`;
+   const dir=b.y>a.y?1:-1;
+   const rr=Math.min(r,Math.abs(b.y-a.y)/2,Math.abs(x-a.r),Math.abs(b.l-x));
+   return `M${a.r} ${a.y}H${x-rr}`
+    +`Q${x} ${a.y} ${x} ${a.y+rr*dir}`
+    +`V${b.y-rr*dir}`
+    +`Q${x} ${b.y} ${x+rr} ${b.y}`
+    +`H${b.l}`};
+
   for(let i=1;i<cols.length;i++){
    const prev=[...cols[i-1].querySelectorAll('.bsl.w')];
+   const legs=[];
    cols[i].querySelectorAll('.bsl[data-team]').forEach(row=>{
     const src=prev.find(p=>p.dataset.team===row.dataset.team);
     if(!src)return;
-    const a=R(src),b=R(row),mid=(a.r+b.l)/2;
-    d.push(`M${a.r} ${a.y}H${mid}V${b.y}H${b.l}`)})}
+    legs.push({a:R(src),b:R(row)})});
+   if(!legs.length)continue;
+   legs.sort((p,q)=>Math.abs(q.b.y-q.a.y)-Math.abs(p.b.y-p.a.y));
+   const gapL=Math.max(...legs.map(l=>l.a.r)),gapR=Math.min(...legs.map(l=>l.b.l));
+   const span=gapR-gapL,n=legs.length;
+   legs.forEach((l,j)=>{
+    const x=n===1?gapL+span/2:gapL+span*(j+1)/(n+1);
+    d.push(elbow(l.a,l.b,x,5))})}
   /* One path per connector rather than one for all of them, so a line that has
      just become true can draw itself in while the ones already on screen stay
      put. lines() also runs on resize, where nothing has changed and nothing
