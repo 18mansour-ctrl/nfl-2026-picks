@@ -61,7 +61,7 @@ h1,h2,h3,h4,p{margin:0}
    the step and asks twice, the ghost chip on a division redoes just that one.
    Both are absent until there is something to clear, and both arrive and leave
    on the same short rise. */
-.clr{position:absolute;top:22px;right:-9.25px;overflow:hidden;
+.clr{position:absolute;top:22px;right:-7px;overflow:hidden;
  font-family:var(--cond);font-size:12.5px;font-weight:700;letter-spacing:.07em;
  text-transform:uppercase;color:var(--fnt);
  padding:5px 10px;border-radius:6px;background:none;
@@ -134,6 +134,7 @@ h1,h2,h3,h4,p{margin:0}
    the grouping — the label sits close to its four, and .divs keeps 24px between
    divisions, so the gap itself says where one ends. */
 .dvl{display:flex;align-items:center;justify-content:space-between;gap:12px;
+ padding-left:3px;
  font-family:var(--cond);font-size:16.5px;font-weight:700;letter-spacing:.05em;
  text-transform:uppercase;color:var(--mut);padding-bottom:3px}
 /* Set like the label it shares the row with — same condensed caps, same
@@ -144,7 +145,7 @@ h1,h2,h3,h4,p{margin:0}
 .dvr{display:inline-flex;align-items:center;gap:4px;flex:none;cursor:pointer;
  font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.05em;
  text-transform:uppercase;color:var(--fnt);border:0;background:none;
- padding:6px .75px 6px 10px;margin:-6px 0;
+ padding:6px 3px 6px 10px;margin:-6px 0;
  opacity:0;transform:translateY(-3px);
  transition:color .15s var(--e-out),background .15s var(--e-out),
   opacity .18s var(--e-out),transform .24s var(--e-out)}
