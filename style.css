@@ -61,15 +61,17 @@ h1,h2,h3,h4,p{margin:0}
    the step and asks twice, the ghost chip on a division redoes just that one.
    Both are absent until there is something to clear, and both arrive and leave
    on the same short rise. */
-.clr{position:absolute;top:24px;right:0;overflow:hidden;
- font-size:12.5px;font-weight:500;letter-spacing:-.004em;color:var(--mut);
- padding:7px 13px;border-radius:999px;background:rgba(25,25,23,.055);
- white-space:nowrap;opacity:0;transform:translateY(-5px) scale(.9);
+.clr{position:absolute;top:22px;right:-10px;overflow:hidden;
+ font-family:var(--cond);font-size:12.5px;font-weight:700;letter-spacing:.07em;
+ text-transform:uppercase;color:var(--fnt);
+ padding:5px 10px;border-radius:6px;background:none;
+ white-space:nowrap;opacity:0;transform:translateY(-4px);
  transition:background .16s var(--e-out),color .16s var(--e-out),
   width .22s var(--e-out),opacity .2s var(--e-out),transform .26s var(--e-out)}
 .clr.in{opacity:1;transform:none}
-.clr:hover{background:rgba(25,25,23,.1);color:var(--ink)}
+.clr:hover{background:rgba(25,25,23,.06);color:var(--mut)}
 .clr.in:active{transform:scale(.95)}
+/* the fill arrives only once it is armed, so the colour itself is the warning */
 .clr.armed,.clr.armed:hover{background:var(--hls);color:var(--ink)}
 .clrl{display:block}
 .clrb{position:absolute;left:0;bottom:0;width:100%;height:2px;border-radius:2px;
@@ -134,17 +136,22 @@ h1,h2,h3,h4,p{margin:0}
 .dvl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
  font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
  text-transform:uppercase;color:var(--mut);padding-bottom:3px}
+/* Set like the label it shares the row with — same condensed caps, same
+   tracking, no fill — so it reads as part of that line rather than a control
+   dropped on top of it. The arrow is what says it is a button; the pill only
+   appears under the pointer. Text aligns to the card edge, so the hover fill
+   overhangs by its own padding, which is fine for a state nobody sees at rest. */
 .dvr{display:inline-flex;align-items:center;gap:4px;flex:none;cursor:pointer;
- font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:-.002em;
- text-transform:none;color:var(--fnt);border:0;
- padding:3.5px 9px 3.5px 7px;margin:-3.5px 0;border-radius:999px;
- background:rgba(25,25,23,.05);opacity:0;transform:translateY(-3px);
+ font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.055em;
+ text-transform:uppercase;color:var(--fnt);border:0;background:none;
+ padding:3px 5px;margin:-3px -5px -3px 0;border-radius:6px;
+ opacity:0;transform:translateY(-3px);
  transition:color .15s var(--e-out),background .15s var(--e-out),
   opacity .18s var(--e-out),transform .24s var(--e-out)}
 .dvr.in{opacity:1;transform:none}
-.dvr:hover{color:var(--mut);background:rgba(25,25,23,.1)}
+.dvr:hover{color:var(--mut);background:rgba(25,25,23,.06)}
 .dvr.in:active{transform:scale(.93)}
-.dvri{width:11px;height:11px;flex:none;fill:none;stroke:currentColor;stroke-width:2.6;
+.dvri{width:10px;height:10px;flex:none;fill:none;stroke:currentColor;stroke-width:2.9;
  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--e-out)}
 .dvr:hover .dvri{transform:rotate(-40deg)}
 .dvr.spin .dvri{animation:respin .52s cubic-bezier(.45,.05,.2,1)}
