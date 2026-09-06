@@ -1735,6 +1735,12 @@ function lines(root){
     +`Q${x} ${b.y} ${x+rr} ${b.y}`
     +`H${b.l}`};
 
+  /* A stub into the spine and a stub back out of it. */
+  const stub=(from,to,x,y,dir,r)=>{
+   const rr=Math.min(r,Math.abs(x-from));
+   return dir==='in'
+    ? `M${from} ${y}H${x}` : `M${x} ${y}H${to}`};
+
   for(let i=1;i<cols.length;i++){
    const prev=[...cols[i-1].querySelectorAll('.bsl.w')];
    const legs=[];
@@ -1743,12 +1749,31 @@ function lines(root){
     if(!src)return;
     legs.push({a:R(src),b:R(row)})});
    if(!legs.length)continue;
-   legs.sort((p,q)=>Math.abs(q.b.y-q.a.y)-Math.abs(p.b.y-p.a.y));
    const gapL=Math.max(...legs.map(l=>l.a.r)),gapR=Math.min(...legs.map(l=>l.b.l));
+   const x=(gapL+gapR)/2;
+
+   /* The wild card round does not feed the divisional game by game — the
+      winners are pooled and drawn again against the bye. Three lines nesting
+      past each other draw that as a tree, which is both untrue and the messiest
+      thing on the page: the top seed's conqueror crosses the bottom seed's on
+      the way past. So they gather on one spine and come back off it, which is
+      the shape of a re-draw and reads as one object instead of three snakes.
+      Every later round really is a tree — two winners, one game — so those keep
+      their own elbows, where nothing crosses anyway. */
+   const pooled=i===1&&legs.length>1;
+   if(pooled){
+    const ys=legs.flatMap(l=>[l.a.y,l.b.y]);
+    d.push(`M${x} ${Math.min(...ys)}V${Math.max(...ys)}`);
+    legs.forEach(l=>{
+     d.push(`M${l.a.r} ${l.a.y}H${x}`);
+     d.push(`M${x} ${l.b.y}H${l.b.l}`)});
+    continue}
+
+   legs.sort((p,q)=>Math.abs(q.b.y-q.a.y)-Math.abs(p.b.y-p.a.y));
    const span=gapR-gapL,n=legs.length;
    legs.forEach((l,j)=>{
-    const x=n===1?gapL+span/2:gapL+span*(j+1)/(n+1);
-    d.push(elbow(l.a,l.b,x,5))})}
+    const cx=n===1?gapL+span/2:gapL+span*(j+1)/(n+1);
+    d.push(elbow(l.a,l.b,cx,5))})}
   /* One path per connector rather than one for all of them, so a line that has
      just become true can draw itself in while the ones already on screen stay
      put. lines() also runs on resize, where nothing has changed and nothing
