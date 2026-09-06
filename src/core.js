@@ -361,10 +361,10 @@ function wireClear(root){
  const disarm=()=>{armed=0;b.classList.remove('armed');morphLabel(b,'Clear')};
  b.onclick=()=>{
   /* wiping a whole step is worth a second tap; the arming lapses on its own
-     after three seconds, quietly — a visible countdown made more of it than
+     after two seconds, quietly — a visible countdown made more of it than
      the moment deserves */
   if(!armed){armed=1;b.classList.add('armed');morphLabel(b,'Confirm?');
-   t=setTimeout(disarm,3000);return}
+   t=setTimeout(disarm,2000);return}
   clearTimeout(t);armed=0;b.classList.remove('armed');b.style.width='';
   CLEARERS[step]();reconcile();save();repaint()}}
 
