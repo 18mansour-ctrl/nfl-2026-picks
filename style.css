@@ -134,7 +134,7 @@ h1,h2,h3,h4,p{margin:0}
    the grouping — the label sits close to its four, and .divs keeps 24px between
    divisions, so the gap itself says where one ends. */
 .dvl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
- font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
+ font-family:var(--cond);font-size:16.5px;font-weight:700;letter-spacing:.05em;
  text-transform:uppercase;color:var(--mut);padding-bottom:3px}
 /* Set like the label it shares the row with — same condensed caps, same
    tracking, no fill — so it reads as part of that line rather than a control
@@ -142,7 +142,7 @@ h1,h2,h3,h4,p{margin:0}
    appears under the pointer. Text aligns to the card edge, so the hover fill
    overhangs by its own padding, which is fine for a state nobody sees at rest. */
 .dvr{display:inline-flex;align-items:center;gap:4px;flex:none;cursor:pointer;
- font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.055em;
+ font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.05em;
  text-transform:uppercase;color:var(--fnt);border:0;background:none;
  padding:3px 5px;margin:-3px -5px -3px 0;border-radius:6px;
  opacity:0;transform:translateY(-3px);
@@ -151,7 +151,7 @@ h1,h2,h3,h4,p{margin:0}
 .dvr.in{opacity:1;transform:none}
 .dvr:hover{color:var(--mut);background:rgba(25,25,23,.06)}
 .dvr.in:active{transform:scale(.93)}
-.dvri{width:10px;height:10px;flex:none;fill:none;stroke:currentColor;stroke-width:2.9;
+.dvri{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;stroke-width:2.9;
  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--e-out)}
 .dvr:hover .dvri{transform:rotate(-40deg)}
 .dvr.spin .dvri{animation:respin .52s cubic-bezier(.45,.05,.2,1)}
