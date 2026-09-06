@@ -265,8 +265,10 @@ h1,h2,h3,h4,p{margin:0}
  gap:0 var(--bgap,26px);align-items:stretch}
 .blines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .bcol{display:flex;flex-direction:column;min-width:0;position:relative;z-index:1}
-.bch{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;
- text-transform:uppercase;color:var(--fnt);text-align:center;margin-bottom:12px;
+/* the same label as a division's or a seeding band's, only as small as three
+   of them across one column will allow */
+.bch{font-family:var(--cond);font-size:11.5px;font-weight:700;letter-spacing:.05em;
+ text-transform:uppercase;color:var(--mut);text-align:center;margin-bottom:10px;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bgs{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:14px}
 .bgm{display:grid;border-radius:8px;background:var(--card);overflow:hidden;
@@ -275,6 +277,10 @@ h1,h2,h3,h4,p{margin:0}
  min-height:42px;padding:0 9px;text-align:left;min-width:0;
  transition:background 180ms var(--e-out),opacity 180ms var(--e-out)}
 .bsl+.bsl{border-top:1px solid var(--hr)}
+/* nothing has reached it yet, so it recedes rather than holding a card's worth
+   of weight next to games that have actually been played */
+.bgm.open{background:rgba(25,25,23,.035);box-shadow:none}
+.bgm.open .bsl+.bsl{border-top-color:transparent}
 .bsl.held{cursor:default}
 .bsl.held .bnm,.bsl.held .bsd{color:var(--mut)}
 .bsl.held .mark{opacity:.55}

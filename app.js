@@ -906,7 +906,10 @@ const slot=(g,side,id)=>{
   style="--tc:${t.c};--tf:${t.f}" aria-pressed="${won}" aria-label="${esc(t.city)} ${esc(t.name)}">
 <i class="bsd">${seed||''}</i>${mark(t,'xs')}<span class="bnm">${esc(t.k)}</span></button>`};
 
-const game=(id,g)=>`<div class="bgm">${slot(g,'home',id)}${slot(g,'away',id)}</div>`;
+/* A game nobody has reached yet is a placeholder, not a card — same open
+   treatment an unfilled seed row gets on the step before. */
+const game=(id,g)=>`<div class="bgm${!g.home&&!g.away?' open':''}"
+>${slot(g,'home',id)}${slot(g,'away',id)}</div>`;
 
 const champHTML=()=>{const ch=champion();
  return ch?`<div class="champ" style="--tc:${T[ch].c}">
@@ -1005,7 +1008,7 @@ function lines(root){
   const cols=[...bkt.querySelectorAll('.bcol')];
   const R=el=>{const r=el.getBoundingClientRect();
    return {l:r.left-box.left,r:r.right-box.left,y:r.top-box.top+r.height/2}};
-  const d=[];
+  const d=[],REDUCED=matchMedia('(prefers-reduced-motion:reduce)').matches;
   /* One line per team that advanced, from the row it won in to the row it
      turns up in — not a shared spine. The reseeding is already expressed by
      where the names land, so the lines can simply be true. */
@@ -1016,7 +1019,22 @@ function lines(root){
     if(!src)return;
     const a=R(src),b=R(row),mid=(a.r+b.l)/2;
     d.push(`M${a.r} ${a.y}H${mid}V${b.y}H${b.l}`)})}
-  svg.innerHTML=d.length?`<path d="${d.join(' ')}" fill="none" stroke="rgba(25,25,23,.26)" stroke-width="1.5" stroke-linejoin="round"/>`:''});
+  /* One path per connector rather than one for all of them, so a line that has
+     just become true can draw itself in while the ones already on screen stay
+     put. lines() also runs on resize, where nothing has changed and nothing
+     should animate — hence comparing against what was drawn last time. */
+  const seen=new Set(svg.dataset.paths?svg.dataset.paths.split('|'):[]);
+  svg.innerHTML=d.map(p=>`<path d="${p}" fill="none" stroke="rgba(25,25,23,.26)"`
+   +` stroke-width="1.5" stroke-linejoin="round"/>`).join('');
+  svg.dataset.paths=d.join('|');
+  if(REDUCED)return;
+  [...svg.querySelectorAll('path')].forEach((p,i)=>{
+   if(seen.has(d[i]))return;
+   const len=p.getTotalLength();
+   p.setAttribute('stroke-dasharray',len);
+   p.animate([{strokeDashoffset:len},{strokeDashoffset:0}],
+    {duration:420,easing:'cubic-bezier(.3,.8,.3,1)'})
+    .onfinish=()=>p.removeAttribute('stroke-dasharray')})});
 }
 })();
 
