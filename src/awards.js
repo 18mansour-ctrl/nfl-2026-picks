@@ -24,7 +24,7 @@ ${mark(t,'xs')}<span class="cnn">${esc(c.n)}</span>
    fallback than a pair of initials on a card this size. */
 const chosen=(k,a)=>{const t=a.team?T[a.team]:null,shot=a.player&&shotOf(a.player);
  return `<div class="pick"${t?` style="--tc:${t.c};--tf:${t.f}"`:''}>
-${shot?`<img class="pkf" src="${shot}" alt="" width="96" height="96" decoding="async">`
+${shot?`<span class="pkfw"></span><img class="pkf" src="${shot}" alt="" decoding="async">`
       :mark(t,'bg')}
 <span class="pkn">${esc(a.player)}</span>
 <span class="pkm">${t?esc(t.city+' '+t.name):(a.team?esc(a.team):'no team')}${a.pos?' · '+esc(a.pos):''}</span>
