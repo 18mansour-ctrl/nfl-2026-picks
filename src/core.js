@@ -264,7 +264,8 @@ function render(){
 }
 function wire(root){
  root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
- if(SEC[STEP].after)SEC[STEP].after(root)}
+ if(SEC[STEP].after)SEC[STEP].after(root);
+ wireClear(root)}
 
 /* Re-render one region and nothing else, with no entrance. Used where a pick
    genuinely changes what is downstream of it — the bracket past the game you
@@ -277,6 +278,11 @@ function patch(sel,html){
 /* The two things every screen has to keep honest after a pick. */
 function syncChrome(){
  const root=$('#root');if(!root)return;
+ /* the clear button appears the moment there is something to clear, and every
+    step calls through here after a pick — it cannot live in the render path,
+    because a pick deliberately does not re-render */
+ const cb=root.querySelector('[data-clear-step]');
+ if(cb){const h=HASPICKS[cb.dataset.clearStep];cb.hidden=!(h&&h())}
  root.querySelectorAll('.rl').forEach(b=>{const k=b.dataset.step;
   b.disabled=!stepOpen(k);
   b.classList.toggle('ok',stepDone(k)&&k!==STEP);
@@ -298,6 +304,30 @@ function repaint(){
  scrollTo(0,y);
 }
 window.addEventListener('hashchange',render);
+
+/* Clearing a step is cheap to offer and expensive to do by accident — the
+   divisions step alone is thirty-two taps — so it asks twice rather than
+   opening a dialog. The second tap has three seconds, then it forgets. */
+function clearBtn(step){
+ return `<button class="clr" data-clear-step="${step}" hidden>Clear</button>`}
+const CLEARERS={
+ divisions:()=>{S.fin={}},
+ seeds:()=>{S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
+ bracket:()=>{S.win={}},
+ awards:()=>{S.award={mvp:{},opoy:{},dpoy:{}}}};
+const HASPICKS={
+ divisions:()=>Object.values(S.fin).some(a=>a&&a.length),
+ seeds:()=>CONFS.some(c=>wildOf(c).length),
+ bracket:()=>Object.keys(S.win).length>0,
+ awards:()=>['mvp','opoy','dpoy'].some(k=>(S.award[k]||{}).player)};
+function wireClear(root){
+ const b=root.querySelector('[data-clear-step]');if(!b)return;
+ const step=b.dataset.clearStep;
+ let armed=0,t=null;
+ b.onclick=()=>{
+  if(!armed){armed=1;b.classList.add('armed');b.textContent='Tap again to clear';
+   t=setTimeout(()=>{armed=0;b.classList.remove('armed');b.textContent='Clear'},3000);return}
+  clearTimeout(t);CLEARERS[step]();reconcile();save();repaint()}}
 
 /* the button that carries you on, and says what is left when it cannot */
 function nextBar(k,label,href){

@@ -60,6 +60,7 @@ SEC.bracket={render(){
  const B=bracket();
  return `<div class="sheet">
 <header class="phx">
+${clearBtn("bracket")}
 <p class="kick">Step three</p>
 <h1>Play the bracket</h1>
 <p class="lede">Tap the side you think survives. The divisional round reseeds

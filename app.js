@@ -267,7 +267,8 @@ function render(){
 }
 function wire(root){
  root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
- if(SEC[STEP].after)SEC[STEP].after(root)}
+ if(SEC[STEP].after)SEC[STEP].after(root);
+ wireClear(root)}
 
 /* Re-render one region and nothing else, with no entrance. Used where a pick
    genuinely changes what is downstream of it — the bracket past the game you
@@ -280,6 +281,11 @@ function patch(sel,html){
 /* The two things every screen has to keep honest after a pick. */
 function syncChrome(){
  const root=$('#root');if(!root)return;
+ /* the clear button appears the moment there is something to clear, and every
+    step calls through here after a pick — it cannot live in the render path,
+    because a pick deliberately does not re-render */
+ const cb=root.querySelector('[data-clear-step]');
+ if(cb){const h=HASPICKS[cb.dataset.clearStep];cb.hidden=!(h&&h())}
  root.querySelectorAll('.rl').forEach(b=>{const k=b.dataset.step;
   b.disabled=!stepOpen(k);
   b.classList.toggle('ok',stepDone(k)&&k!==STEP);
@@ -301,6 +307,30 @@ function repaint(){
  scrollTo(0,y);
 }
 window.addEventListener('hashchange',render);
+
+/* Clearing a step is cheap to offer and expensive to do by accident — the
+   divisions step alone is thirty-two taps — so it asks twice rather than
+   opening a dialog. The second tap has three seconds, then it forgets. */
+function clearBtn(step){
+ return `<button class="clr" data-clear-step="${step}" hidden>Clear</button>`}
+const CLEARERS={
+ divisions:()=>{S.fin={}},
+ seeds:()=>{S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
+ bracket:()=>{S.win={}},
+ awards:()=>{S.award={mvp:{},opoy:{},dpoy:{}}}};
+const HASPICKS={
+ divisions:()=>Object.values(S.fin).some(a=>a&&a.length),
+ seeds:()=>CONFS.some(c=>wildOf(c).length),
+ bracket:()=>Object.keys(S.win).length>0,
+ awards:()=>['mvp','opoy','dpoy'].some(k=>(S.award[k]||{}).player)};
+function wireClear(root){
+ const b=root.querySelector('[data-clear-step]');if(!b)return;
+ const step=b.dataset.clearStep;
+ let armed=0,t=null;
+ b.onclick=()=>{
+  if(!armed){armed=1;b.classList.add('armed');b.textContent='Tap again to clear';
+   t=setTimeout(()=>{armed=0;b.classList.remove('armed');b.textContent='Clear'},3000);return}
+  clearTimeout(t);CLEARERS[step]();reconcile();save();repaint()}}
 
 /* the button that carries you on, and says what is left when it cannot */
 function nextBar(k,label,href){
@@ -456,20 +486,19 @@ function listHTML(conf,div){
 const division=(conf,div)=>{
  const fin=finOf(conf,div),key=divKey(conf,div);
  return `<div class="dv" data-div="${esc(key)}" data-conf="${conf}" data-name="${esc(div)}">
-<p class="dvl">${esc(div)}<em>${fin.length<4?ORD[fin.length]+' next':'set'}</em></p>
+<p class="dvl">${esc(div)}</p>
 <div class="rank">${listHTML(conf,div)}</div></div>`};
 
 SEC.divisions={render(){
  return `<div class="sheet">
 <header class="phx">
+${clearBtn("divisions")}
 <p class="kick">Step one</p>
-<h1>How does each division finish?</h1>
-<p class="lede">Tap the teams in the order you think they will finish, first to
-fourth. Whoever you put first wins the division and takes a top-four seed, so
-this is the shape of your bracket as well as your table.</p>
+<h1>Division standings</h1>
+<p class="lede">Tap the teams in the order you think they will finish.</p>
 </header>
 ${CONFS.map(conf=>`<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${DIVS.filter(d=>finDone(conf,d)).length} of 4 set</span></div>
+<div class="sh"><h4>${conf}</h4></div>
 <div class="divs">${DIVS.map(d=>division(conf,d)).join('')}</div></section>`).join('')}
 ${nextBar('divisions','Seed the conferences','#seeds')}
 </div>`},
@@ -484,11 +513,6 @@ function wireRank(root){
   S.fin[key]=fin;reconcile();save();
   flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
    wireRank(box)});
-  const lab=box.querySelector('.dvl em');
-  if(lab)lab.textContent=fin.length<4?ORD[fin.length]+' next':'set';
-  const conf=box.dataset.conf;
-  const count=box.closest('.sect').querySelector('.sh>span');
-  if(count)count.textContent=DIVS.filter(d=>finDone(conf,d)).length+' of 4 set';
   syncChrome()})}
 
 /* First, Last, Invert, Play. Measure where every row is, let the list rewrite
@@ -553,6 +577,7 @@ ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${con
 SEC.seeds={render(){
  return `<div class="sheet">
 <header class="phx">
+${clearBtn("seeds")}
 <p class="kick">Step two</p>
 <h1>Seed the conferences</h1>
 <p class="lede">Your four division winners take the top four seeds — that part
@@ -744,6 +769,7 @@ SEC.bracket={render(){
  const B=bracket();
  return `<div class="sheet">
 <header class="phx">
+${clearBtn("bracket")}
 <p class="kick">Step three</p>
 <h1>Play the bracket</h1>
 <p class="lede">Tap the side you think survives. The divisional round reseeds
@@ -878,6 +904,7 @@ const block=([k,title,note])=>{
 SEC.awards={render(){
  return `<div class="sheet">
 <header class="phx">
+${clearBtn("awards")}
 <p class="kick">Step four</p>
 <h1>Three awards</h1>
 <p class="lede">Pick off the board or write anyone in. The prices are an

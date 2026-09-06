@@ -54,7 +54,14 @@ h1,h2,h3,h4,p{margin:0}
 .sh>span{font-size:12.5px;color:var(--mut);flex:none}
 .sh+*{margin-top:14px}
 
-.phx{padding-top:30px}
+.phx{position:relative;padding-top:30px}
+/* sits on the kicker's line, out of the headline's way, and is not there at
+   all until there is something to clear */
+.clr{position:absolute;top:26px;right:0;font-size:13px;font-weight:500;
+ color:var(--mut);padding:7px 12px;border-radius:7px;background:rgba(25,25,23,.05);
+ white-space:nowrap;transition:background .15s var(--e-out),color .15s var(--e-out)}
+.clr:hover{background:rgba(25,25,23,.1);color:var(--ink)}
+.clr.armed{background:var(--hls);color:var(--ink);font-weight:600}
 .kick{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.07em;
  text-transform:uppercase;color:var(--mut)}
 .phx h1{font-size:31px;font-weight:700;letter-spacing:-.032em;line-height:1.08;
@@ -106,12 +113,9 @@ h1,h2,h3,h4,p{margin:0}
    row keeps its element through the rewrite so the FLIP in divisions.js has
    something to animate. */
 .divs{display:grid;gap:24px}
-.dvl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
- font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
+.dvl{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
  text-transform:uppercase;color:var(--mut);padding-bottom:8px;
  border-bottom:1px solid var(--hr)}
-.dvl em{font-family:var(--sans);font-style:normal;font-size:11.5px;font-weight:400;
- letter-spacing:-.005em;text-transform:none;color:var(--fnt);flex:none}
 .rank{display:grid;gap:5px;margin-top:10px}
 .rkr{display:grid;grid-template-columns:26px auto minmax(0,1fr) auto;
  grid-template-areas:"n m c w" "n m t w";gap:0 10px;align-items:center;text-align:left;

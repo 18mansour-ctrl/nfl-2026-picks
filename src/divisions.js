@@ -43,20 +43,19 @@ function listHTML(conf,div){
 const division=(conf,div)=>{
  const fin=finOf(conf,div),key=divKey(conf,div);
  return `<div class="dv" data-div="${esc(key)}" data-conf="${conf}" data-name="${esc(div)}">
-<p class="dvl">${esc(div)}<em>${fin.length<4?ORD[fin.length]+' next':'set'}</em></p>
+<p class="dvl">${esc(div)}</p>
 <div class="rank">${listHTML(conf,div)}</div></div>`};
 
 SEC.divisions={render(){
  return `<div class="sheet">
 <header class="phx">
+${clearBtn("divisions")}
 <p class="kick">Step one</p>
-<h1>How does each division finish?</h1>
-<p class="lede">Tap the teams in the order you think they will finish, first to
-fourth. Whoever you put first wins the division and takes a top-four seed, so
-this is the shape of your bracket as well as your table.</p>
+<h1>Division standings</h1>
+<p class="lede">Tap the teams in the order you think they will finish.</p>
 </header>
 ${CONFS.map(conf=>`<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${DIVS.filter(d=>finDone(conf,d)).length} of 4 set</span></div>
+<div class="sh"><h4>${conf}</h4></div>
 <div class="divs">${DIVS.map(d=>division(conf,d)).join('')}</div></section>`).join('')}
 ${nextBar('divisions','Seed the conferences','#seeds')}
 </div>`},
@@ -71,11 +70,6 @@ function wireRank(root){
   S.fin[key]=fin;reconcile();save();
   flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
    wireRank(box)});
-  const lab=box.querySelector('.dvl em');
-  if(lab)lab.textContent=fin.length<4?ORD[fin.length]+' next':'set';
-  const conf=box.dataset.conf;
-  const count=box.closest('.sect').querySelector('.sh>span');
-  if(count)count.textContent=DIVS.filter(d=>finDone(conf,d)).length+' of 4 set';
   syncChrome()})}
 
 /* First, Last, Invert, Play. Measure where every row is, let the list rewrite

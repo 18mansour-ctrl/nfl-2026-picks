@@ -43,6 +43,7 @@ ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${con
 SEC.seeds={render(){
  return `<div class="sheet">
 <header class="phx">
+${clearBtn("seeds")}
 <p class="kick">Step two</p>
 <h1>Seed the conferences</h1>
 <p class="lede">Your four division winners take the top four seeds — that part
