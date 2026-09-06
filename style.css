@@ -133,7 +133,7 @@ h1,h2,h3,h4,p{margin:0}
    here just doubles the line ten pixels above a card boundary. Proximity does
    the grouping — the label sits close to its four, and .divs keeps 24px between
    divisions, so the gap itself says where one ends. */
-.dvl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+.dvl{display:flex;align-items:center;justify-content:space-between;gap:12px;
  font-family:var(--cond);font-size:16.5px;font-weight:700;letter-spacing:.05em;
  text-transform:uppercase;color:var(--mut);padding-bottom:3px}
 /* Set like the label it shares the row with — same condensed caps, same
@@ -144,12 +144,12 @@ h1,h2,h3,h4,p{margin:0}
 .dvr{display:inline-flex;align-items:center;gap:4px;flex:none;cursor:pointer;
  font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.05em;
  text-transform:uppercase;color:var(--fnt);border:0;background:none;
- padding:3px 5px;margin:-3px -5px -3px 0;border-radius:6px;
+ padding:6px 0 6px 10px;margin:-6px 0;
  opacity:0;transform:translateY(-3px);
  transition:color .15s var(--e-out),background .15s var(--e-out),
   opacity .18s var(--e-out),transform .24s var(--e-out)}
 .dvr.in{opacity:1;transform:none}
-.dvr:hover{color:var(--mut);background:rgba(25,25,23,.06)}
+.dvr:hover{color:var(--mut)}
 .dvr.in:active{transform:scale(.93)}
 .dvri{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;stroke-width:2.9;
  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--e-out)}
