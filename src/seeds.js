@@ -13,7 +13,8 @@ const GRIP='<span class="gripd"></span><span class="gripd"></span><span class="g
 
 function row(conf,k,i){
  const t=T[k];
- return `<div class="sd full" style="--tc:${t.c};--tf:${t.f}" data-row="${i}" data-team="${esc(k)}">
+ return `<div class="sd full" style="--tc:${t.c};--tf:${t.f}" data-row="${i}"
+ data-team="${esc(k)}" data-flip="row:${conf}:${esc(k)}">
 <i class="sdn">${i+1}</i>${mark(t,'sm')}
 <span class="sdt">${esc(t.city)} ${esc(t.name)}</span>
 ${i===0?'<em class="sdb">bye</em>':''}
@@ -21,7 +22,8 @@ ${i>=4?`<button class="sdx" data-drop="${esc(k)}" aria-label="Remove ${esc(t.nam
 <button class="grip" data-grip aria-label="Reorder ${esc(t.name)}"
  aria-describedby="griphelp">${GRIP}</button></div>`}
 
-const hole=(i,txt)=>`<div class="sd open" data-row="${i}"><i class="sdn">${i+1}</i>
+const hole=(i,txt,conf)=>`<div class="sd open" data-row="${i}"
+ data-flip="hole:${conf}:${i}"><i class="sdn">${i+1}</i>
 <span class="sdt empty">${esc(txt||'Wild card — tap a team below')}</span></div>`;
 
 function conference(conf){
@@ -30,14 +32,14 @@ function conference(conf){
  const left=3-wild.length;
  const taken=new Set(ord.concat(wild));
  const pool=confTeams(conf).filter(t=>!taken.has(t.k)&&!w.has(t.k));
- return `<section class="sect">
+ return `<section class="sect" data-flip="sect:${conf}">
 <div class="sh"><h4>${conf}</h4></div>
 <p class="bandl">Division winners <em>drag to order</em></p>
-<div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first')).join('')}</div>
-<p class="bandl wc">Wild cards</p>
-<div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4)).join('')}</div>
-${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
- style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
+<div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first',conf)).join('')}</div>
+<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards</p>
+<div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4,'',conf)).join('')}</div>
+${left?`<div class="tms pool" data-flip="pool:${conf}">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
+ data-flip="tm:${conf}:${t.k}" style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
 </section>`}
 
 SEC.seeds={render(){
@@ -53,9 +55,10 @@ ${nextBar('seeds','Play the bracket','#bracket')}
 after(root){
  root.querySelectorAll('[data-seed]').forEach(b=>b.onclick=()=>{
   const conf=b.dataset.seed,wl=S.wild[conf]||[];
-  if(wl.length<3){wl.push(b.dataset.k);S.wild[conf]=wl;repaint()}});
+  if(wl.length<3)flipRender(()=>{wl.push(b.dataset.k);S.wild[conf]=wl})});
  root.querySelectorAll('[data-drop]').forEach(b=>b.onclick=()=>{
-  CONFS.forEach(c=>{S.wild[c]=(S.wild[c]||[]).filter(k=>k!==b.dataset.drop)});repaint()});
+  flipRender(()=>CONFS.forEach(c=>{
+   S.wild[c]=(S.wild[c]||[]).filter(k=>k!==b.dataset.drop)}))});
  root.querySelectorAll('.seeds[data-band]').forEach(sortable)}};
 
 /* ---- the drag ------------------------------------------------------------

@@ -297,6 +297,62 @@ function syncChrome(){
   if(a){a.className=ok?'next':'next off';
    if(ok)a.setAttribute('href',bar.dataset.href);else a.removeAttribute('href')}}}
 
+/* A whole-screen redraw that nobody sees redraw. Every element worth following
+   carries a data-flip key: measure them all, let the redraw happen, then move
+   each one from where it used to be. Elements that went away are re-parented
+   into a fixed overlay and faded out of the place they occupied — innerHTML
+   detaches those nodes rather than destroying them, so they are still there to
+   use as their own ghosts. Only the outermost mover is animated, or a section
+   and the rows inside it would each carry the same delta and travel twice. */
+function flipRender(mutate){
+ if(matchMedia('(prefers-reduced-motion:reduce)').matches){mutate();repaint();return}
+ const root=$('#root'),before=new Map();
+ root.querySelectorAll('[data-flip]').forEach(el=>
+  before.set(el.dataset.flip,{r:el.getBoundingClientRect(),el}));
+ mutate();
+ repaint();
+ const after=new Map();
+ root.querySelectorAll('[data-flip]').forEach(el=>after.set(el.dataset.flip,el));
+ const EASE='cubic-bezier(.22,.7,.25,1)';
+
+ /* Only the outermost casualty becomes a ghost. The detached subtree keeps its
+    parent chain, so a vanished pool still owns its vanished cards — ghosting
+    both would strip the cards out of it and dissolve twelve things where one
+    block is what actually left. */
+ const gone=[];
+ before.forEach(({r,el},k)=>{if(!after.has(k))gone.push({r,el})});
+ const goneSet=new Set(gone.map(g=>g.el));
+ let ghosts=null;
+ gone.filter(({el})=>{let p=el.parentElement;
+   while(p){if(goneSet.has(p))return false;p=p.parentElement}return true})
+  .forEach(({r,el})=>{
+  if(!ghosts){ghosts=document.createElement('div');ghosts.className='ghosts';
+   document.body.appendChild(ghosts)}
+  el.style.cssText+=`;position:absolute;margin:0;left:${r.left}px;top:${r.top}px;`
+   +`width:${r.width}px;height:${r.height}px`;
+  ghosts.appendChild(el);
+  el.animate([{opacity:1,transform:'none'},{opacity:0,transform:'scale(.96)'}],
+   {duration:190,easing:'ease-out',fill:'forwards'})});
+ if(ghosts)setTimeout(()=>ghosts.remove(),230);
+
+ const moved=[];
+ after.forEach((el,k)=>{const b=before.get(k);if(!b)return;
+  const a=el.getBoundingClientRect();
+  const dx=b.r.left-a.left,dy=b.r.top-a.top;
+  if(Math.abs(dx)<.5&&Math.abs(dy)<.5)return;
+  moved.push({el,dx,dy})});
+ const set=new Set(moved.map(m=>m.el));
+ moved.filter(({el})=>{let p=el.parentElement;
+   while(p){if(set.has(p))return false;p=p.parentElement}return true})
+  .forEach(({el,dx,dy})=>el.animate(
+   [{transform:`translate(${dx}px,${dy}px)`},{transform:'none'}],
+   {duration:380,easing:EASE}));
+
+ after.forEach((el,k)=>{if(before.has(k))return;
+  el.animate([{opacity:0,transform:'scale(.97)'},{opacity:1,transform:'none'}],
+   {duration:270,easing:EASE})});
+}
+
 /* Kept for the places a whole-screen redraw is genuinely the simplest correct
    thing — collapsing the award finder onto its pick. It skips the entrance. */
 function repaint(){
@@ -374,7 +430,7 @@ function wireClear(root){
 /* the button that carries you on, and says what is left when it cannot */
 function nextBar(k,label,href){
  const ok=stepDone(k);
- return `<div class="nextbar" data-for="${k}" data-href="${href}">
+ return `<div class="nextbar" data-flip="nextbar" data-for="${k}" data-href="${href}">
 <a class="${ok?'next':'next off'}"${ok?` href="${href}"`:''}>${esc(label)}</a>
 </div>`}
 
@@ -614,7 +670,8 @@ const GRIP='<span class="gripd"></span><span class="gripd"></span><span class="g
 
 function row(conf,k,i){
  const t=T[k];
- return `<div class="sd full" style="--tc:${t.c};--tf:${t.f}" data-row="${i}" data-team="${esc(k)}">
+ return `<div class="sd full" style="--tc:${t.c};--tf:${t.f}" data-row="${i}"
+ data-team="${esc(k)}" data-flip="row:${conf}:${esc(k)}">
 <i class="sdn">${i+1}</i>${mark(t,'sm')}
 <span class="sdt">${esc(t.city)} ${esc(t.name)}</span>
 ${i===0?'<em class="sdb">bye</em>':''}
@@ -622,7 +679,8 @@ ${i>=4?`<button class="sdx" data-drop="${esc(k)}" aria-label="Remove ${esc(t.nam
 <button class="grip" data-grip aria-label="Reorder ${esc(t.name)}"
  aria-describedby="griphelp">${GRIP}</button></div>`}
 
-const hole=(i,txt)=>`<div class="sd open" data-row="${i}"><i class="sdn">${i+1}</i>
+const hole=(i,txt,conf)=>`<div class="sd open" data-row="${i}"
+ data-flip="hole:${conf}:${i}"><i class="sdn">${i+1}</i>
 <span class="sdt empty">${esc(txt||'Wild card — tap a team below')}</span></div>`;
 
 function conference(conf){
@@ -631,14 +689,14 @@ function conference(conf){
  const left=3-wild.length;
  const taken=new Set(ord.concat(wild));
  const pool=confTeams(conf).filter(t=>!taken.has(t.k)&&!w.has(t.k));
- return `<section class="sect">
+ return `<section class="sect" data-flip="sect:${conf}">
 <div class="sh"><h4>${conf}</h4></div>
 <p class="bandl">Division winners <em>drag to order</em></p>
-<div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first')).join('')}</div>
-<p class="bandl wc">Wild cards</p>
-<div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4)).join('')}</div>
-${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
- style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
+<div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first',conf)).join('')}</div>
+<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards</p>
+<div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4,'',conf)).join('')}</div>
+${left?`<div class="tms pool" data-flip="pool:${conf}">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
+ data-flip="tm:${conf}:${t.k}" style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
 </section>`}
 
 SEC.seeds={render(){
@@ -654,9 +712,10 @@ ${nextBar('seeds','Play the bracket','#bracket')}
 after(root){
  root.querySelectorAll('[data-seed]').forEach(b=>b.onclick=()=>{
   const conf=b.dataset.seed,wl=S.wild[conf]||[];
-  if(wl.length<3){wl.push(b.dataset.k);S.wild[conf]=wl;repaint()}});
+  if(wl.length<3)flipRender(()=>{wl.push(b.dataset.k);S.wild[conf]=wl})});
  root.querySelectorAll('[data-drop]').forEach(b=>b.onclick=()=>{
-  CONFS.forEach(c=>{S.wild[c]=(S.wild[c]||[]).filter(k=>k!==b.dataset.drop)});repaint()});
+  flipRender(()=>CONFS.forEach(c=>{
+   S.wild[c]=(S.wild[c]||[]).filter(k=>k!==b.dataset.drop)}))});
  root.querySelectorAll('.seeds[data-band]').forEach(sortable)}};
 
 /* ---- the drag ------------------------------------------------------------
