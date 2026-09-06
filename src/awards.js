@@ -19,11 +19,15 @@ const row=(k,c,on)=>{const t=T[c.t];
 ${mark(t,'xs')}<span class="cnn">${esc(c.n)}</span>
 <span class="cnt">${esc(c.t)} · ${esc(c.p)}</span><span class="cno">${esc(c.o)}</span></button>`};
 
-const chosen=(k,a)=>{const t=a.team?T[a.team]:null;
+/* The face if we have one, the club's mark if we do not — a name searched out
+   of the wider roster will not have a headshot, and a shield is a better
+   fallback than a pair of initials on a card this size. */
+const chosen=(k,a)=>{const t=a.team?T[a.team]:null,shot=a.player&&shotOf(a.player);
  return `<div class="pick"${t?` style="--tc:${t.c};--tf:${t.f}"`:''}>
-${mark(t,'bg')}
+${shot?`<img class="pkf" src="${shot}" alt="" width="96" height="96" decoding="async">`
+      :mark(t,'bg')}
 <span class="pkn">${esc(a.player)}</span>
-<span class="pkm">${a.team?esc(a.team):'no team'}${a.pos?' · '+esc(a.pos):''}${a.odds?' · '+esc(a.odds):''}</span>
+<span class="pkm">${t?esc(t.city+' '+t.name):(a.team?esc(a.team):'no team')}${a.pos?' · '+esc(a.pos):''}</span>
 <button class="pkx" data-clear="${k}">Change</button></div>`};
 
 /* Pat and Patrick Surtain are one man, and only one of them should come back

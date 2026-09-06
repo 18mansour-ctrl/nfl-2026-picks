@@ -466,6 +466,10 @@ h1,h2,h3,h4,p{margin:0}
  margin-top:14px;padding:14px 14px 15px;border-radius:9px;box-shadow:var(--cardsh);
  background:var(--tc,var(--card))}
 .pick .mark{grid-area:m}
+/* the cut-out sits straight on the team's colour — a plate behind it only drew
+   a second card inside the first */
+.pkf{grid-area:m;width:46px;height:46px;object-fit:cover;object-position:50% 12%;
+ display:block;background:none}
 .pkn{grid-area:n;font-size:19px;font-weight:700;letter-spacing:-.026em;align-self:end;
  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pkn{color:var(--tf,var(--ink))}
