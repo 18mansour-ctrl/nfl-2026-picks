@@ -461,7 +461,6 @@ h1,h2,h3,h4,p{margin:0}
 .cno{font-size:13px;font-weight:600;color:var(--mut2);min-width:52px;text-align:right;
  font-variant-numeric:tabular-nums}
 .cnone{font-family:var(--serif);font-size:14.5px;color:var(--mut2);margin-top:12px}
-.writein{margin-top:12px}
 .pick{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
  grid-template-areas:"m n x" "m s x";gap:1px 13px;align-items:center;
  margin-top:14px;padding:14px 14px 15px;border-radius:9px;box-shadow:var(--cardsh);

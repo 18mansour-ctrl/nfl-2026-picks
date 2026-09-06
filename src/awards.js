@@ -1,13 +1,15 @@
 /* Step four: three names, chosen off a board.
    An empty text box is the worst version of this: it asks you to remember
    fifty names and spell them. A ranked field puts the likely ones in front of
-   you, orders them the way the market does, and still takes a write-in for
-   anyone it has missed. The list filters as you type rather than re-rendering,
+   you and orders them the way the market does. The write-in is gone because
+   there is nobody left to write in — the search reaches every skill player on
+   all thirty-two rosters, so a name typed by hand could only be a misspelling
+   of one already there. The list filters as you type rather than re-rendering,
    so the caret survives the first keystroke. */
 (()=>{
-const AWARDS=[['mvp','Most Valuable Player','Nearly always a quarterback. Nearly.'],
- ['opoy','Offensive Player of the Year','The one who broke a number, which is not always the MVP.'],
- ['dpoy','Defensive Player of the Year','The one an offence has to build a plan around.']];
+const AWARDS=[['mvp','Most Valuable Player','all NFL players'],
+ ['opoy','Offensive Player of the Year','all offensive players'],
+ ['dpoy','Defensive Player of the Year','all defensive players']];
 
 const row=(k,c,on)=>{const t=T[c.t];
  return `<button class="cnd${on?' on':''}" data-pick="${k}" data-n="${esc(c.n.toLowerCase())}"
@@ -35,23 +37,18 @@ const samePerson=(a,b)=>a.last===b.last&&!!a.first&&!!b.first&&
  (a.first.startsWith(b.first)||b.first.startsWith(a.first));
 
 const AW=Object.fromEntries(AWARDS.map(a=>[a[0],a]));
-const block=([k,title,note])=>{
+const block=([k,title,reach])=>{
  const a=S.award[k]||{},list=board(k);
  if(a.player)return `<section class="sect">
 <div class="sh"><h4>${esc(title)}</h4></div>${chosen(k,a)}</section>`;
  return `<section class="sect">
 <div class="sh"><h4>${esc(title)}</h4></div>
-<p class="hint">${esc(note)}</p>
 <div class="finder">
-<input class="fsearch" type="search" data-search="${k}" placeholder="Search the board"
- autocomplete="off" spellcheck="false" aria-label="Search ${esc(title)} candidates">
+<input class="fsearch" type="search" data-search="${k}" placeholder="Search ${esc(reach)}"
+ autocomplete="off" spellcheck="false" aria-label="Search ${esc(reach)} for a ${esc(title)} pick">
 <div class="cnds" data-list="${k}">${list.map(c=>row(k,c,false)).join('')}
 <span data-pool="${k}"></span></div>
 <p class="cnone" data-none="${k}" hidden>Nobody by that name.</p>
-<div class="writein">
-<input class="awin" type="text" data-write="${k}" placeholder="Someone else — type a name"
- autocomplete="off" spellcheck="false" aria-label="Write in a ${esc(title)} pick">
-</div>
 </div></section>`};
 
 SEC.awards={render(){
@@ -107,9 +104,5 @@ after(root){
   wirePicks(pool);
   const none=root.querySelector(`[data-none="${k}"]`);
   if(none)none.hidden=!!(n+extra.length)}});
- root.querySelectorAll('[data-write]').forEach(inp=>{
-  const commit=()=>{const v=inp.value.trim();if(!v)return;
-   S.award[inp.dataset.write]={player:v};swap(inp.dataset.write,inp)};
-  inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit()}};
-  inp.onblur=commit})}};
+}};
 })();
