@@ -230,3 +230,18 @@ Söhne, Söhne Schmal and Tiempos Text, self-hosted from `fonts/`.
   cannot tell you who won the pool. That would need results from somewhere.
 - **The awards are free text.** A player list would mean inventing a roster for
   a season that has not been played, so you type the name and tap the team.
+
+## Curating the award boards
+
+`awards-odds-2026.csv` is the raw pull — MVP 100, OPOY 67, DPOY 58, with the
+odds source and a confidence flag on every team and position.
+
+    ./serve.sh 8145
+    open http://localhost:8145/curate.html
+
+Drag or nudge to reorder, delete anyone who does not belong, and fix a wrong
+team or position in place. Order, deletions and corrections are kept in the
+browser, so the tool can be left and come back to. **Export players.js** writes
+the block for `src/players.js`; re-pulling the odds later keeps everything you
+have curated, because the tool stores an order and a set of corrections rather
+than a copy of the rows.
