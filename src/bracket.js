@@ -41,13 +41,12 @@ function finalHTML(B){
   return `<button class="sbh${won?' w':''}${lost?' lost':''}" data-game="sb" data-team="${esc(k)}"
    style="--tc:${t.c};--tf:${t.f}" aria-pressed="${won}">${mark(t,'bg')}
 <span class="sbc">${esc(t.city)}</span><span class="sbn">${esc(t.name)}</span></button>`};
- return `<div class="sbw">${side(g.home)}<span class="sbv">v</span>${side(g.away)}</div>
+ return `<div class="sbw">${side(g.home)}<span class="sbv">vs</span>${side(g.away)}</div>
 <div id="champline">${champHTML()}</div>`}
 
 function conference(B,conf){
- const bye=seedsOf(conf)[0];
  return `<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${bye?T[bye].name+' on the bye':'seven to seed'}</span></div>
+<div class="sh"><h4>${conf}</h4></div>
 <div class="bkt" data-conf="${conf}">
 <svg class="blines" aria-hidden="true"></svg>
 ${ROUNDS.map(([label,ids],ci)=>`<div class="bcol" data-col="${ci}">
@@ -62,10 +61,7 @@ SEC.bracket={render(){
 <header class="phx">
 ${clearBtn("bracket")}
 <p class="kick">Step three</p>
-<h1>Play the bracket</h1>
-<p class="lede">Tap the side you think survives. The divisional round reseeds
-itself as you go — the top seed left draws the lowest seed left — so the three
-wild card winners pool before they are redrawn.</p>
+<h1>Playoff bracket</h1>
 </header>
 ${CONFS.map(c=>conference(B,c)).join('')}
 <section class="sect">

@@ -345,12 +345,10 @@ const CLEARERS={
     no longer exists, and hand them back as seeds the moment four winners
     reappear. S.ord is derived from the winners and clears itself. */
  divisions:()=>{S.fin={};S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
- seeds:()=>{S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
  bracket:()=>{S.win={}},
  awards:()=>{S.award={mvp:{},opoy:{},dpoy:{}}}};
 const HASPICKS={
  divisions:()=>Object.values(S.fin).some(a=>a&&a.length),
- seeds:()=>CONFS.some(c=>wildOf(c).length),
  bracket:()=>Object.keys(S.win).length>0,
  awards:()=>['mvp','opoy','dpoy'].some(k=>(S.award[k]||{}).player)};
 function wireClear(root){

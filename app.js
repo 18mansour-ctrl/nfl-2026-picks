@@ -348,12 +348,10 @@ const CLEARERS={
     no longer exists, and hand them back as seeds the moment four winners
     reappear. S.ord is derived from the winners and clears itself. */
  divisions:()=>{S.fin={};S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
- seeds:()=>{S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
  bracket:()=>{S.win={}},
  awards:()=>{S.award={mvp:{},opoy:{},dpoy:{}}}};
 const HASPICKS={
  divisions:()=>Object.values(S.fin).some(a=>a&&a.length),
- seeds:()=>CONFS.some(c=>wildOf(c).length),
  bracket:()=>Object.keys(S.win).length>0,
  awards:()=>['mvp','opoy','dpoy'].some(k=>(S.award[k]||{}).player)};
 function wireClear(root){
@@ -634,10 +632,10 @@ function conference(conf){
  const taken=new Set(ord.concat(wild));
  const pool=confTeams(conf).filter(t=>!taken.has(t.k)&&!w.has(t.k));
  return `<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${left?left+' wild card'+(left===1?'':'s')+' to add':'seeded'}</span></div>
-<p class="bandl">Division winners <em>already in — drag to order</em></p>
+<div class="sh"><h4>${conf}</h4></div>
+<p class="bandl">Division winners <em>drag to order</em></p>
 <div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first')).join('')}</div>
-<p class="bandl wc">Wild cards <em>your three picks</em></p>
+<p class="bandl wc">Wild cards</p>
 <div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4)).join('')}</div>
 ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
  style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
@@ -646,12 +644,8 @@ ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${con
 SEC.seeds={render(){
  return `<div class="sheet">
 <header class="phx">
-${clearBtn("seeds")}
 <p class="kick">Step two</p>
-<h1>Seed the conferences</h1>
-<p class="lede">Your four division winners take the top four seeds — that part
-is the rule, not a choice, so they are already in. Drag them into order and add
-three wild cards. The one seed sits out the first round.</p>
+<h1>Conference seeding</h1>
 <p class="sr" id="griphelp">Press space to lift a team, then use the arrow keys
 to move it, and space again to drop it.</p>
 </header>
@@ -819,13 +813,12 @@ function finalHTML(B){
   return `<button class="sbh${won?' w':''}${lost?' lost':''}" data-game="sb" data-team="${esc(k)}"
    style="--tc:${t.c};--tf:${t.f}" aria-pressed="${won}">${mark(t,'bg')}
 <span class="sbc">${esc(t.city)}</span><span class="sbn">${esc(t.name)}</span></button>`};
- return `<div class="sbw">${side(g.home)}<span class="sbv">v</span>${side(g.away)}</div>
+ return `<div class="sbw">${side(g.home)}<span class="sbv">vs</span>${side(g.away)}</div>
 <div id="champline">${champHTML()}</div>`}
 
 function conference(B,conf){
- const bye=seedsOf(conf)[0];
  return `<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${bye?T[bye].name+' on the bye':'seven to seed'}</span></div>
+<div class="sh"><h4>${conf}</h4></div>
 <div class="bkt" data-conf="${conf}">
 <svg class="blines" aria-hidden="true"></svg>
 ${ROUNDS.map(([label,ids],ci)=>`<div class="bcol" data-col="${ci}">
@@ -840,10 +833,7 @@ SEC.bracket={render(){
 <header class="phx">
 ${clearBtn("bracket")}
 <p class="kick">Step three</p>
-<h1>Play the bracket</h1>
-<p class="lede">Tap the side you think survives. The divisional round reseeds
-itself as you go — the top seed left draws the lowest seed left — so the three
-wild card winners pool before they are redrawn.</p>
+<h1>Playoff bracket</h1>
 </header>
 ${CONFS.map(c=>conference(B,c)).join('')}
 <section class="sect">

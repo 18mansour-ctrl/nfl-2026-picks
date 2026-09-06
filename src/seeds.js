@@ -31,10 +31,10 @@ function conference(conf){
  const taken=new Set(ord.concat(wild));
  const pool=confTeams(conf).filter(t=>!taken.has(t.k)&&!w.has(t.k));
  return `<section class="sect">
-<div class="sh"><h4>${conf}</h4><span>${left?left+' wild card'+(left===1?'':'s')+' to add':'seeded'}</span></div>
-<p class="bandl">Division winners <em>already in — drag to order</em></p>
+<div class="sh"><h4>${conf}</h4></div>
+<p class="bandl">Division winners <em>drag to order</em></p>
 <div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first')).join('')}</div>
-<p class="bandl wc">Wild cards <em>your three picks</em></p>
+<p class="bandl wc">Wild cards</p>
 <div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4)).join('')}</div>
 ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
  style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
@@ -43,12 +43,8 @@ ${left?`<div class="tms pool">${pool.map(t=>`<button class="tm" data-seed="${con
 SEC.seeds={render(){
  return `<div class="sheet">
 <header class="phx">
-${clearBtn("seeds")}
 <p class="kick">Step two</p>
-<h1>Seed the conferences</h1>
-<p class="lede">Your four division winners take the top four seeds — that part
-is the rule, not a choice, so they are already in. Drag them into order and add
-three wild cards. The one seed sits out the first round.</p>
+<h1>Conference seeding</h1>
 <p class="sr" id="griphelp">Press space to lift a team, then use the arrow keys
 to move it, and space again to drop it.</p>
 </header>
