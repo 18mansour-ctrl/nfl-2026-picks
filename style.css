@@ -172,9 +172,11 @@ h1,h2,h3,h4,p{margin:0}
  transition:background 180ms var(--e-out),color 180ms var(--e-out)}
 .rkr>.mark{grid-area:m}
 .rkc{grid-area:c;font-size:11.5px;color:var(--mut);line-height:1.25;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ transition:color 180ms var(--e-out),opacity 180ms var(--e-out)}
 .rkt{grid-area:t;font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.2;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ transition:color 180ms var(--e-out)}
 .rkr:active{transform:scale(.99)}
 .rkr.on{background:var(--tc)}
 .rkr.on .rkt{color:var(--tf);font-weight:700}
