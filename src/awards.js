@@ -29,7 +29,7 @@ const block=([k,title,note])=>{
  if(a.player)return `<section class="sect">
 <div class="sh"><h4>${esc(title)}</h4></div>${chosen(k,a)}</section>`;
  return `<section class="sect">
-<div class="sh"><h4>${esc(title)}</h4><span>${list.length} on the board</span></div>
+<div class="sh"><h4>${esc(title)}</h4></div>
 <p class="hint">${esc(note)}</p>
 <div class="finder">
 <input class="fsearch" type="search" data-search="${k}" placeholder="Search the board"
@@ -47,9 +47,6 @@ SEC.awards={render(){
 <header class="phx">
 ${clearBtn("awards")}
 <h1>Three awards</h1>
-<p class="lede">Pick off the board or write anyone in. The prices are an
-indicative preseason line — they are here to order the field, not because
-anyone is taking the bet.</p>
 </header>
 ${AWARDS.map(block).join('')}
 ${nextBar('awards','See your card','#share')}

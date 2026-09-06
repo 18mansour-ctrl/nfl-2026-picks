@@ -196,7 +196,6 @@ SEC.share={render(){
  return `<div class="sheet">
 <header class="phx">
 <h1>Your card</h1>
-<p class="lede">Put your name on it, then save the picture and send it to the group.</p>
 </header>
 <section class="sect">
 <div class="sh"><h4>Name</h4></div>
@@ -204,7 +203,7 @@ SEC.share={render(){
  placeholder="Your name" autocomplete="name" spellcheck="false" aria-label="Your name">
 </section>
 <section class="sect">
-<div class="sh"><h4>The picture</h4><span>1080 × 1080</span></div>
+<div class="sh"><h4>The picture</h4></div>
 <div class="cardwrap"><canvas id="card" role="img" aria-label="Your 2026 NFL predictions"></canvas></div>
 <div class="acts">
 <button class="next" id="dl">Save the picture</button>

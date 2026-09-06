@@ -945,7 +945,7 @@ const block=([k,title,note])=>{
  if(a.player)return `<section class="sect">
 <div class="sh"><h4>${esc(title)}</h4></div>${chosen(k,a)}</section>`;
  return `<section class="sect">
-<div class="sh"><h4>${esc(title)}</h4><span>${list.length} on the board</span></div>
+<div class="sh"><h4>${esc(title)}</h4></div>
 <p class="hint">${esc(note)}</p>
 <div class="finder">
 <input class="fsearch" type="search" data-search="${k}" placeholder="Search the board"
@@ -963,9 +963,6 @@ SEC.awards={render(){
 <header class="phx">
 ${clearBtn("awards")}
 <h1>Three awards</h1>
-<p class="lede">Pick off the board or write anyone in. The prices are an
-indicative preseason line — they are here to order the field, not because
-anyone is taking the bet.</p>
 </header>
 ${AWARDS.map(block).join('')}
 ${nextBar('awards','See your card','#share')}
@@ -1200,7 +1197,6 @@ SEC.share={render(){
  return `<div class="sheet">
 <header class="phx">
 <h1>Your card</h1>
-<p class="lede">Put your name on it, then save the picture and send it to the group.</p>
 </header>
 <section class="sect">
 <div class="sh"><h4>Name</h4></div>
@@ -1208,7 +1204,7 @@ SEC.share={render(){
  placeholder="Your name" autocomplete="name" spellcheck="false" aria-label="Your name">
 </section>
 <section class="sect">
-<div class="sh"><h4>The picture</h4><span>1080 × 1080</span></div>
+<div class="sh"><h4>The picture</h4></div>
 <div class="cardwrap"><canvas id="card" role="img" aria-label="Your 2026 NFL predictions"></canvas></div>
 <div class="acts">
 <button class="next" id="dl">Save the picture</button>

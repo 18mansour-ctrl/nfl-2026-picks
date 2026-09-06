@@ -187,12 +187,19 @@ h1,h2,h3,h4,p{margin:0}
    rather than a thing you fill. Arrows instead of drag: a drag handle on a
    phone competes with the page scroll, and the whole interaction here is
    four small moves. */
-.bandl{font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.06em;
- text-transform:uppercase;color:var(--mut);margin:20px 0 9px}
-.bandl em{font-family:var(--sans);font-style:normal;font-size:11.5px;font-weight:400;
- letter-spacing:-.005em;text-transform:none;color:var(--fnt);margin-left:8px}
-.bandl.wc{margin-top:22px}
-.sh+.bandl{margin-top:16px}
+/* Same label as a division's: same face, size, tracking, optical left inset,
+   and the same distance to the cards under it. Two screens with two sizes of
+   the same thing was the whole complaint. */
+.bandl{margin:0;padding-left:3px;padding-bottom:3px;
+ font-family:var(--cond);font-size:16.5px;font-weight:700;letter-spacing:.05em;
+ text-transform:uppercase;color:var(--mut)}
+.bandl em{font-family:var(--sans);font-style:normal;font-size:12.5px;font-weight:400;
+ letter-spacing:-.005em;text-transform:none;color:var(--fnt);margin-left:10px}
+.bandl+.seeds{margin-top:10px}
+.bandl.wc{margin-top:24px}
+/* .bandl's own margin:0 outranks .sh+* at equal specificity, so the gap under
+   the conference head has to be named here */
+.sh+.bandl{margin-top:14px}
 .seeds{display:grid;gap:6px}
 .sd{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 4px 0 12px;
  border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
@@ -290,14 +297,18 @@ h1,h2,h3,h4,p{margin:0}
    unstyled text. */
 .tms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:11px}
 .tm{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
- grid-template-areas:"d c" "d n";gap:0 9px;align-items:center;text-align:left;
- padding:10px 12px;border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
+ grid-template-areas:"d c" "d n";gap:0 10px;align-items:center;text-align:left;
+ padding:8px 12px;border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
  transition:background 180ms var(--e-out),box-shadow 180ms var(--e-out),
             transform 110ms var(--e-out)}
+/* The template names a column for the badge and nothing claimed it, so the logo
+   auto-placed into the first free cell and sat against the city line instead of
+   spanning both. Same row as a division's, so it should read as the same card. */
+.tm>.mark{grid-area:d}
 .tm.on>.mark{opacity:1}
 .tct{grid-area:c;font-size:11.5px;color:var(--mut);line-height:1.25;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tnm{grid-area:n;font-size:15.5px;font-weight:600;letter-spacing:-.018em;line-height:1.2;
+.tnm{grid-area:n;font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.2;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tm:active{transform:scale(.97)}
 .tm.on{background:var(--tc);box-shadow:var(--cardsh)}
