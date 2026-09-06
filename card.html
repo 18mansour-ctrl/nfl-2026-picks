@@ -1,0 +1,93 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Export card</title>
+<style>
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Buch.woff2') format('woff2');font-weight:400}
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Kraftig.woff2') format('woff2');font-weight:500}
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Halbfett.woff2') format('woff2');font-weight:600}
+@font-face{font-family:'Sohne';src:url('fonts/Sohne-Dreiviertelfett.woff2') format('woff2');font-weight:700}
+@font-face{font-family:'Sohne Schmal';src:url('fonts/SohneSchmal-Dreiviertelfett.woff2') format('woff2');font-weight:700}
+:root{--sans:'Sohne',system-ui,sans-serif;--cond:'Sohne Schmal','Sohne',sans-serif;
+ --paper:#F2F2EE;--ink:#111110}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D8D8D2;padding:20px;font-family:var(--sans)}
+
+/* Zero radius, no shadow, no soft fill anywhere. Separation is colour and
+   hairline only — the three references agree on that and my earlier passes
+   broke it in every element. */
+.card{width:1080px;height:1350px;overflow:hidden;position:relative;
+ display:flex;flex-direction:column;background:var(--paper);color:var(--ink)}
+.lg{object-fit:contain;display:block}
+
+/* ---- header: the canvas takes the champion's colour ---- */
+.dh{background:var(--tc);color:#fff;padding:44px 48px 40px;flex:none}
+.dhr{display:flex;justify-content:space-between;font-family:var(--cond);
+ font-size:23px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;opacity:.65}
+.dlab{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
+ text-transform:uppercase;opacity:.65;margin-top:52px}
+.dch{display:flex;align-items:center;gap:36px;margin-top:14px}
+.dlogo{width:190px;height:190px;flex:none}
+.dch h1{font-family:var(--cond);font-size:132px;font-weight:700;line-height:.84;
+ letter-spacing:.004em;text-transform:uppercase}
+.droad{display:flex;align-items:stretch;gap:0;margin-top:34px;
+ border-top:2px solid rgba(255,255,255,.3);padding-top:22px}
+.droad em{font-family:var(--cond);font-size:25px;font-weight:700;letter-spacing:.12em;
+ text-transform:uppercase;font-style:normal;opacity:.65;padding-right:22px;
+ display:flex;align-items:center}
+.droad span{font-family:var(--cond);font-size:25px;font-weight:700;letter-spacing:.1em;
+ padding:9px 20px;border:2px solid rgba(255,255,255,.45);margin-right:12px}
+
+/* ---- bracket: a data panel, compact and hard-edged ---- */
+.dbk{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:2px solid var(--ink)}
+.cf{padding:26px 26px 22px;display:flex;flex-direction:column;min-width:0}
+.cf+.cf{border-left:2px solid var(--ink)}
+.cfl{font-family:var(--cond);font-size:24px;font-weight:700;letter-spacing:.13em;
+ text-transform:uppercase;color:#6A6A62;margin-bottom:16px}
+.cg{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.cc{display:flex;flex-direction:column;justify-content:space-around;gap:8px}
+.gm{display:grid;gap:2px}
+.cl{display:grid;grid-template-columns:20px 26px 1fr;align-items:center;gap:8px;
+ padding:9px 9px;background:#fff;border:2px solid var(--ink);min-width:0}
+.cl+.cl{border-top:0}
+.cl i{font-style:normal;font-family:var(--sans);font-size:15px;font-weight:600;
+ font-variant-numeric:tabular-nums;color:#96968E;text-align:center}
+.cl .lg{width:26px;height:26px}
+.cl b{font-family:var(--cond);font-size:27px;font-weight:700;letter-spacing:.03em}
+.cl.w{background:var(--tc);border-color:var(--tc);color:#fff}
+.cl.w i{color:rgba(255,255,255,.7)}
+
+/* ---- awards: three hard blocks, faces bleeding off the bottom ---- */
+.daw{flex:none;height:300px;display:grid;grid-template-columns:1fr 1fr 1fr}
+.awc{position:relative;background:var(--tc);color:#fff;overflow:hidden;padding:20px 22px}
+.awc+.awc{border-left:2px solid var(--paper)}
+.awl{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
+ text-transform:uppercase;opacity:.7;position:relative;z-index:2}
+.awlogo{position:absolute;right:-30px;top:-26px;width:150px;height:150px;opacity:.16}
+.face{position:absolute;right:-46px;bottom:0;height:196px;width:auto;object-fit:contain;z-index:1}
+.awn{position:absolute;left:22px;bottom:20px;z-index:2}
+.awn i{display:block;font-style:normal;font-family:var(--cond);font-size:21px;
+ letter-spacing:.12em;opacity:.7;margin-bottom:6px}
+.awn span{display:block;font-family:var(--cond);font-size:30px;font-weight:700;
+ letter-spacing:.05em;text-transform:uppercase;opacity:.8;line-height:1}
+.awn b{display:block;font-family:var(--cond);font-size:42px;font-weight:700;
+ letter-spacing:.03em;text-transform:uppercase;line-height:.94}
+</style></head><body>
+<div class="card D" style="--tc:#003087;--ac:#C8102E">
+ <header class="dh">
+  <div class="dhr"><span>Nick&rsquo;s</span><span>2026 NFL Predictions</span></div>
+  <p class="dlab">Champion</p>
+  <div class="dch"><img class="lg dlogo" src="logos/buf.webp" alt=""><h1>Buffalo<br>Bills</h1></div>
+  <p class="droad"><em>7 seed</em><span>PIT</span><span>LAC</span><span>TEN</span><span>NYG</span></p>
+ </header>
+ <div class="dbk"><div class="cf"><p class="cfl">AFC</p><div class="cg"><div class="cc"><div class="gm"><div class="cl" style="--tc:#FFB81C"><i>2</i><img class="lg " src="logos/pit.webp" alt=""><b>PIT</b></div><div class="cl w" style="--tc:#003087"><i>7</i><img class="lg " src="logos/buf.webp" alt=""><b>BUF</b></div></div><div class="gm"><div class="cl w" style="--tc:#E4002B"><i>3</i><img class="lg " src="logos/hou.webp" alt=""><b>HOU</b></div><div class="cl" style="--tc:#311D00"><i>6</i><img class="lg " src="logos/cle.webp" alt=""><b>CLE</b></div></div><div class="gm"><div class="cl" style="--tc:#008C95"><i>4</i><img class="lg " src="logos/mia.webp" alt=""><b>MIA</b></div><div class="cl w" style="--tc:#418FDE"><i>5</i><img class="lg " src="logos/ten.webp" alt=""><b>TEN</b></div></div></div><div class="cc"><div class="gm"><div class="cl" style="--tc:#0072CE"><i>1</i><img class="lg " src="logos/lac.webp" alt=""><b>LAC</b></div><div class="cl w" style="--tc:#003087"><i>7</i><img class="lg " src="logos/buf.webp" alt=""><b>BUF</b></div></div><div class="gm"><div class="cl" style="--tc:#E4002B"><i>3</i><img class="lg " src="logos/hou.webp" alt=""><b>HOU</b></div><div class="cl w" style="--tc:#418FDE"><i>5</i><img class="lg " src="logos/ten.webp" alt=""><b>TEN</b></div></div></div><div class="cc"><div class="gm"><div class="cl" style="--tc:#418FDE"><i>5</i><img class="lg " src="logos/ten.webp" alt=""><b>TEN</b></div><div class="cl w" style="--tc:#003087"><i>7</i><img class="lg " src="logos/buf.webp" alt=""><b>BUF</b></div></div></div></div></div><div class="cf"><p class="cfl">NFC</p><div class="cg"><div class="cc"><div class="gm"><div class="cl" style="--tc:#091F2C"><i>2</i><img class="lg " src="logos/chi.webp" alt=""><b>CHI</b></div><div class="cl w" style="--tc:#001E62"><i>7</i><img class="lg " src="logos/nyg.webp" alt=""><b>NYG</b></div></div><div class="gm"><div class="cl" style="--tc:#A71930"><i>3</i><img class="lg " src="logos/atl.webp" alt=""><b>ATL</b></div><div class="cl w" style="--tc:#203731"><i>6</i><img class="lg " src="logos/gb.webp" alt=""><b>GB</b></div></div><div class="gm"><div class="cl" style="--tc:#004851"><i>4</i><img class="lg " src="logos/phi.webp" alt=""><b>PHI</b></div><div class="cl w" style="--tc:#0C2340"><i>5</i><img class="lg " src="logos/dal.webp" alt=""><b>DAL</b></div></div></div><div class="cc"><div class="gm"><div class="cl" style="--tc:#003594"><i>1</i><img class="lg " src="logos/lar.webp" alt=""><b>LAR</b></div><div class="cl w" style="--tc:#001E62"><i>7</i><img class="lg " src="logos/nyg.webp" alt=""><b>NYG</b></div></div><div class="gm"><div class="cl" style="--tc:#0C2340"><i>5</i><img class="lg " src="logos/dal.webp" alt=""><b>DAL</b></div><div class="cl w" style="--tc:#203731"><i>6</i><img class="lg " src="logos/gb.webp" alt=""><b>GB</b></div></div></div><div class="cc"><div class="gm"><div class="cl" style="--tc:#203731"><i>6</i><img class="lg " src="logos/gb.webp" alt=""><b>GB</b></div><div class="cl w" style="--tc:#001E62"><i>7</i><img class="lg " src="logos/nyg.webp" alt=""><b>NYG</b></div></div></div></div></div></div>
+ <div class="daw">
+  <div class="awc" style="--tc:#003087">
+   <p class="awl">MVP</p><img class="lg awlogo" src="logos/buf.webp" alt="">
+   <img class="face" src="headshots/joshallen.webp" alt="">
+   <p class="awn"><i>QB</i><span>Josh</span><b>Allen</b></p></div><div class="awc" style="--tc:#582C83">
+   <p class="awl">OPOY</p><img class="lg awlogo" src="logos/min.webp" alt="">
+   <img class="face" src="headshots/justinjefferson.webp" alt="">
+   <p class="awn"><i>WR</i><span>Justin</span><b>Jefferson</b></p></div><div class="awc" style="--tc:#003594">
+   <p class="awl">DPOY</p><img class="lg awlogo" src="logos/lar.webp" alt="">
+   <img class="face" src="headshots/mylesgarrett.webp" alt="">
+   <p class="awn"><i>EDGE</i><span>Myles</span><b>Garrett</b></p></div>
+ </div>
+</div></body></html>
