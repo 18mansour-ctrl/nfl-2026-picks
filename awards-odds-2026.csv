@@ -1,0 +1,226 @@
+award,rank,player,team,position,odds,odds_range,source,team_pos_confidence,headshot_file,have_headshot
+MVP,1,Josh Allen,BUF,QB,+500,+500 to +650,VegasInsider consensus,ok,joshallen.webp,yes
+MVP,2,Lamar Jackson,BAL,QB,+800,+800 to +1100,VegasInsider consensus,ok,lamarjackson.webp,yes
+MVP,3,Joe Burrow,CIN,QB,+800,+800 to +1000,VegasInsider consensus,ok,joeburrow.webp,yes
+MVP,4,Drake Maye,NE,QB,+1000,+1000 to +1200,VegasInsider consensus,ok,drakemaye.webp,yes
+MVP,5,Justin Herbert,LAC,QB,+1000,+1000 to +1100,VegasInsider consensus,ok,justinherbert.webp,yes
+MVP,6,Patrick Mahomes,KC,QB,+1000,+1000 to +1700,VegasInsider consensus,ok,patrickmahomes.webp,yes
+MVP,7,Caleb Williams,CHI,QB,+1200,+1200 to +1600,VegasInsider consensus,ok,calebwilliams.webp,yes
+MVP,8,Dak Prescott,DAL,QB,+1200,+1200 to +1400,VegasInsider consensus,ok,dakprescott.webp,yes
+MVP,9,Matthew Stafford,LAR,QB,+1200,+1200 to +1400,VegasInsider consensus,ok,matthewstafford.webp,yes
+MVP,10,Brock Purdy,SF,QB,+1800,+1800 to +2000,VegasInsider consensus,ok,brockpurdy.webp,yes
+MVP,11,Jordan Love,GB,QB,+2000,+2000 to +2200,VegasInsider consensus,ok,jordanlove.webp,yes
+MVP,12,Jayden Daniels,WAS,QB,+2000,+2000 to +3000,VegasInsider consensus,ok,jaydendaniels.webp,yes
+MVP,13,Trevor Lawrence,JAX,QB,+1600,+1600 to +2500,VegasInsider consensus,ok,trevorlawrence.webp,yes
+MVP,14,Jalen Hurts,PHI,QB,+1900,+1900 to +3500,VegasInsider consensus,ok,jalenhurts.webp,yes
+MVP,15,Sam Darnold,MIN,QB,+2500,+2500 to +3000,VegasInsider consensus,ok,samdarnold.webp,yes
+MVP,16,Bo Nix,DEN,QB,+3000,+3000 to +3500,VegasInsider consensus,ok,bonix.webp,yes
+MVP,17,Jared Goff,DET,QB,+2500,+2500 to +3500,VegasInsider consensus,ok,jaredgoff.webp,yes
+MVP,18,Kyler Murray,ARI,QB,+4000,+4000 to +4500,VegasInsider consensus,ok,kylermurray.webp,yes
+MVP,19,Baker Mayfield,TB,QB,+4000,+4000 to +5000,VegasInsider consensus,ok,bakermayfield.webp,yes
+MVP,20,Jaxson Dart,NYG,QB,+4500,+4500 to +6600,VegasInsider consensus,check,jaxsondart.webp,no
+MVP,21,C.J. Stroud,HOU,QB,+5000,+5000 to +6000,VegasInsider consensus,ok,cjstroud.webp,yes
+MVP,22,Cam Ward,TEN,QB,+6000,+6000 to +50000,VegasInsider consensus,check,camward.webp,yes
+MVP,23,Daniel Jones,IND,QB,+8000,+8000 to +17500,VegasInsider consensus,ok,danieljones.webp,yes
+MVP,24,Tyler Shough,NO,QB,+8000,+8000 to +10000,VegasInsider consensus,check,tylershough.webp,no
+MVP,25,Bryce Young,CAR,QB,+10000,+10000 to +22500,VegasInsider consensus,ok,bryceyoung.webp,yes
+MVP,26,Aaron Rodgers,PIT,QB,+10000,+10000 to +50000,VegasInsider consensus,ok,aaronrodgers.webp,yes
+MVP,27,Bijan Robinson,ATL,RB,+6000,+6000 to +10000,VegasInsider consensus,ok,bijanrobinson.webp,yes
+MVP,28,Malik Willis,GB,QB,+10000,+10000 to +50000,VegasInsider consensus,ok,malikwillis.webp,no
+MVP,29,Jahmyr Gibbs,DET,RB,+4500,+4500 to +12500,VegasInsider consensus,ok,jahmyrgibbs.webp,yes
+MVP,30,Michael Penix Jr.,ATL,QB,+12500,+12500 to +15000,VegasInsider consensus,check,michaelpenix.webp,yes
+MVP,31,Christian McCaffrey,SF,RB,+15000,+15000 to +20000,VegasInsider consensus,ok,christianmccaffrey.webp,yes
+MVP,32,Puka Nacua,LAR,WR,+12500,+12500 to +25000,VegasInsider consensus,ok,pukanacua.webp,yes
+MVP,33,Tua Tagovailoa,MIA,QB,+15000,+15000 to +30000,VegasInsider consensus,ok,tuatagovailoa.webp,yes
+MVP,34,Justin Jefferson,MIN,WR,+20000,+20000 to +50000,VegasInsider consensus,ok,justinjefferson.webp,yes
+MVP,35,Ja'Marr Chase,CIN,WR,+15000,+15000 to +20000,VegasInsider consensus,ok,jamarrchase.webp,yes
+MVP,36,Justin Fields,NYJ,QB,+20000,+20000 to +50000,VegasInsider consensus,ok,justinfields.webp,yes
+MVP,37,Saquon Barkley,PHI,RB,+15000,+15000 to +20000,VegasInsider consensus,ok,saquonbarkley.webp,yes
+MVP,38,Jaxon Smith-Njigba,SEA,WR,+10000,+10000 to +35000,VegasInsider consensus,ok,jaxonsmithnjigba.webp,yes
+MVP,39,Geno Smith,LV,QB,+20000,+20000 to +50000,VegasInsider consensus,ok,genosmith.webp,yes
+MVP,40,Deshaun Watson,CLE,QB,+20000,+20000 to +50000,VegasInsider consensus,ok,deshaunwatson.webp,no
+MVP,41,CeeDee Lamb,DAL,WR,+20000,+20000 to +50000,VegasInsider consensus,ok,ceedeelamb.webp,yes
+MVP,42,Kirk Cousins,ATL,QB,+17500,+17500 to +25000,VegasInsider consensus,ok,kirkcousins.webp,no
+MVP,43,Travis Hunter,JAX,WR/CB,+12500,+12500 to +25000,VegasInsider consensus,check,travishunter.webp,yes
+MVP,44,James Cook,BUF,RB,+10000,+10000 to +50000,VegasInsider consensus,ok,jamescook.webp,yes
+MVP,45,Jonathan Taylor,IND,RB,+10000,+10000 to +20000,VegasInsider consensus,ok,jonathantaylor.webp,yes
+MVP,46,Shedeur Sanders,CLE,QB,+20000,+20000 to +30000,VegasInsider consensus,check,shedeursanders.webp,yes
+MVP,47,Myles Garrett,LAR,EDGE,+15000,+15000 to +20000,VegasInsider consensus,check,mylesgarrett.webp,no
+MVP,48,Derrick Henry,BAL,RB,+8000,+8000 to +25000,VegasInsider consensus,check,derrickhenry.webp,yes
+MVP,49,De'Von Achane,MIA,RB,+20000,+20000 to +50000,VegasInsider consensus,ok,devonachane.webp,yes
+MVP,50,Joe Flacco,CIN,QB,+30000,+30000,VegasInsider consensus,ok,joeflacco.webp,no
+MVP,51,Drake London,ATL,WR,+30000,+30000 to +50000,VegasInsider consensus,ok,drakelondon.webp,yes
+MVP,52,J.J. McCarthy,MIN,QB,+12500,+12500 to +30000,VegasInsider consensus,check,jjmccarthy.webp,yes
+MVP,53,Amon-Ra St. Brown,DET,WR,+30000,+30000 to +50000,VegasInsider consensus,ok,amonrastbrown.webp,yes
+MVP,54,Will Anderson Jr.,HOU,EDGE,+30000,+30000 to +50000,VegasInsider consensus,ok,willanderson.webp,no
+MVP,55,Trey McBride,ARI,TE,+30000,+30000 to +50000,VegasInsider consensus,ok,treymcbride.webp,yes
+MVP,56,Fernando Mendoza,,QB,+15000,+15000 to +30000,VegasInsider consensus,check,fernandomendoza.webp,no
+MVP,57,Nico Collins,HOU,WR,+30000,+30000 to +50000,VegasInsider consensus,ok,nicocollins.webp,yes
+MVP,58,Mac Jones,SF,QB,+30000,+30000 to +50000,VegasInsider consensus,ok,macjones.webp,no
+MVP,59,Malik Nabers,NYG,WR,+30000,+30000 to +50000,VegasInsider consensus,check,maliknabers.webp,yes
+MVP,60,D'Andre Swift,CHI,RB,+35000,+35000,VegasInsider consensus,ok,dandreswift.webp,no
+MVP,61,Kenneth Walker III,SEA,RB,+17500,+17500 to +50000,VegasInsider consensus,ok,kennethwalker.webp,yes
+MVP,62,Tetairoa McMillan,CAR,WR,+40000,+40000 to +50000,VegasInsider consensus,check,tetairoamcmillan.webp,no
+MVP,63,Rashee Rice,KC,WR,+40000,+40000 to +75000,VegasInsider consensus,ok,rasheerice.webp,no
+MVP,64,Nik Bonitto,DEN,EDGE,+40000,+40000 to +75000,VegasInsider consensus,ok,nikbonitto.webp,no
+MVP,65,Nick Bosa,SF,EDGE,+40000,+40000 to +50000,VegasInsider consensus,ok,nickbosa.webp,no
+MVP,66,Zay Flowers,BAL,WR,+40000,+40000 to +50000,VegasInsider consensus,ok,zayflowers.webp,yes
+MVP,67,T.J. Watt,PIT,EDGE,+40000,+40000 to +50000,VegasInsider consensus,ok,tjwatt.webp,no
+MVP,68,Travis Etienne Jr.,JAX,RB,+40000,+40000 to +75000,VegasInsider consensus,ok,travisetienne.webp,yes
+MVP,69,TreVeyon Henderson,NE,RB,+40000,+40000 to +75000,VegasInsider consensus,check,treveyonhenderson.webp,yes
+MVP,70,Danielle Hunter,HOU,EDGE,+40000,+40000 to +75000,VegasInsider consensus,ok,daniellehunter.webp,no
+MVP,71,DK Metcalf,PIT,WR,+40000,+40000 to +75000,VegasInsider consensus,ok,dkmetcalf.webp,yes
+MVP,72,Brian Burns,NYG,EDGE,+40000,+40000 to +75000,VegasInsider consensus,ok,brianburns.webp,no
+MVP,73,Maxx Crosby,LV,EDGE,+40000,+40000 to +50000,VegasInsider consensus,ok,maxxcrosby.webp,no
+MVP,74,Jared Verse,LAR,EDGE,+40000,+40000 to +75000,VegasInsider consensus,ok,jaredverse.webp,no
+MVP,75,Aidan Hutchinson,DET,EDGE,+40000,+40000 to +50000,VegasInsider consensus,ok,aidanhutchinson.webp,no
+MVP,76,Brock Bowers,LV,TE,+40000,+40000 to +50000,VegasInsider consensus,ok,brockbowers.webp,yes
+MVP,77,Jeffery Simmons,TEN,DT,+50000,+50000,VegasInsider consensus,ok,jefferysimmons.webp,no
+MVP,78,Joey Bosa,BUF,EDGE,+50000,+50000,VegasInsider consensus,check,joeybosa.webp,no
+MVP,79,Micah Parsons,GB,EDGE,+20000,+20000 to +50000,VegasInsider consensus,check,micahparsons.webp,no
+MVP,80,Breece Hall,NYJ,RB,+50000,+50000 to +75000,VegasInsider consensus,ok,breecehall.webp,yes
+MVP,81,Zack Baun,PHI,LB,+50000,+50000 to +100000,VegasInsider consensus,check,zackbaun.webp,no
+MVP,82,Omarion Hampton,LAC,RB,+30000,+30000 to +50000,VegasInsider consensus,check,omarionhampton.webp,yes
+MVP,83,Javonte Williams,DAL,RB,+40000,+40000 to +100000,VegasInsider consensus,ok,javontewilliams.webp,no
+MVP,84,Christian Gonzalez,NE,CB,+50000,+50000 to +100000,VegasInsider consensus,check,christiangonzalez.webp,no
+MVP,85,Quinn Ewers,,QB,+50000,+50000 to +100000,VegasInsider consensus,check,quinnewers.webp,no
+MVP,86,Bucky Irving,TB,RB,+50000,+50000 to +100000,VegasInsider consensus,ok,buckyirving.webp,yes
+MVP,87,Jalen Carter,PHI,DT,+50000,+50000 to +100000,VegasInsider consensus,ok,jalencarter.webp,no
+MVP,88,Jakobi Meyers,LV,WR,+50000,+50000 to +100000,VegasInsider consensus,ok,jakobimeyers.webp,no
+MVP,89,Anthony Richardson,IND,QB,+30000,+30000 to +50000,VegasInsider consensus,ok,anthonyrichardson.webp,no
+MVP,90,Jacoby Brissett,ARI,QB,+50000,+50000,VegasInsider consensus,ok,jacobybrissett.webp,no
+MVP,91,Mike Evans,TB,WR,+50000,+50000 to +100000,VegasInsider consensus,ok,mikeevans.webp,yes
+MVP,92,George Pickens,DAL,WR,+50000,+50000,VegasInsider consensus,ok,georgepickens.webp,yes
+MVP,93,Josh Jacobs,GB,RB,+50000,+50000,VegasInsider consensus,ok,joshjacobs.webp,yes
+MVP,94,Garrett Wilson,NYJ,WR,+50000,+50000,VegasInsider consensus,ok,garrettwilson.webp,yes
+MVP,95,Colston Loveland,CHI,TE,+50000,+50000 to +100000,VegasInsider consensus,check,colstonloveland.webp,no
+MVP,96,Fred Warner,SF,LB,+50000,+50000 to +100000,VegasInsider consensus,ok,fredwarner.webp,no
+MVP,97,Chris Olave,NO,WR,+50000,+50000 to +100000,VegasInsider consensus,ok,chrisolave.webp,yes
+MVP,98,Emeka Egbuka,TB,WR,+50000,+50000 to +100000,VegasInsider consensus,check,emekaegbuka.webp,no
+MVP,99,Cam Skattebo,NYG,RB,+50000,+50000 to +75000,VegasInsider consensus,check,camskattebo.webp,no
+MVP,100,Roquan Smith,BAL,LB,+50000,+50000 to +100000,VegasInsider consensus,ok,roquansmith.webp,no
+OPOY,1,Jahmyr Gibbs,DET,RB,+750,15/2 (+750),BetOnline.ag,ok,jahmyrgibbs.webp,yes
+OPOY,2,Bijan Robinson,ATL,RB,+900,9/1 (+900),BetOnline.ag,ok,bijanrobinson.webp,yes
+OPOY,3,Ja'Marr Chase,CIN,WR,+900,9/1 (+900),BetOnline.ag,ok,jamarrchase.webp,yes
+OPOY,4,Christian McCaffrey,SF,RB,+1000,10/1 (+1000),BetOnline.ag,ok,christianmccaffrey.webp,yes
+OPOY,5,Jaxon Smith-Njigba,SEA,WR,+1000,10/1 (+1000),BetOnline.ag,ok,jaxonsmithnjigba.webp,yes
+OPOY,6,Puka Nacua,LAR,WR,+1000,10/1 (+1000),BetOnline.ag,ok,pukanacua.webp,yes
+OPOY,7,CeeDee Lamb,DAL,WR,+1400,14/1 (+1400),BetOnline.ag,ok,ceedeelamb.webp,yes
+OPOY,8,Saquon Barkley,PHI,RB,+1400,14/1 (+1400),BetOnline.ag,ok,saquonbarkley.webp,yes
+OPOY,9,Justin Jefferson,MIN,WR,+1600,16/1 (+1600),BetOnline.ag,ok,justinjefferson.webp,yes
+OPOY,10,Amon-Ra St. Brown,DET,WR,+1800,18/1 (+1800),BetOnline.ag,ok,amonrastbrown.webp,yes
+OPOY,11,James Cook,BUF,RB,+1800,18/1 (+1800),BetOnline.ag,ok,jamescook.webp,yes
+OPOY,12,Jonathan Taylor,IND,RB,+1800,18/1 (+1800),BetOnline.ag,ok,jonathantaylor.webp,yes
+OPOY,13,Malik Nabers,NYG,WR,+2000,20/1 (+2000),BetOnline.ag,check,maliknabers.webp,yes
+OPOY,14,Derrick Henry,BAL,RB,+2200,22/1 (+2200),BetOnline.ag,check,derrickhenry.webp,yes
+OPOY,15,De'Von Achane,MIA,RB,+2500,25/1 (+2500),BetOnline.ag,ok,devonachane.webp,yes
+OPOY,16,Rashee Rice,KC,WR,+2500,25/1 (+2500),BetOnline.ag,ok,rasheerice.webp,no
+OPOY,17,Nico Collins,HOU,WR,+2800,28/1 (+2800),BetOnline.ag,ok,nicocollins.webp,yes
+OPOY,18,Ashton Jeanty,LV,RB,+4000,40/1 (+4000),BetOnline.ag,check,ashtonjeanty.webp,yes
+OPOY,19,Drake London,ATL,WR,+4500,45/1 (+4500),BetOnline.ag,ok,drakelondon.webp,yes
+OPOY,20,Josh Allen,BUF,QB,+4500,45/1 (+4500),BetOnline.ag,ok,joshallen.webp,yes
+OPOY,21,Kenneth Walker III,SEA,RB,+4500,45/1 (+4500),BetOnline.ag,ok,kennethwalker.webp,yes
+OPOY,22,Omarion Hampton,LAC,RB,+4500,45/1 (+4500),BetOnline.ag,check,omarionhampton.webp,yes
+OPOY,23,Tetairoa McMillan,CAR,WR,+4500,45/1 (+4500),BetOnline.ag,check,tetairoamcmillan.webp,no
+OPOY,24,Bucky Irving,TB,RB,+5000,50/1 (+5000),BetOnline.ag,ok,buckyirving.webp,yes
+OPOY,25,George Pickens,DAL,WR,+5000,50/1 (+5000),BetOnline.ag,ok,georgepickens.webp,yes
+OPOY,26,Jeremiyah Love,,RB,+5500,55/1 (+5500),BetOnline.ag,check,jeremiyahlove.webp,no
+OPOY,27,A.J. Brown,PHI,WR,+6600,66/1 (+6600),BetOnline.ag,ok,ajbrown.webp,no
+OPOY,28,Josh Jacobs,GB,RB,+6600,66/1 (+6600),BetOnline.ag,ok,joshjacobs.webp,yes
+OPOY,29,Lamar Jackson,BAL,QB,+6600,66/1 (+6600),BetOnline.ag,ok,lamarjackson.webp,yes
+OPOY,30,Zach Charbonnet,SEA,RB,+6600,66/1 (+6600),BetOnline.ag,ok,zachcharbonnet.webp,no
+OPOY,31,Cam Skattebo,NYG,RB,+7000,70/1 (+7000),BetOnline.ag,check,camskattebo.webp,no
+OPOY,32,Jaxson Dart,NYG,QB,+7000,70/1 (+7000),BetOnline.ag,check,jaxsondart.webp,no
+OPOY,33,Caleb Williams,CHI,QB,+7500,75/1 (+7500),BetOnline.ag,ok,calebwilliams.webp,yes
+OPOY,34,Jayden Daniels,WAS,QB,+7500,75/1 (+7500),BetOnline.ag,ok,jaydendaniels.webp,yes
+OPOY,35,Joe Burrow,CIN,QB,+7500,75/1 (+7500),BetOnline.ag,ok,joeburrow.webp,yes
+OPOY,36,Justin Herbert,LAC,QB,+7500,75/1 (+7500),BetOnline.ag,ok,justinherbert.webp,yes
+OPOY,37,Patrick Mahomes,KC,QB,+7500,75/1 (+7500),BetOnline.ag,ok,patrickmahomes.webp,yes
+OPOY,38,Terry McLaurin,WAS,WR,+7500,75/1 (+7500),BetOnline.ag,ok,terrymclaurin.webp,yes
+OPOY,39,Travis Etienne Jr.,JAX,RB,+7500,75/1 (+7500),BetOnline.ag,ok,travisetienne.webp,yes
+OPOY,40,Tyreek Hill,MIA,WR,+7500,75/1 (+7500),BetOnline.ag,ok,tyreekhill.webp,yes
+OPOY,41,Breece Hall,NYJ,RB,+8000,80/1 (+8000),BetOnline.ag,ok,breecehall.webp,yes
+OPOY,42,Brock Bowers,LV,TE,+8000,80/1 (+8000),BetOnline.ag,ok,brockbowers.webp,yes
+OPOY,43,Garrett Wilson,NYJ,WR,+8000,80/1 (+8000),BetOnline.ag,ok,garrettwilson.webp,yes
+OPOY,44,Javonte Williams,DAL,RB,+8000,80/1 (+8000),BetOnline.ag,ok,javontewilliams.webp,no
+OPOY,45,Kyren Williams,LAR,RB,+8000,80/1 (+8000),BetOnline.ag,ok,kyrenwilliams.webp,yes
+OPOY,46,Trey McBride,ARI,TE,+8000,80/1 (+8000),BetOnline.ag,ok,treymcbride.webp,yes
+OPOY,47,Woody Marks,HOU,RB,+8000,80/1 (+8000),BetOnline.ag,check,woodymarks.webp,no
+OPOY,48,Brock Purdy,SF,QB,+10000,100/1 (+10000),BetOnline.ag,ok,brockpurdy.webp,yes
+OPOY,49,Chase Brown,CIN,RB,+10000,100/1 (+10000),BetOnline.ag,ok,chasebrown.webp,yes
+OPOY,50,Chris Olave,NO,WR,+10000,100/1 (+10000),BetOnline.ag,ok,chrisolave.webp,yes
+OPOY,51,Christian Watson,GB,WR,+10000,100/1 (+10000),BetOnline.ag,ok,christianwatson.webp,no
+OPOY,52,Colston Loveland,CHI,TE,+10000,100/1 (+10000),BetOnline.ag,check,colstonloveland.webp,no
+OPOY,53,Dak Prescott,DAL,QB,+10000,100/1 (+10000),BetOnline.ag,ok,dakprescott.webp,yes
+OPOY,54,Daniel Jones,IND,QB,+10000,100/1 (+10000),BetOnline.ag,ok,danieljones.webp,yes
+OPOY,55,Davante Adams,LAR,WR,+10000,100/1 (+10000),BetOnline.ag,ok,davanteadams.webp,yes
+OPOY,56,DJ Moore,CHI,WR,+10000,100/1 (+10000),BetOnline.ag,ok,djmoore.webp,no
+OPOY,57,Emeka Egbuka,TB,WR,+10000,100/1 (+10000),BetOnline.ag,check,emekaegbuka.webp,no
+OPOY,58,Jalen Hurts,PHI,QB,+10000,100/1 (+10000),BetOnline.ag,ok,jalenhurts.webp,yes
+OPOY,59,Jaylen Waddle,MIA,WR,+10000,100/1 (+10000),BetOnline.ag,ok,jaylenwaddle.webp,no
+OPOY,60,Marvin Harrison Jr.,ARI,WR,+10000,100/1 (+10000),BetOnline.ag,ok,marvinharrison.webp,yes
+OPOY,61,Matthew Stafford,LAR,QB,+10000,100/1 (+10000),BetOnline.ag,ok,matthewstafford.webp,yes
+OPOY,62,Mike Evans,TB,WR,+10000,100/1 (+10000),BetOnline.ag,ok,mikeevans.webp,yes
+OPOY,63,Rico Dowdle,CAR,RB,+10000,100/1 (+10000),BetOnline.ag,ok,ricodowdle.webp,no
+OPOY,64,RJ Harvey,DEN,RB,+10000,100/1 (+10000),BetOnline.ag,check,rjharvey.webp,no
+OPOY,65,TreVeyon Henderson,NE,RB,+10000,100/1 (+10000),BetOnline.ag,check,treveyonhenderson.webp,yes
+OPOY,66,Trevor Lawrence,JAX,QB,+10000,100/1 (+10000),BetOnline.ag,ok,trevorlawrence.webp,yes
+OPOY,67,Zay Flowers,BAL,WR,+10000,100/1 (+10000),BetOnline.ag,ok,zayflowers.webp,yes
+DPOY,1,Myles Garrett,LAR,EDGE,+425,17/4 (+425),BetOnline.ag,check,mylesgarrett.webp,no
+DPOY,2,Will Anderson Jr.,HOU,EDGE,+750,15/2 (+750),BetOnline.ag,ok,willanderson.webp,no
+DPOY,3,Maxx Crosby,LV,EDGE,+800,8/1 (+800),BetOnline.ag,ok,maxxcrosby.webp,no
+DPOY,4,Aidan Hutchinson,DET,EDGE,+850,17/2 (+850),BetOnline.ag,ok,aidanhutchinson.webp,no
+DPOY,5,Micah Parsons,GB,EDGE,+950,19/2 (+950),BetOnline.ag,check,micahparsons.webp,no
+DPOY,6,Nik Bonitto,DEN,EDGE,+1100,11/1 (+1100),BetOnline.ag,ok,nikbonitto.webp,no
+DPOY,7,Nick Bosa,SF,EDGE,+1200,12/1 (+1200),BetOnline.ag,ok,nickbosa.webp,no
+DPOY,8,Jared Verse,LAR,EDGE,+1400,14/1 (+1400),BetOnline.ag,ok,jaredverse.webp,no
+DPOY,9,Brian Burns,NYG,EDGE,+1600,16/1 (+1600),BetOnline.ag,ok,brianburns.webp,no
+DPOY,10,T.J. Watt,PIT,EDGE,+1900,19/1 (+1900),BetOnline.ag,ok,tjwatt.webp,no
+DPOY,11,Danielle Hunter,HOU,EDGE,+2800,28/1 (+2800),BetOnline.ag,ok,daniellehunter.webp,no
+DPOY,12,Jalen Carter,PHI,DT,+2800,28/1 (+2800),BetOnline.ag,ok,jalencarter.webp,no
+DPOY,13,Laiatu Latu,IND,EDGE,+2800,28/1 (+2800),BetOnline.ag,ok,laiatulatu.webp,no
+DPOY,14,Fred Warner,SF,LB,+3300,33/1 (+3300),BetOnline.ag,ok,fredwarner.webp,no
+DPOY,15,Trey Hendrickson,BAL,EDGE,+3300,33/1 (+3300),BetOnline.ag,check,treyhendrickson.webp,no
+DPOY,16,Tuli Tuipulotu,LAC,EDGE,+3300,33/1 (+3300),BetOnline.ag,ok,tulituipulotu.webp,no
+DPOY,17,Carson Schwesinger,CLE,LB,+5000,50/1 (+5000),BetOnline.ag,check,carsonschwesinger.webp,no
+DPOY,18,Chris Jones,KC,DT,+5000,50/1 (+5000),BetOnline.ag,ok,chrisjones.webp,no
+DPOY,19,Cooper DeJean,PHI,CB,+5000,50/1 (+5000),BetOnline.ag,ok,cooperdejean.webp,no
+DPOY,20,Josh Hines-Allen,JAX,EDGE,+5000,50/1 (+5000),BetOnline.ag,ok,joshhinesallen.webp,no
+DPOY,21,Josh Sweat,ARI,EDGE,+5000,50/1 (+5000),BetOnline.ag,ok,joshsweat.webp,no
+DPOY,22,Kyle Hamilton,BAL,S,+5000,50/1 (+5000),BetOnline.ag,ok,kylehamilton.webp,no
+DPOY,23,Montez Sweat,CHI,EDGE,+5000,50/1 (+5000),BetOnline.ag,ok,montezsweat.webp,no
+DPOY,24,Quinyon Mitchell,PHI,CB,+5000,50/1 (+5000),BetOnline.ag,ok,quinyonmitchell.webp,no
+DPOY,25,Andrew Van Ginkel,MIN,LB,+6500,65/1 (+6500),BetOnline.ag,ok,andrewvanginkel.webp,no
+DPOY,26,Abdul Carter,NYG,EDGE,+6600,66/1 (+6600),BetOnline.ag,check,abdulcarter.webp,no
+DPOY,27,Derek Stingley Jr.,HOU,CB,+6600,66/1 (+6600),BetOnline.ag,ok,derekstingley.webp,no
+DPOY,28,K'Lavon Chaisson,LV,EDGE,+6600,66/1 (+6600),BetOnline.ag,ok,klavonchaisson.webp,no
+DPOY,29,Nick Emmanwori,SEA,S,+6600,66/1 (+6600),BetOnline.ag,check,nickemmanwori.webp,no
+DPOY,30,Roquan Smith,BAL,LB,+6600,66/1 (+6600),BetOnline.ag,ok,roquansmith.webp,no
+DPOY,31,Will McDonald IV,NYJ,EDGE,+6600,66/1 (+6600),BetOnline.ag,ok,willmcdonald.webp,no
+DPOY,32,Bradley Chubb,MIA,EDGE,+7500,75/1 (+7500),BetOnline.ag,ok,bradleychubb.webp,no
+DPOY,33,Devon Witherspoon,SEA,CB,+7500,75/1 (+7500),BetOnline.ag,ok,devonwitherspoon.webp,no
+DPOY,34,Patrick Surtain II,DEN,CB,+7500,75/1 (+7500),BetOnline.ag,ok,patricksurtain.webp,no
+DPOY,35,Brian Branch,DET,S,+8000,80/1 (+8000),BetOnline.ag,ok,brianbranch.webp,no
+DPOY,36,Byron Young,LAR,EDGE,+8000,80/1 (+8000),BetOnline.ag,ok,byronyoung.webp,no
+DPOY,37,Devin Lloyd,JAX,LB,+8000,80/1 (+8000),BetOnline.ag,ok,devinlloyd.webp,no
+DPOY,38,George Karlaftis,KC,EDGE,+8000,80/1 (+8000),BetOnline.ag,ok,georgekarlaftis.webp,no
+DPOY,39,Jaycee Horn,CAR,CB,+8000,80/1 (+8000),BetOnline.ag,ok,jayceehorn.webp,no
+DPOY,40,Jeffery Simmons,TEN,DT,+8000,80/1 (+8000),BetOnline.ag,ok,jefferysimmons.webp,no
+DPOY,41,Kamari Lassiter,HOU,CB,+8000,80/1 (+8000),BetOnline.ag,check,kamarilassiter.webp,no
+DPOY,42,Leonard Williams,SEA,DT,+8000,80/1 (+8000),BetOnline.ag,ok,leonardwilliams.webp,no
+DPOY,43,Alex Highsmith,PIT,EDGE,+10000,100/1 (+10000),BetOnline.ag,ok,alexhighsmith.webp,no
+DPOY,44,Budda Baker,ARI,S,+10000,100/1 (+10000),BetOnline.ag,ok,buddabaker.webp,no
+DPOY,45,Chase Young,NO,EDGE,+10000,100/1 (+10000),BetOnline.ag,ok,chaseyoung.webp,no
+DPOY,46,Derwin James Jr.,LAC,S,+10000,100/1 (+10000),BetOnline.ag,ok,derwinjames.webp,no
+DPOY,47,Greg Rousseau,BUF,EDGE,+10000,100/1 (+10000),BetOnline.ag,ok,gregrousseau.webp,no
+DPOY,48,Jalon Walker,ATL,EDGE,+10000,100/1 (+10000),BetOnline.ag,check,jalonwalker.webp,no
+DPOY,49,Kerby Joseph,DET,S,+10000,100/1 (+10000),BetOnline.ag,ok,kerbyjoseph.webp,no
+DPOY,50,Kevin Byard III,CHI,S,+10000,100/1 (+10000),BetOnline.ag,ok,kevinbyard.webp,no
+DPOY,51,Quinnen Williams,NYJ,DT,+10000,100/1 (+10000),BetOnline.ag,ok,quinnenwilliams.webp,no
+DPOY,52,Rashan Gary,GB,EDGE,+10000,100/1 (+10000),BetOnline.ag,ok,rashangary.webp,no
+DPOY,53,Rueben Bain Jr.,,EDGE,+10000,100/1 (+10000),BetOnline.ag,check,ruebenbain.webp,no
+DPOY,54,Talanoa Hufanga,DEN,S,+10000,100/1 (+10000),BetOnline.ag,ok,talanoahufanga.webp,no
+DPOY,55,Trent McDuffie,KC,CB,+10000,100/1 (+10000),BetOnline.ag,ok,trentmcduffie.webp,no
+DPOY,56,Xavier McKinney,GB,S,+10000,100/1 (+10000),BetOnline.ag,ok,xaviermckinney.webp,no
+DPOY,57,Zach Allen,DEN,DT,+10000,100/1 (+10000),BetOnline.ag,ok,zachallen.webp,no
+DPOY,58,Zack Baun,PHI,LB,+10000,100/1 (+10000),BetOnline.ag,check,zackbaun.webp,no
