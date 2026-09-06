@@ -447,6 +447,10 @@ h1,h2,h3,h4,p{margin:0}
  transition:background 140ms var(--e-out)}
 .cnd:active{background:rgba(25,25,23,.07)}
 .cnd+.cnd{border-top:1px solid var(--hr)}
+/* the divider between the priced board and the rest of the league */
+.cnh{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--fnt);padding:11px 12px 6px;
+ border-top:1px solid var(--hr);background:rgba(25,25,23,.02)}
 .cnd:hover{background:rgba(25,25,23,.035)}
 .cnd .mark{opacity:.9}
 .cnn{font-size:15px;font-weight:600;letter-spacing:-.018em;min-width:0;

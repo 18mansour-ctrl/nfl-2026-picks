@@ -107,7 +107,7 @@ dpoy:[
  ['Leonard Williams','SEA','DT','+8000'],['Alex Highsmith','PIT','EDGE','+10000'],
  ['Budda Baker','ARI','S','+10000'],['Rueben Bain Jr.','TB','EDGE','+10000'],
  ['Chase Young','NO','EDGE','+10000'],['Greg Rousseau','BUF','EDGE','+10000'],
- ['Jalon Walker','ATL','EDGE','+10000'],['Kevin Byard III','CHI','S','+10000'],
+ ['Jalon Walker','ATL','EDGE','+10000'],['Kevin Byard III','NE','S','+10000'],
  ['Rashan Gary','DAL','EDGE','+10000'],['Talanoa Hufanga','DEN','S','+10000'],
  ['Xavier McKinney','GB','S','+10000'],['Zach Allen','DEN','DT','+10000'],
  ['Zack Baun','PHI','LB','+10000']]};

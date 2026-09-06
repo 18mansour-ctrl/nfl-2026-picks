@@ -245,3 +245,17 @@ browser, so the tool can be left and come back to. **Export players.js** writes
 the block for `src/players.js`; re-pulling the odds later keeps everything you
 have curated, because the tool stores an order and a set of corrections rather
 than a copy of the rows.
+
+## The searchable pool
+
+`rosters-2026.csv` is every player on all 32 rosters. `tools/roster.py` turns it
+into `src/roster.js` — skill positions only, since no award here has ever gone
+to a lineman, a kicker, a punter or a long snapper:
+
+    python3 tools/roster.py && ./build.sh
+
+The board is what you see on the awards step: the curated, priced shortlist,
+and the only names that need a headshot. The roster is what you can *find* —
+it stays out of the DOM until you type, then appears under "Everyone else",
+filtered to the right side of the ball. Offence cannot turn up in the
+defensive award's search, or the other way round; MVP sees both.
