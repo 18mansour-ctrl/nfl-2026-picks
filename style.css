@@ -57,11 +57,25 @@ h1,h2,h3,h4,p{margin:0}
 .phx{position:relative;padding-top:30px}
 /* sits on the kicker's line, out of the headline's way, and is not there at
    all until there is something to clear */
-.clr{position:absolute;top:26px;right:0;font-size:13px;font-weight:500;
- color:var(--mut);padding:7px 12px;border-radius:7px;background:rgba(25,25,23,.05);
- white-space:nowrap;transition:background .15s var(--e-out),color .15s var(--e-out)}
+/* Two destructive controls at two scales: the filled pill in the header wipes
+   the step and asks twice, the ghost chip on a division redoes just that one.
+   Both are absent until there is something to clear, and both arrive and leave
+   on the same short rise. */
+.clr{position:absolute;top:24px;right:0;overflow:hidden;
+ font-size:12.5px;font-weight:500;letter-spacing:-.004em;color:var(--mut);
+ padding:7px 13px;border-radius:999px;background:rgba(25,25,23,.055);
+ white-space:nowrap;opacity:0;transform:translateY(-5px) scale(.9);
+ transition:background .16s var(--e-out),color .16s var(--e-out),
+  width .22s var(--e-out),opacity .2s var(--e-out),transform .26s var(--e-out)}
+.clr.in{opacity:1;transform:none}
 .clr:hover{background:rgba(25,25,23,.1);color:var(--ink)}
-.clr.armed{background:var(--hls);color:var(--ink);font-weight:600}
+.clr.in:active{transform:scale(.95)}
+.clr.armed,.clr.armed:hover{background:var(--hls);color:var(--ink)}
+.clrl{display:block}
+.clrb{position:absolute;left:0;bottom:0;width:100%;height:2px;border-radius:2px;
+ background:rgba(25,25,23,.3);transform:scaleX(0);transform-origin:left}
+.clr.armed .clrb{animation:drain 3s linear forwards}
+@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 .kick{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.07em;
  text-transform:uppercase;color:var(--mut)}
 .phx h1{font-size:31px;font-weight:700;letter-spacing:-.032em;line-height:1.08;
@@ -117,10 +131,15 @@ h1,h2,h3,h4,p{margin:0}
  font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.055em;
  text-transform:uppercase;color:var(--mut);padding-bottom:8px;
  border-bottom:1px solid var(--hr)}
-.dvr{font-family:var(--sans);font-size:11.5px;font-weight:500;letter-spacing:-.005em;
- text-transform:none;color:var(--fnt);background:none;border:0;padding:0;flex:none;
- cursor:pointer;transition:color .15s var(--e-out)}
-.dvr:hover{color:var(--ink)}
+.dvr{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:-.002em;
+ text-transform:none;color:var(--fnt);background:none;border:0;flex:none;cursor:pointer;
+ padding:3px 8px;margin:-3px -8px -3px 0;border-radius:999px;
+ opacity:0;transform:translateY(-3px);
+ transition:color .15s var(--e-out),background .15s var(--e-out),
+  opacity .18s var(--e-out),transform .24s var(--e-out)}
+.dvr.in{opacity:1;transform:none}
+.dvr:hover{color:var(--mut);background:rgba(25,25,23,.06)}
+.dvr.in:active{transform:scale(.94)}
 .rank{display:grid;gap:5px;margin-top:10px}
 .rkr{display:grid;grid-template-columns:26px auto minmax(0,1fr) auto;
  grid-template-areas:"n m c w" "n m t w";gap:0 10px;align-items:center;text-align:left;

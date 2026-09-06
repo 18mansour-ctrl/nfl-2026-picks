@@ -69,13 +69,13 @@ after(root){wireRank(root);root.querySelectorAll('.dv').forEach(wireReset)}};
 function wireReset(box){
  const r=box.querySelector('.dvr');if(!r)return;
  const key=box.dataset.div;
- r.hidden=!(S.fin[key]||[]).length;
+ toggleCtl(r,!!(S.fin[key]||[]).length);
  r.onclick=()=>{
   const list=box.querySelector('.rank');
   S.fin[key]=[];reconcile();save();
   flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
    wireRank(box)});
-  r.hidden=true;syncChrome()}}
+  toggleCtl(r,false);syncChrome()}}
 
 function wireRank(root){
  root.querySelectorAll('.dv [data-pick]').forEach(b=>b.onclick=()=>{

@@ -285,7 +285,7 @@ function syncChrome(){
     step calls through here after a pick — it cannot live in the render path,
     because a pick deliberately does not re-render */
  const cb=root.querySelector('[data-clear-step]');
- if(cb){const h=HASPICKS[cb.dataset.clearStep];cb.hidden=!(h&&h())}
+ if(cb){const h=HASPICKS[cb.dataset.clearStep];toggleCtl(cb,!!(h&&h()))}
  root.querySelectorAll('.rl').forEach(b=>{const k=b.dataset.step;
   b.disabled=!stepOpen(k);
   b.classList.toggle('ok',stepDone(k)&&k!==STEP);
@@ -312,7 +312,35 @@ window.addEventListener('hashchange',render);
    divisions step alone is thirty-two taps — so it asks twice rather than
    opening a dialog. The second tap has three seconds, then it forgets. */
 function clearBtn(step){
- return `<button class="clr" data-clear-step="${step}" hidden>Clear</button>`}
+ return `<button class="clr" type="button" data-clear-step="${step}" hidden
+><span class="clrl">Clear</span><i class="clrb"></i></button>`}
+
+/* hidden is what keeps a dead control out of the tab order and off the
+   accessibility tree, and display:none cannot transition — so the class
+   carries the motion, and hidden goes on a beat late or comes off a beat
+   early. Re-entrant: flipping back mid-flight just cancels the pending hide. */
+function toggleCtl(el,show){
+ if(!el)return;
+ if((el.dataset.on==='1')===!!show)return;
+ el.dataset.on=show?'1':'0';
+ clearTimeout(+el.dataset.t||0);
+ if(show){el.hidden=false;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(el.dataset.on==='1')el.classList.add('in')}))}
+ else{el.classList.remove('in');
+  el.dataset.t=setTimeout(()=>{if(el.dataset.on!=='1')el.hidden=true},200)}}
+
+/* Swap a label without the button snapping to its new width: measure both
+   ends with transitions off, then let the width travel between them. */
+function morphLabel(b,txt){
+ const l=b.querySelector('.clrl');if(!l)return;
+ const w0=b.getBoundingClientRect().width;
+ b.style.transition='none';b.style.width='auto';l.textContent=txt;
+ const w1=b.getBoundingClientRect().width;
+ b.style.width=w0+'px';b.getBoundingClientRect();
+ b.style.transition='';b.style.width=w1+'px';
+ clearTimeout(+b.dataset.w||0);
+ b.dataset.w=setTimeout(()=>{b.style.width=''},260)}
 const CLEARERS={
  divisions:()=>{S.fin={}},
  seeds:()=>{S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
@@ -326,11 +354,18 @@ const HASPICKS={
 function wireClear(root){
  const b=root.querySelector('[data-clear-step]');if(!b)return;
  const step=b.dataset.clearStep;
+ /* render only ever emits it hidden; syncChrome is what reveals it, and that
+    runs from pick handlers — so a reload carrying saved picks needs this. */
+ toggleCtl(b,!!HASPICKS[step]());
  let armed=0,t=null;
+ const disarm=()=>{armed=0;b.classList.remove('armed');morphLabel(b,'Clear')};
  b.onclick=()=>{
-  if(!armed){armed=1;b.classList.add('armed');b.textContent='Tap again to clear';
-   t=setTimeout(()=>{armed=0;b.classList.remove('armed');b.textContent='Clear'},3000);return}
-  clearTimeout(t);CLEARERS[step]();reconcile();save();repaint()}}
+  /* wiping a whole step is worth a second tap; the bar across the foot of the
+     pill drains for as long as that second tap is still live */
+  if(!armed){armed=1;b.classList.add('armed');morphLabel(b,'Confirm?');
+   t=setTimeout(disarm,3000);return}
+  clearTimeout(t);armed=0;b.classList.remove('armed');b.style.width='';
+  CLEARERS[step]();reconcile();save();repaint()}}
 
 /* the button that carries you on, and says what is left when it cannot */
 function nextBar(k,label,href){
@@ -512,13 +547,13 @@ after(root){wireRank(root);root.querySelectorAll('.dv').forEach(wireReset)}};
 function wireReset(box){
  const r=box.querySelector('.dvr');if(!r)return;
  const key=box.dataset.div;
- r.hidden=!(S.fin[key]||[]).length;
+ toggleCtl(r,!!(S.fin[key]||[]).length);
  r.onclick=()=>{
   const list=box.querySelector('.rank');
   S.fin[key]=[];reconcile();save();
   flip(list,()=>{list.innerHTML=listHTML(box.dataset.conf,box.dataset.name);
    wireRank(box)});
-  r.hidden=true;syncChrome()}}
+  toggleCtl(r,false);syncChrome()}}
 
 function wireRank(root){
  root.querySelectorAll('.dv [data-pick]').forEach(b=>b.onclick=()=>{
