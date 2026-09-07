@@ -20,8 +20,12 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .dch{display:flex;align-items:center;justify-content:flex-end;gap:20px}
 .dlogo{width:82px;height:82px;flex:none;object-fit:contain;display:block}
 .dcw{text-align:right}
-.dcl{margin-bottom:11px;
+.dcl{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:11px;
  font-size:19px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.72}
+/* the Lombardi in silhouette: the ball tipped on its stand, the flared neck,
+   the plinth */
+.dcl svg{width:25px;height:37px;fill:currentColor;display:block;flex:none;
+ margin-bottom:-3px}
 .dch h1{font-size:68px;font-weight:700;line-height:1;letter-spacing:-.034em}
 
 /* ---- card one: how all thirty two finish -------------------------------- */
@@ -32,9 +36,9 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    in a circle, mark, city over nickname, and .rkr.on's fill on the winner. */
 .dvs{flex:1;padding:34px 40px 8px;display:grid;grid-template-columns:1fr 1fr;
  column-gap:28px;align-content:start}
-.dvc{display:flex;flex-direction:column;gap:30px;min-width:0}
+.dvc{display:flex;flex-direction:column;gap:26px;min-width:0}
 .dvl{padding-left:3px;padding-bottom:8px;font-size:17px;font-weight:700;
- letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+ letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
 .dv{display:grid;grid-template-columns:164px 292px;column-gap:11px;height:148px}
 .win{position:relative;background:var(--tc);color:var(--tf);border-radius:8px;
  box-shadow:var(--cardsh);display:flex;flex-direction:column;align-items:center;
@@ -94,7 +98,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sm .nm{font-size:36px}
 
 /* ---- the awards row, on card one ---------------------------------------- */
-.daw{flex:none;height:238px;padding:31px 40px 0;
+.daw{flex:none;height:262px;padding:31px 40px 0;
  display:flex;flex-direction:column;gap:34px}
 /* the app's section heading: sentence case, tight, no rule under it */
 .dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
@@ -115,7 +119,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
   <p class="dhr">My 2026<br>NFL predictions</p>
-  <div class="dcw"><p class="dcl">My Super Bowl champion</p>
+  <div class="dcw"><p class="dcl"><svg viewBox="0 0 16 24" aria-hidden="true"><ellipse cx="8" cy="4.7" rx="6.1" ry="3.4" transform="rotate(-22 8 4.7)"/><path d="M6.4 8.1c-.4 4.3-1.8 8.2-3.9 11h11c-2.1-2.8-3.5-6.7-3.9-11a4.7 4.7 0 0 1-3.2 0Z"/><rect x="1.1" y="19.5" width="13.8" height="3.4" rx=".7"/></svg>My Super Bowl champion</p>
    <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
     <h1>Buffalo Bills</h1></div></div>
  </header>
@@ -139,7 +143,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
   <p class="dhr">My 2026<br>NFL predictions</p>
-  <div class="dcw"><p class="dcl">My Super Bowl champion</p>
+  <div class="dcw"><p class="dcl"><svg viewBox="0 0 16 24" aria-hidden="true"><ellipse cx="8" cy="4.7" rx="6.1" ry="3.4" transform="rotate(-22 8 4.7)"/><path d="M6.4 8.1c-.4 4.3-1.8 8.2-3.9 11h11c-2.1-2.8-3.5-6.7-3.9-11a4.7 4.7 0 0 1-3.2 0Z"/><rect x="1.1" y="19.5" width="13.8" height="3.4" rx=".7"/></svg>My Super Bowl champion</p>
    <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
     <h1>Buffalo Bills</h1></div></div>
  </header>
