@@ -255,7 +255,7 @@ svg.innerHTML=d.map(p=>`<path d="${p}" fill="none" stroke="rgba(25,25,23,.24)" s
  let x0=w,y0=h,x1=0,y1=0;
  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(px[(y*w+x)*4+3]>12){
   if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
- const bw=x1-x0+1,bh=y1-y0+1,D=dish.clientHeight,k=D*.97/bh;
+ const bw=x1-x0+1,bh=y1-y0+1,D=dish.clientHeight,k=D*.86/bh;
  im.style.height=h*k+'px';
  im.style.left=D/2-(x0+bw/2)*k+'px';
  im.style.bottom=-((h-1-y1)*k)+'px';
