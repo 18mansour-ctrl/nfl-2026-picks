@@ -31,12 +31,12 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    drawing rule, and nobody taps a PNG. So the club that won the division takes
    a block in its colour and the other three keep the app's row exactly: place
    in a circle, mark, city over nickname, and .rkr.on's fill on the winner. */
-.dvs{flex:1;padding:16px 46px 8px;display:grid;grid-template-columns:1fr 1fr;
- column-gap:30px;align-content:start}
+.dvs{flex:1;padding:16px 40px 8px;display:grid;grid-template-columns:1fr 1fr;
+ column-gap:28px;align-content:start}
 .dvc{display:flex;flex-direction:column;gap:34px;min-width:0}
 .dvl{padding-left:3px;padding-bottom:8px;font-size:17px;font-weight:700;
  letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
-.dv{display:grid;grid-template-columns:176px 268px;column-gap:11px;height:148px}
+.dv{display:grid;grid-template-columns:164px 292px;column-gap:11px;height:148px}
 .win{position:relative;background:var(--tc);color:var(--tf);border-radius:8px;
  box-shadow:var(--cardsh);display:flex;flex-direction:column;align-items:center;
  justify-content:center;gap:8px;padding:10px 10px}
@@ -52,8 +52,8 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 /* a wild card carries the faintest wash of the club's own colour behind the
    label, so the row is marked twice over at a glance and up close */
 .rkr.wc{background:color-mix(in srgb,var(--tc) 11%,var(--card))}
-.rkw{font-family:var(--cond);font-size:10.5px;font-weight:700;letter-spacing:.09em;
- text-transform:uppercase;color:var(--fnt)}
+.rkw{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+ color:var(--mut)}
 .rkn{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
  font-style:normal;font-size:13px;font-weight:700;background:rgba(25,25,23,.07);
  color:var(--fnt)}
@@ -95,14 +95,18 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sm .nm{font-size:36px}
 
 /* ---- the awards row, on card one ---------------------------------------- */
-.daw{flex:none;height:300px;display:grid;grid-template-columns:repeat(3,1fr);
- column-gap:16px;align-items:center;padding:0 30px;border-top:1px solid var(--hr)}
+.daw{flex:none;height:300px;padding:0 40px;border-top:1px solid var(--hr);
+ display:flex;flex-direction:column;justify-content:center;gap:20px}
+/* the app's section heading: sentence case, tight, no rule under it */
+.dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
+.dvs>.dawl{grid-column:1/-1;margin-bottom:20px}
+.awrow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:16px;align-items:center}
 .aw{display:flex;align-items:center;gap:17px;min-width:0}
 .dish{flex:none;width:126px;height:126px;border-radius:50%;overflow:hidden;position:relative;
  background:var(--c)}
 .dish img{position:absolute;display:block;width:auto}
 .awt{min-width:0}
-.awl{font-size:12.5px;font-weight:700;letter-spacing:.065em;text-transform:uppercase;
+.awl{font-size:14.5px;font-weight:700;letter-spacing:.055em;text-transform:uppercase;
  color:var(--fnt)}
 .awn{margin-top:6px;font-size:27px;font-weight:700;letter-spacing:-.032em;line-height:1.07}
 .awm{margin-top:5px;font-size:15px;font-weight:500;color:var(--mut);letter-spacing:-.004em}
@@ -117,15 +121,18 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  </header>
  <div class="dvs" id="dvs"></div>
  <div class="daw">
+  <p class="dawl">Award predictions</p>
+  <div class="awrow">
   <div class="aw" style="--c:#003087"><span class="dish"><img src="headshots/joshallen.webp" alt=""></span>
    <span class="awt"><p class="awl">MVP</p><p class="awn">Josh Allen</p>
     <p class="awm">QB<i>|</i>Bills</p></span></div>
   <div class="aw" style="--c:#582C83"><span class="dish"><img src="headshots/justinjefferson.webp" alt=""></span>
-   <span class="awt"><p class="awl">Offensive POY</p><p class="awn">Justin Jefferson</p>
+   <span class="awt"><p class="awl">OPOY</p><p class="awn">Justin Jefferson</p>
     <p class="awm">WR<i>|</i>Vikings</p></span></div>
   <div class="aw" style="--c:#003594"><span class="dish"><img src="headshots/mylesgarrett.webp" alt=""></span>
-   <span class="awt"><p class="awl">Defensive POY</p><p class="awn">Myles Garrett</p>
+   <span class="awt"><p class="awl">DPOY</p><p class="awn">Myles Garrett</p>
     <p class="awm">EDGE<i>|</i>Rams</p></span></div>
+  </div>
  </div>
 </div>
 
@@ -179,7 +186,8 @@ const DIV={AFC:[['East',['MIA','BUF','NE','NYJ']],['North',['PIT','CLE','BAL','C
                 ['South',['HOU','TEN','IND','JAX']],['West',['LAC','DEN','KC','LV']]],
            NFC:[['East',['PHI','DAL','NYG','WAS']],['North',['CHI','GB','DET','MIN']],
                 ['South',['ATL','TB','CAR','NO']],['West',['LAR','SF','SEA','ARI']]]};
-document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
+document.getElementById('dvs').innerHTML='<p class="dawl">Division standings</p>'
+ +['AFC','NFC'].map(cf=>
  `<div><div class="dvc">`
  +DIV[cf].map(([d,[w,...rest]])=>`<div><p class="dvl">${cf} ${d}</p><div class="dv">`
    +`<div class="win" style="--tc:${C[w]};--tf:${FG(w)}">${CROWN}${img(w)}`
