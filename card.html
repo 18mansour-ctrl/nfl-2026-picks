@@ -14,27 +14,26 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
  background:var(--paper);color:var(--ink)}
 
-.dh{background:var(--tc);color:var(--tf);height:174px;flex:none;padding:30px 40px 0;
+.dh{background:var(--tc);color:var(--tf);height:206px;flex:none;padding:30px 40px 0;
  display:flex;flex-direction:column;justify-content:space-between}
 .dhr{font-family:var(--cond);font-size:22px;font-weight:700;letter-spacing:.16em;
  text-transform:uppercase;opacity:.6}
 .dch{display:flex;align-items:center;gap:22px;padding-bottom:22px}
-.dlogo{width:90px;height:90px;flex:none;object-fit:contain;display:block}
-.dch h1{font-size:72px;font-weight:700;line-height:1;letter-spacing:-.034em}
+.dlogo{width:104px;height:104px;flex:none;object-fit:contain;display:block}
+.dch h1{font-size:84px;font-weight:700;line-height:1;letter-spacing:-.034em}
 
 /* A bracket is a landscape shape; this frame is portrait. So it runs downward
    instead — six wild card games across the full width, then four, then two,
    then the final. Every row fills the frame, and the round a team reached is
    the width of its card. AFC holds the left half throughout, NFC the right. */
-.br{flex:1;position:relative;padding:16px 32px 12px;display:flex;flex-direction:column}
+.br{flex:1;position:relative;padding:20px 32px 24px;display:flex;flex-direction:column;
+ justify-content:space-between}
 .lines{position:absolute;inset:0;pointer-events:none;z-index:0}
-.cfh{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:11px;
+.cfh{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:10px;margin-bottom:2px;
  border-bottom:1px solid var(--hr)}
 .cfh p{font-family:var(--cond);font-size:24px;font-weight:700;letter-spacing:.14em;
  text-transform:uppercase}
 .rw{display:grid;gap:10px;position:relative;z-index:1}
-.rl{font-family:var(--cond);font-size:16px;font-weight:700;letter-spacing:.14em;
- text-transform:uppercase;color:var(--fnt);padding:13px 1px 7px;position:relative;z-index:1}
 .gm{background:var(--card);border:1px solid var(--ln);border-radius:10px;overflow:hidden;
  display:flex;flex-direction:column}
 .sl{flex:1;display:grid;align-items:center;padding:0 12px}
@@ -44,11 +43,12 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .mk img{object-fit:contain;display:block;width:100%;height:100%}
 .nm{font-weight:600;letter-spacing:-.022em;white-space:nowrap;overflow:hidden;
  text-overflow:ellipsis}
-.sl.w{background:var(--tc)}
-.sl.w .nm{color:var(--tf);font-weight:700}
-.sl.w .sd{color:var(--tf);opacity:.72}
+.sl.w .nm{font-weight:700}
+.sl.out .nm{color:var(--mut);font-weight:400}
+.sl.out .mk img{opacity:.5}
+.sl.out .sd{color:#B9B8AE}
 
-.r0 .gm{height:136px}.r1 .gm{height:152px}.r2 .gm{height:164px}.r3 .gm{height:192px}
+.r0 .gm{height:98px}.r1 .gm{height:106px}.r2 .gm{height:114px}.r3 .gm{height:146px}
 .r0 .sl{grid-template-columns:14px 24px minmax(0,1fr);gap:8px;padding:0 10px}
 .r1 .sl{grid-template-columns:16px 30px minmax(0,1fr);gap:11px}
 .r2 .sl{grid-template-columns:17px 34px minmax(0,1fr);gap:13px}
@@ -56,16 +56,16 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .r0 .mk,.r0 .mk img{height:24px}.r1 .mk,.r1 .mk img{height:30px}
 .r2 .mk,.r2 .mk img{height:34px}.r3 .mk,.r3 .mk img{height:44px}
 .r0 .sd{font-size:12px}.r1 .sd{font-size:13px}.r2 .sd{font-size:14px}.r3 .sd{font-size:15px}
-.r0 .nm{font-size:18px}.r1 .nm{font-size:24px}.r2 .nm{font-size:28px}.r3 .nm{font-size:38px}
+.r0 .nm{font-size:18px}.r1 .nm{font-size:24px}.r2 .nm{font-size:28px}.r3 .nm{font-size:36px}
 
-.daw{flex:none;height:250px;display:grid;grid-template-columns:repeat(3,1fr);
+.daw{flex:none;height:344px;display:grid;grid-template-columns:repeat(3,1fr);
  padding:0 34px;border-top:1px solid var(--hr)}
-.aw{position:relative;overflow:hidden;padding:18px 10px 0}
+.aw{position:relative;overflow:hidden;padding:24px 10px 0}
 .awl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;
  text-transform:uppercase;color:var(--fnt);position:relative;z-index:2}
-.awn{position:relative;z-index:2;margin-top:6px;font-size:31px;font-weight:700;
- letter-spacing:-.032em;line-height:1.06;max-width:160px}
-.face{position:absolute;right:-16px;bottom:0;height:182px;width:auto;z-index:1}
+.awn{position:relative;z-index:2;margin-top:7px;font-size:36px;font-weight:700;
+ letter-spacing:-.032em;line-height:1.06;max-width:184px}
+.face{position:absolute;right:-16px;bottom:0;height:250px;width:auto;z-index:1}
 </style></head><body>
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
@@ -100,12 +100,12 @@ const RDS=[['Wild card',[
   [['TEN',5],['BUF',7],1],[['GB',6],['NYG',7],1]]],
  ['Super Bowl',[[['BUF',''],['NYG',''],0]]]];
 const slot=([k,s],win)=>{const t=T[k];
- return `<span class="sl${win?' w':''}" style="--tc:${t[1]};--tf:${t[2]}">`
+ return `<span class="sl ${win?'w':'out'}">`
   +`<i class="sd">${s}</i><span class="mk"><img src="logos/${k.toLowerCase()}.webp" alt=""></span>`
   +`<span class="nm">${t[0]}</span></span>`};
 const br=document.getElementById('br');
 br.insertAdjacentHTML('beforeend',RDS.map(([l,gs],r)=>
- `<p class="rl">${l}</p><div class="rw r${r}" style="grid-template-columns:repeat(${gs.length},1fr)">`
+ `<div class="rw r${r}" style="grid-template-columns:repeat(${gs.length},1fr)">`
  +gs.map(([a,b,w],i)=>`<div class="gm" data-r="${r}" data-i="${i}">${slot(a,!w)}${slot(b,!!w)}</div>`).join('')
  +`</div>`).join(''));
 
