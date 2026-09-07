@@ -14,12 +14,14 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
  background:var(--paper);color:var(--ink);flex:none}
 
-.dh{background:var(--tc);color:var(--tf);height:192px;flex:none;padding:34px 40px 0;
- display:flex;flex-direction:column;justify-content:space-between}
-.dhr{font-size:26px;font-weight:700;letter-spacing:-.024em;color:#fff}
-.dch{display:flex;align-items:center;justify-content:flex-end;gap:20px;
- padding-bottom:28px}
+.dh{background:var(--tc);color:var(--tf);height:212px;flex:none;padding:0 40px 30px;
+ display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
+.dhr{font-size:54px;font-weight:700;line-height:1.02;letter-spacing:-.032em;color:#fff}
+.dch{display:flex;align-items:center;justify-content:flex-end;gap:20px}
 .dlogo{width:82px;height:82px;flex:none;object-fit:contain;display:block}
+.dcw{text-align:right}
+.dcl{margin-bottom:11px;
+ font-size:19px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.72}
 .dch h1{font-size:68px;font-weight:700;line-height:1;letter-spacing:-.034em}
 
 /* ---- card one: how all thirty two finish -------------------------------- */
@@ -28,9 +30,9 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    drawing rule, and nobody taps a PNG. So the club that won the division takes
    a block in its colour and the other three keep the app's row exactly: place
    in a circle, mark, city over nickname, and .rkr.on's fill on the winner. */
-.dvs{flex:1;padding:46px 40px 8px;display:grid;grid-template-columns:1fr 1fr;
+.dvs{flex:1;padding:34px 40px 8px;display:grid;grid-template-columns:1fr 1fr;
  column-gap:28px;align-content:start}
-.dvc{display:flex;flex-direction:column;gap:34px;min-width:0}
+.dvc{display:flex;flex-direction:column;gap:30px;min-width:0}
 .dvl{padding-left:3px;padding-bottom:8px;font-size:17px;font-weight:700;
  letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
 .dv{display:grid;grid-template-columns:164px 292px;column-gap:11px;height:148px}
@@ -112,9 +114,10 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
-  <p class="dhr">My 2026 NFL Predictions</p>
-  <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
-   <h1>Buffalo Bills</h1></div>
+  <p class="dhr">My 2026<br>NFL predictions</p>
+  <div class="dcw"><p class="dcl">My Super Bowl champion</p>
+   <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
+    <h1>Buffalo Bills</h1></div></div>
  </header>
  <div class="dvs" id="dvs"></div>
  <div class="daw">
@@ -135,9 +138,10 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
-  <p class="dhr">My 2026 NFL Predictions</p>
-  <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
-   <h1>Buffalo Bills</h1></div>
+  <p class="dhr">My 2026<br>NFL predictions</p>
+  <div class="dcw"><p class="dcl">My Super Bowl champion</p>
+   <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
+    <h1>Buffalo Bills</h1></div></div>
  </header>
  <div class="br" id="br"><svg class="lines" id="lines"></svg>
   <div class="hd"><p>Wild card</p><p>Divisional</p><p>Conference</p></div>
