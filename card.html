@@ -34,8 +34,8 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .dvs{flex:1;padding:16px 34px 8px;display:grid;grid-template-columns:1fr 1fr;
  column-gap:26px;align-content:start}
 .dvc{display:flex;flex-direction:column;gap:60px;min-width:0}
-.dvl{padding-left:3px;padding-bottom:6px;font-size:13px;font-weight:700;
- letter-spacing:.055em;text-transform:uppercase;color:var(--mut)}
+.dvl{padding-left:3px;padding-bottom:8px;font-size:17px;font-weight:700;
+ letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
 .dv{display:grid;grid-template-columns:172px minmax(0,1fr);column-gap:11px;height:148px}
 .win{position:relative;background:var(--tc);color:var(--tf);border-radius:8px;
  box-shadow:var(--cardsh);display:flex;flex-direction:column;align-items:center;
@@ -46,12 +46,14 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .crown{position:absolute;top:11px;left:12px;width:24px;height:21px;fill:var(--tf)}
 .rank{display:flex;flex-direction:column;gap:6px;height:100%}
-.rkr{display:grid;grid-template-columns:24px 26px minmax(0,1fr);
+.rkr{display:grid;grid-template-columns:24px 26px minmax(0,1fr) auto;
  gap:0 12px;align-items:center;flex:1;padding:0 13px;border-radius:8px;
  background:var(--card);box-shadow:var(--cardsh)}
-/* a wild card is denoted by the faintest wash of the club's own colour,
-   which says it without a label sitting in the row */
+/* a wild card carries the faintest wash of the club's own colour behind the
+   label, so the row is marked twice over at a glance and up close */
 .rkr.wc{background:color-mix(in srgb,var(--tc) 11%,var(--card))}
+.rkw{font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.11em;
+ text-transform:uppercase;color:var(--fnt)}
 .rkn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;
  font-style:normal;font-size:13px;font-weight:700;background:rgba(25,25,23,.07);
  color:var(--fnt)}
@@ -185,7 +187,9 @@ document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
    +`<div class="rank">`+rest.map((k,i)=>
      `<div class="rkr${SEED[k]?' wc':''}" style="--tc:${C[k]}">`
      +`<i class="rkn">${i+2}</i>${img(k)}`
-     +`<span class="rkt">${N[k]}</span></div>`).join('')+`</div>`
+     +`<span class="rkt">${N[k]}</span>`
+     +(SEED[k]?'<span class="rkw">Wild card</span>':'<span></span>')
+     +`</div>`).join('')+`</div>`
    +`</div></div>`).join('')+`</div></div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
