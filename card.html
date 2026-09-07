@@ -29,13 +29,14 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
    seven also means a card is wide enough for a team's full name. */
 .br{flex:1;position:relative;padding:16px 36px 12px;display:flex;flex-direction:column}
 .lines{position:absolute;inset:0;pointer-events:none;z-index:0}
-.hd{display:grid;grid-template-columns:repeat(3,1fr);column-gap:20px;padding-bottom:9px;
+.hd{display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
+ padding-bottom:9px;
  border-bottom:1px solid var(--hr)}
 .hd p,.cf{font-family:var(--cond);font-weight:700;text-transform:uppercase}
 .hd p{font-size:16px;letter-spacing:.14em;color:var(--fnt)}
 .cf{font-size:23px;letter-spacing:.13em;padding:12px 0 6px;position:relative;z-index:1}
-.bn{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(6,1fr);
- column-gap:20px;position:relative;z-index:1}
+.bn{flex:1;display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
+ grid-template-rows:repeat(6,1fr);position:relative;z-index:1}
 .gm{align-self:center;background:var(--card);border:1px solid var(--ln);border-radius:10px;
  overflow:hidden}
 .sl{display:grid;grid-template-columns:18px 30px minmax(0,1fr);align-items:center;gap:12px;
@@ -44,7 +45,7 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .sd{font-style:normal;font-size:13px;font-weight:600;text-align:center;color:var(--fnt)}
 .mk{display:grid;place-items:center;height:30px}
 .mk img{width:30px;height:30px;object-fit:contain;display:block}
-.nm{font-size:24px;font-weight:600;letter-spacing:-.024em;
+.nm{font-size:26px;font-weight:600;letter-spacing:-.024em;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sl.w .nm{font-weight:700}
 .sl.out .nm{color:var(--mut);font-weight:400}
@@ -52,7 +53,7 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .sl.out .sd{color:#BBBAB0}
 
 /* the seam: both conference finals drop straight into it */
-.sm{flex:none;height:118px;display:grid;grid-template-columns:1fr 2fr;column-gap:20px;
+.sm{flex:none;height:118px;display:grid;grid-template-columns:1fr 650px;
  align-items:center;position:relative;z-index:1}
 .sml{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
  text-transform:uppercase}
