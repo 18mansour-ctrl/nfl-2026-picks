@@ -15,118 +15,93 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
  background:var(--paper);color:var(--ink)}
 
-/* the only colour on the card */
-.dh{background:var(--tc);color:#fff;padding:44px 50px 46px;flex:none}
-.dhr{font-family:var(--cond);font-size:25px;font-weight:700;letter-spacing:.14em;
- text-transform:uppercase;opacity:.66}
-.dch{display:flex;align-items:center;gap:36px;margin-top:36px}
-.dlogo{width:172px;height:172px;flex:none;object-fit:contain;display:block}
-.dch h1{font-family:var(--cond);font-size:124px;font-weight:700;line-height:.84;
- letter-spacing:.004em;text-transform:uppercase}
+/* the only colour on the card outside the bracket fills */
+.dh{background:var(--tc);color:#fff;height:200px;flex:none;padding:36px 54px 0;
+ display:flex;flex-direction:column;justify-content:space-between}
+.dhr{font-family:var(--cond);font-size:24px;font-weight:700;letter-spacing:.15em;
+ text-transform:uppercase;opacity:.62}
+.dch{display:flex;align-items:center;gap:26px;padding-bottom:26px}
+.dlogo{width:104px;height:104px;flex:none;object-fit:contain;display:block}
+.dch h1{font-family:var(--cond);font-size:92px;font-weight:700;line-height:.86;
+ letter-spacing:.005em;text-transform:uppercase}
 
-/* the app's bracket, mirrored about the Super Bowl */
-.bkt{flex:1;position:relative;display:grid;
- grid-template-columns:repeat(3,1fr) 188px repeat(3,1fr);
- gap:0 12px;align-items:stretch;padding:30px 26px 26px}
-.blines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.bcol{display:flex;flex-direction:column;min-width:0;position:relative;z-index:1}
-.bch{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.09em;
- text-transform:uppercase;color:var(--fnt);text-align:center;margin-bottom:14px;
- white-space:nowrap}
-.bgs{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:20px}
-.bgm{display:grid;border-radius:11px;background:var(--card);overflow:hidden;
- box-shadow:var(--cardsh);min-width:0}
-.bsl{display:grid;grid-template-columns:15px auto minmax(0,1fr);align-items:center;gap:6px;
- min-height:56px;padding:0 9px;min-width:0}
-.bsl.r{grid-template-columns:minmax(0,1fr) auto 15px;text-align:right}
+/* the bracket: four labelled rounds, AFC left and NFC right, read top down */
+.bkt{flex:1;padding:30px 46px 34px;display:flex;flex-direction:column;
+ justify-content:space-between}
+.cfh{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.cfh p{font-family:var(--cond);font-size:32px;font-weight:700;letter-spacing:.15em;
+ text-transform:uppercase;color:var(--ink)}
+.rd{display:flex;flex-direction:column;gap:12px}
+.rdl{display:flex;align-items:center;gap:14px;font-family:var(--cond);font-size:19px;
+ font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--fnt)}
+.rdl::after{content:"";flex:1;height:1px;background:var(--hr)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:17px 30px}
+.bgm{border-radius:11px;background:var(--card);overflow:hidden;box-shadow:var(--cardsh)}
+.bsl{display:grid;grid-template-columns:19px 30px minmax(0,1fr);align-items:center;gap:13px;
+ height:38px;padding:0 15px}
 .bsl+.bsl{border-top:1px solid var(--hr)}
-.bsd{font-style:normal;font-size:13px;font-weight:600;color:var(--fnt);text-align:center}
-.mark{display:grid;place-items:center;width:25px;height:25px;flex:none}
-.mark img{width:100%;height:100%;object-fit:contain;display:block;opacity:.85}
-.bnm{font-family:var(--cond);font-size:24px;font-weight:700;letter-spacing:.03em;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bsl.lost{opacity:.44}
+.bsd{font-style:normal;font-size:14px;font-weight:600;color:var(--fnt);text-align:center}
+.mark{display:grid;place-items:center;height:30px}
+.mark img{width:30px;height:30px;object-fit:contain;display:block;opacity:.9}
+.bnm{font-family:var(--cond);font-size:27px;font-weight:700;letter-spacing:.02em;
+ text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bsl.lost{opacity:.4}
 .bsl.w{background:var(--tc)}
 .bsl.w .bnm{color:var(--tf)}
-.bsl.w .bsd{color:var(--tf);opacity:.65}
+.bsl.w .bsd{color:var(--tf);opacity:.7}
 .bsl.w .mark img{opacity:1}
+.sb .bsl{height:56px;grid-template-columns:19px 40px minmax(0,1fr)}
+.sb .mark,.sb .mark img{height:40px}.sb .mark img{width:40px}
+.sb .bnm{font-size:36px}
+.sb .rdl{font-size:22px;color:var(--ink)}
+.sb .rdl::after{background:var(--ink);opacity:.16}
 
-/* the middle is the final, which is what the mirror is for */
-.mid{position:relative;z-index:1;display:flex;flex-direction:column;align-items:stretch}
-.mid .sbw{margin-top:0;display:flex;flex-direction:column;justify-content:center;flex:1}
-.mid .bgm{border-radius:13px}
-.mid .bsl{min-height:74px}
-.mid .bnm{font-size:30px}
-
-.daw{flex:none;height:286px;display:grid;grid-template-columns:1fr 1fr 1fr;
- padding:0 34px 0}
-.awc{position:relative;overflow:hidden;padding:6px 10px 0}
-.awl{font-family:var(--cond);font-size:20px;font-weight:700;letter-spacing:.13em;
+.daw{flex:none;height:300px;display:grid;grid-template-columns:repeat(3,1fr);
+ padding:0 40px;border-top:1px solid var(--hr)}
+.awc{position:relative;overflow:hidden;padding:22px 12px 0}
+.awl{font-family:var(--cond);font-size:19px;font-weight:700;letter-spacing:.14em;
  text-transform:uppercase;color:var(--fnt);position:relative;z-index:2}
-.face{position:absolute;right:-30px;bottom:0;height:196px;width:auto;object-fit:contain;z-index:1}
-.awn{position:relative;z-index:2;margin-top:8px;font-family:var(--cond);font-size:40px;
- font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:.92;max-width:180px}
+.face{position:absolute;right:-14px;bottom:0;height:214px;width:auto;z-index:1}
+.awn{position:relative;z-index:2;margin-top:9px;font-family:var(--cond);font-size:44px;
+ font-weight:700;letter-spacing:.02em;text-transform:uppercase;line-height:.9;max-width:170px}
 </style></head><body>
-<div class="card" style="--tc:#003087">
+<div class="card" id="card" style="--tc:#003087">
  <header class="dh">
-  <p class="dhr">Nick&rsquo;s picks</p>
+  <p class="dhr">Nick&rsquo;s picks &middot; 2026 NFL playoffs</p>
   <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
-   <h1>Buffalo<br>Bills</h1></div>
+   <h1>Buffalo Bills</h1></div>
  </header>
- <div class="bkt"><svg class="blines"></svg><div class="bcol" data-cf="AFC"><p class="bch">Wild Card</p><div class="bgs"><div class="bgm" data-g="AFC-wc0"><span class="bsl lost" style="--tc:#FFB81C;--tf:#FFFFFF"><i class="bsd">2</i><span class="mark"><img src="logos/pit.webp" alt=""></span><span class="bnm">PIT</span></span><span class="bsl w" style="--tc:#003087;--tf:#FFFFFF"><i class="bsd">7</i><span class="mark"><img src="logos/buf.webp" alt=""></span><span class="bnm">BUF</span></span></div><div class="bgm" data-g="AFC-wc1"><span class="bsl w" style="--tc:#E4002B;--tf:#FFFFFF"><i class="bsd">3</i><span class="mark"><img src="logos/hou.webp" alt=""></span><span class="bnm">HOU</span></span><span class="bsl lost" style="--tc:#311D00;--tf:#FFFFFF"><i class="bsd">6</i><span class="mark"><img src="logos/cle.webp" alt=""></span><span class="bnm">CLE</span></span></div><div class="bgm" data-g="AFC-wc2"><span class="bsl lost" style="--tc:#008C95;--tf:#FFFFFF"><i class="bsd">4</i><span class="mark"><img src="logos/mia.webp" alt=""></span><span class="bnm">MIA</span></span><span class="bsl w" style="--tc:#418FDE;--tf:#FFFFFF"><i class="bsd">5</i><span class="mark"><img src="logos/ten.webp" alt=""></span><span class="bnm">TEN</span></span></div></div></div><div class="bcol" data-cf="AFC"><p class="bch">Divisional</p><div class="bgs"><div class="bgm" data-g="AFC-dv0"><span class="bsl lost" style="--tc:#0072CE;--tf:#FFFFFF"><i class="bsd">1</i><span class="mark"><img src="logos/lac.webp" alt=""></span><span class="bnm">LAC</span></span><span class="bsl w" style="--tc:#003087;--tf:#FFFFFF"><i class="bsd">7</i><span class="mark"><img src="logos/buf.webp" alt=""></span><span class="bnm">BUF</span></span></div><div class="bgm" data-g="AFC-dv1"><span class="bsl lost" style="--tc:#E4002B;--tf:#FFFFFF"><i class="bsd">3</i><span class="mark"><img src="logos/hou.webp" alt=""></span><span class="bnm">HOU</span></span><span class="bsl w" style="--tc:#418FDE;--tf:#FFFFFF"><i class="bsd">5</i><span class="mark"><img src="logos/ten.webp" alt=""></span><span class="bnm">TEN</span></span></div></div></div><div class="bcol" data-cf="AFC"><p class="bch">Championship</p><div class="bgs"><div class="bgm" data-g="AFC-cc"><span class="bsl lost" style="--tc:#418FDE;--tf:#FFFFFF"><i class="bsd">5</i><span class="mark"><img src="logos/ten.webp" alt=""></span><span class="bnm">TEN</span></span><span class="bsl w" style="--tc:#003087;--tf:#FFFFFF"><i class="bsd">7</i><span class="mark"><img src="logos/buf.webp" alt=""></span><span class="bnm">BUF</span></span></div></div></div><div class="mid"><p class="bch mid-l">Super Bowl</p><div class="sbw"><div class="bgm" data-g="sb"><span class="bsl w" style="--tc:#003087;--tf:#FFFFFF"><i class="bsd"></i><span class="mark"><img src="logos/buf.webp" alt=""></span><span class="bnm">BUF</span></span><span class="bsl lost" style="--tc:#001E62;--tf:#FFFFFF"><i class="bsd"></i><span class="mark"><img src="logos/nyg.webp" alt=""></span><span class="bnm">NYG</span></span></div></div></div><div class="bcol" data-cf="NFC"><p class="bch">Championship</p><div class="bgs"><div class="bgm" data-g="NFC-cc"><span class="bsl lost r" style="--tc:#203731;--tf:#FFFFFF"><span class="bnm">GB</span><span class="mark"><img src="logos/gb.webp" alt=""></span><i class="bsd">6</i></span><span class="bsl w r" style="--tc:#001E62;--tf:#FFFFFF"><span class="bnm">NYG</span><span class="mark"><img src="logos/nyg.webp" alt=""></span><i class="bsd">7</i></span></div></div></div><div class="bcol" data-cf="NFC"><p class="bch">Divisional</p><div class="bgs"><div class="bgm" data-g="NFC-dv0"><span class="bsl lost r" style="--tc:#003594;--tf:#FFFFFF"><span class="bnm">LAR</span><span class="mark"><img src="logos/lar.webp" alt=""></span><i class="bsd">1</i></span><span class="bsl w r" style="--tc:#001E62;--tf:#FFFFFF"><span class="bnm">NYG</span><span class="mark"><img src="logos/nyg.webp" alt=""></span><i class="bsd">7</i></span></div><div class="bgm" data-g="NFC-dv1"><span class="bsl lost r" style="--tc:#0C2340;--tf:#FFFFFF"><span class="bnm">DAL</span><span class="mark"><img src="logos/dal.webp" alt=""></span><i class="bsd">5</i></span><span class="bsl w r" style="--tc:#203731;--tf:#FFFFFF"><span class="bnm">GB</span><span class="mark"><img src="logos/gb.webp" alt=""></span><i class="bsd">6</i></span></div></div></div><div class="bcol" data-cf="NFC"><p class="bch">Wild Card</p><div class="bgs"><div class="bgm" data-g="NFC-wc0"><span class="bsl lost r" style="--tc:#091F2C;--tf:#FFFFFF"><span class="bnm">CHI</span><span class="mark"><img src="logos/chi.webp" alt=""></span><i class="bsd">2</i></span><span class="bsl w r" style="--tc:#001E62;--tf:#FFFFFF"><span class="bnm">NYG</span><span class="mark"><img src="logos/nyg.webp" alt=""></span><i class="bsd">7</i></span></div><div class="bgm" data-g="NFC-wc1"><span class="bsl lost r" style="--tc:#A71930;--tf:#FFFFFF"><span class="bnm">ATL</span><span class="mark"><img src="logos/atl.webp" alt=""></span><i class="bsd">3</i></span><span class="bsl w r" style="--tc:#203731;--tf:#FFFFFF"><span class="bnm">GB</span><span class="mark"><img src="logos/gb.webp" alt=""></span><i class="bsd">6</i></span></div><div class="bgm" data-g="NFC-wc2"><span class="bsl lost r" style="--tc:#004851;--tf:#FFFFFF"><span class="bnm">PHI</span><span class="mark"><img src="logos/phi.webp" alt=""></span><i class="bsd">4</i></span><span class="bsl w r" style="--tc:#0C2340;--tf:#FFFFFF"><span class="bnm">DAL</span><span class="mark"><img src="logos/dal.webp" alt=""></span><i class="bsd">5</i></span></div></div></div></div>
- <div class="daw"><div class="awc"><p class="awl">MVP</p><img class="face" src="headshots/joshallen.webp" alt=""><p class="awn">Josh Allen</p></div><div class="awc"><p class="awl">OPOY</p><img class="face" src="headshots/justinjefferson.webp" alt=""><p class="awn">Justin Jefferson</p></div><div class="awc"><p class="awl">DPOY</p><img class="face" src="headshots/mylesgarrett.webp" alt=""><p class="awn">Myles Garrett</p></div></div>
+ <div class="bkt" id="bkt"></div>
+ <div class="daw">
+  <div class="awc"><p class="awl">MVP</p><img class="face" src="headshots/joshallen.webp" alt=""><p class="awn">Josh Allen</p></div>
+  <div class="awc"><p class="awl">Offensive POY</p><img class="face" src="headshots/justinjefferson.webp" alt=""><p class="awn">Justin Jefferson</p></div>
+  <div class="awc"><p class="awl">Defensive POY</p><img class="face" src="headshots/mylesgarrett.webp" alt=""><p class="awn">Myles Garrett</p></div>
+ </div>
 </div><script>
-/* AFC feeds rightward, NFC leftward, and both meet in the middle. Same hairline
-   routing as the app: the wild card winners pool onto one spine because that
-   round is a re-draw, every later round is a real tree. */
-(function(){
- const bkt=document.querySelector('.bkt'), svg=bkt.querySelector('.blines');
- const box=bkt.getBoundingClientRect();
- svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
- const R=el=>{const r=el.getBoundingClientRect();
-  return {l:r.left-box.left,r:r.right-box.left,y:r.top-box.top+r.height/2}};
- const d=[];
- ['AFC','NFC'].forEach(cf=>{
-  const cols=[...bkt.querySelectorAll(`.bcol[data-cf="${cf}"]`)];
-  const order=cf==='AFC'?cols:cols.slice().reverse();   // wild card first either way
-  for(let i=1;i<order.length;i++){
-   const prev=[...order[i-1].querySelectorAll('.bsl.w')], legs=[];
-   order[i].querySelectorAll('.bsl').forEach(row=>{
-    const k=row.querySelector('.bnm').textContent;
-    const src=prev.find(p=>p.querySelector('.bnm').textContent===k);
-    if(src)legs.push({a:R(src),b:R(row)})});
-   if(!legs.length)continue;
-   const out=cf==='AFC';
-   const from=l=>out?l.a.r:l.a.l, to=l=>out?l.b.l:l.b.r;
-   const gapA=out?Math.max(...legs.map(from)):Math.min(...legs.map(from));
-   const gapB=out?Math.min(...legs.map(to)):Math.max(...legs.map(to));
-   const x=(gapA+gapB)/2;
-   if(i===1&&legs.length>1){
-    const ys=legs.flatMap(l=>[l.a.y,l.b.y]);
-    d.push(`M${x} ${Math.min(...ys)}V${Math.max(...ys)}`);
-    legs.forEach(l=>{d.push(`M${from(l)} ${l.a.y}H${x}`);d.push(`M${x} ${l.b.y}H${to(l)}`)});
-   } else legs.forEach(l=>{
-    if(Math.abs(l.b.y-l.a.y)<1){d.push(`M${from(l)} ${l.a.y}H${to(l)}`);return}
-    const dir=l.b.y>l.a.y?1:-1, rr=Math.min(7,Math.abs(l.b.y-l.a.y)/2), sx=out?1:-1;
-    d.push(`M${from(l)} ${l.a.y}H${x-rr*sx}Q${x} ${l.a.y} ${x} ${l.a.y+rr*dir}`
-      +`V${l.b.y-rr*dir}Q${x} ${l.b.y} ${x+rr*sx} ${l.b.y}H${to(l)}`)});
-  }
-  /* conference champion into the final */
-  const cc=bkt.querySelector(`.bcol[data-cf="${cf}"] .bsl.w`);
-  const champCol=[...bkt.querySelectorAll(`.bcol[data-cf="${cf}"]`)].find(c=>
-   c.querySelector('.bch').textContent==='Championship');
-  const w=champCol&&champCol.querySelector('.bsl.w');
-  const sb=bkt.querySelector('.mid .bgm');
-  if(w&&sb){
-   const k=w.querySelector('.bnm').textContent;
-   const target=[...sb.querySelectorAll('.bsl')].find(s=>s.querySelector('.bnm').textContent===k);
-   if(target){const a=R(w),b=R(target),out=cf==='AFC';
-    const fx=out?a.r:a.l, tx=out?b.l:b.r, mx=(fx+tx)/2;
-    if(Math.abs(b.y-a.y)<1)d.push(`M${fx} ${a.y}H${tx}`);
-    else{const dir=b.y>a.y?1:-1, rr=Math.min(7,Math.abs(b.y-a.y)/2), sx=out?1:-1;
-     d.push(`M${fx} ${a.y}H${mx-rr*sx}Q${mx} ${a.y} ${mx} ${a.y+rr*dir}`
-       +`V${b.y-rr*dir}Q${mx} ${b.y} ${mx+rr*sx} ${b.y}H${tx}`)}}}
- });
- svg.innerHTML=d.map(p=>`<path d="${p}" fill="none" stroke="rgba(25,25,23,.26)" stroke-width="1.5" stroke-linejoin="round"/>`).join('');
-})();
+const T={PIT:['Pittsburgh Steelers','#FFB81C','#191917'],BUF:['Buffalo Bills','#003087','#fff'],
+ HOU:['Houston Texans','#E4002B','#fff'],CLE:['Cleveland Browns','#311D00','#fff'],
+ MIA:['Miami Dolphins','#008C95','#fff'],TEN:['Tennessee Titans','#418FDE','#fff'],
+ LAC:['LA Chargers','#0072CE','#fff'],NYG:['New York Giants','#001E62','#fff'],
+ GB:['Green Bay Packers','#203731','#fff'],LAR:['LA Rams','#003594','#fff'],
+ DAL:['Dallas Cowboys','#0C2340','#fff'],CHI:['Chicago Bears','#091F2C','#fff'],
+ ATL:['Atlanta Falcons','#A71930','#fff'],PHI:['Philadelphia Eagles','#004851','#fff']};
+/* [higher seed, lower seed, index of the winner] */
+const RDS=[
+ ['Wild Card',[[['PIT',2],['BUF',7],1],[['HOU',3],['CLE',6],0],[['MIA',4],['TEN',5],1]],
+             [[['CHI',2],['NYG',7],1],[['ATL',3],['GB',6],1],[['PHI',4],['DAL',5],1]]],
+ ['Divisional',[[['LAC',1],['BUF',7],1],[['HOU',3],['TEN',5],1]],
+               [[['LAR',1],['NYG',7],1],[['DAL',5],['GB',6],1]]],
+ ['Conference Championship',[[['TEN',5],['BUF',7],1]],[[['GB',6],['NYG',7],1]]]];
+const SB=[['BUF',''],['NYG',''],0];
+const slot=([k,s],win)=>{const t=T[k];
+ return `<span class="bsl ${win?'w':'lost'}" style="--tc:${t[1]};--tf:${t[2]}">`
+  +`<i class="bsd">${s}</i><span class="mark"><img src="logos/${k.toLowerCase()}.webp" alt=""></span>`
+  +`<span class="bnm">${t[0]}</span></span>`};
+const game=([a,b,w])=>`<div class="bgm">${slot(a,!w)}${slot(b,!!w)}</div>`;
+document.getElementById('bkt').innerHTML=
+ `<div class="cfh"><p>AFC</p><p>NFC</p></div>`
+ +RDS.map(([l,afc,nfc])=>`<section class="rd"><p class="rdl">${l}</p><div class="two">`
+   +`<div>${afc.map(game).join('')}</div><div>${nfc.map(game).join('')}</div>`
+   +`</div></section>`).join('')
+ +`<section class="rd sb"><p class="rdl">Super Bowl</p>${game(SB)}</section>`;
 </script></body></html>
