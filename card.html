@@ -33,34 +33,32 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    the only number on the card; the bracket carries the seeds. */
 .dvs{flex:1;padding:18px 34px 10px;display:grid;grid-template-columns:1fr 1fr;
  column-gap:26px;align-content:start}
-.cfh{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
- text-transform:uppercase;padding-bottom:9px;border-bottom:1px solid var(--hr);
- margin-bottom:15px}
 .dvc{display:flex;flex-direction:column;gap:26px;min-width:0}
 .dvl{display:flex;align-items:center;gap:12px;font-family:var(--cond);font-size:16px;
  font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fnt);
  margin-bottom:9px}
 .dvl::after{content:"";flex:1;height:1px;background:var(--hr)}
-.dv{display:grid;grid-template-columns:172px minmax(0,1fr);column-gap:12px;height:168px}
+.dv{display:grid;grid-template-columns:172px minmax(0,1fr);column-gap:12px;height:181px}
 .win{position:relative;background:var(--tc);color:var(--tf);border-radius:10px;
  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
  padding:10px}
 .win img{width:62px;height:62px;object-fit:contain;display:block}
 .win b{font-size:21px;font-weight:700;letter-spacing:-.022em;line-height:1;
  text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dp{position:absolute;top:4px;left:13px;font-style:normal;font-family:var(--cond);
- font-size:44px;font-weight:700;line-height:1;letter-spacing:.01em;opacity:.3}
+.dp{position:absolute;top:12px;left:13px;display:block;width:35px;height:30px}
+.dp svg{display:block;width:100%;height:100%;fill:currentColor}
 .rest{display:flex;flex-direction:column;justify-content:space-between}
-.rr{display:grid;grid-template-columns:22px 30px minmax(0,1fr);align-items:center;
- gap:12px;height:56px}
+.rr{display:grid;grid-template-columns:22px 30px minmax(0,1fr) auto;align-items:center;
+ column-gap:8px;height:56px}
 .rr+.rr{border-top:1px solid var(--hr)}
 .rp{font-style:normal;font-family:var(--cond);font-size:27px;font-weight:700;
- line-height:1;color:#CFCEC4;text-align:left}
+ line-height:1;color:#CFCEC4;text-align:right}
+.rn{padding-left:5px}
 .rr img{width:30px;height:30px;object-fit:contain;display:block}
 .rn{font-size:23px;font-weight:600;letter-spacing:-.022em;white-space:nowrap;
  overflow:hidden;text-overflow:ellipsis}
-.rr.miss .rn{color:var(--mut);font-weight:400}
-.rr.miss img{opacity:.45}
+.wc{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:.13em;
+ text-transform:uppercase;color:var(--fnt);line-height:1}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -158,6 +156,9 @@ const FG=k=>['PIT','NO','TEN','ARI'].includes(k)?'#fff'
  :(n=>{const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
    return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)>.42?'#191917':'#fff'})
    (parseInt(C[k].slice(1),16));
+/* the block is the division winner, so it wears a crown rather than a 1 */
+const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
+ +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
 const EXT={nyj:'png'};
 const img=k=>{const l=k.toLowerCase();
  return `<img src="logos/${l}.${EXT[l]||'webp'}" alt="">`};
@@ -171,12 +172,14 @@ const DIV={AFC:[['East',['MIA','BUF','NE','NYJ']],['North',['PIT','CLE','BAL','C
            NFC:[['East',['PHI','DAL','NYG','WAS']],['North',['CHI','GB','DET','MIN']],
                 ['South',['ATL','TB','CAR','NO']],['West',['LAR','SF','SEA','ARI']]]};
 document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
- `<div><p class="cfh">${cf}</p><div class="dvc">`
- +DIV[cf].map(([d,[w,...rest]])=>`<div><p class="dvl">${d}</p><div class="dv">`
-   +`<div class="win" style="--tc:${C[w]};--tf:${FG(w)}"><i class="dp">1</i>`
+ `<div><div class="dvc">`
+ +DIV[cf].map(([d,[w,...rest]])=>`<div><p class="dvl">${cf} ${d}</p><div class="dv">`
+   +`<div class="win" style="--tc:${C[w]};--tf:${FG(w)}"><i class="dp">${CROWN}</i>`
    +`${img(w)}<b>${N[w]}</b></div><div class="rest">`
-   +rest.map((k,i)=>`<div class="rr${SEED[k]?'':' miss'}">`
-     +`<i class="rp">${i+2}</i>${img(k)}<span class="rn">${N[k]}</span></div>`).join('')
+   +rest.map((k,i)=>`<div class="rr">`
+     +`<i class="rp">${i+2}</i>${img(k)}<span class="rn">${N[k]}</span>`
+     +(SEED[k]?`<span class="wc">Wild card</span>`:'<span></span>')
+     +`</div>`).join('')
    +`</div></div></div>`).join('')+`</div></div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
