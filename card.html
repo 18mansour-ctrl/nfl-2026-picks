@@ -46,17 +46,18 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .crown{position:absolute;top:11px;left:12px;width:24px;height:21px;fill:var(--tf)}
 .rank{display:flex;flex-direction:column;gap:6px;height:100%}
-.rkr{display:grid;grid-template-columns:26px 30px minmax(0,1fr) auto;
+.rkr{display:grid;grid-template-columns:24px 26px minmax(0,1fr);
  gap:0 12px;align-items:center;flex:1;padding:0 13px;border-radius:8px;
  background:var(--card);box-shadow:var(--cardsh)}
+/* a wild card is denoted by the faintest wash of the club's own colour,
+   which says it without a label sitting in the row */
+.rkr.wc{background:color-mix(in srgb,var(--tc) 11%,var(--card))}
 .rkn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;
  font-style:normal;font-size:13px;font-weight:700;background:rgba(25,25,23,.07);
  color:var(--fnt)}
 .rkr>img{width:26px;height:26px;object-fit:contain;display:block}
 .rkt{font-size:18px;font-weight:600;letter-spacing:-.02em;line-height:1.15;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rkw{font-family:var(--cond);font-size:12px;font-weight:700;
- letter-spacing:.11em;text-transform:uppercase;color:var(--fnt)}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -181,11 +182,10 @@ document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
  +DIV[cf].map(([d,[w,...rest]])=>`<div><p class="dvl">${cf} ${d}</p><div class="dv">`
    +`<div class="win" style="--tc:${C[w]};--tf:${FG(w)}">${CROWN}${img(w)}`
    +`<span class="wct">${N[w]}</span></div>`
-   +`<div class="rank">`+rest.map((k,i)=>`<div class="rkr">`
+   +`<div class="rank">`+rest.map((k,i)=>
+     `<div class="rkr${SEED[k]?' wc':''}" style="--tc:${C[k]}">`
      +`<i class="rkn">${i+2}</i>${img(k)}`
-     +`<span class="rkt">${N[k]}</span>`
-     +(SEED[k]?'<span class="rkw">Wild card</span>':'<span></span>')
-     +`</div>`).join('')+`</div>`
+     +`<span class="rkt">${N[k]}</span></div>`).join('')+`</div>`
    +`</div></div>`).join('')+`</div></div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
