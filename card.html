@@ -61,14 +61,20 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .sm .mk,.sm .mk img{height:38px}.sm .mk img{width:38px}
 .sm .nm{font-size:30px}
 
-.daw{flex:none;height:248px;display:grid;grid-template-columns:repeat(3,1fr);
- padding:0 36px;border-top:1px solid var(--hr)}
-.aw{position:relative;overflow:hidden;padding:18px 10px 0}
-.awl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;
- text-transform:uppercase;color:var(--fnt);position:relative;z-index:2}
-.awn{position:relative;z-index:2;margin-top:6px;font-size:31px;font-weight:700;
- letter-spacing:-.032em;line-height:1.05;max-width:180px}
-.face{position:absolute;right:-18px;bottom:0;height:188px;width:auto;z-index:1}
+.daw{flex:none;height:210px;display:grid;grid-template-columns:repeat(3,1fr);
+ column-gap:22px;align-items:center;padding:0 36px;border-top:1px solid var(--hr)}
+/* The cutouts are framed differently from one another, so bleeding them off
+   the card cut each player at a different point and put a head through every
+   name. Each sits in its own dish instead, which normalises the framing. */
+.aw{display:flex;align-items:center;gap:17px;min-width:0}
+.dish{flex:none;width:116px;height:116px;border-radius:50%;overflow:hidden;position:relative;
+ background:var(--c)}
+.dish img{position:absolute;display:block;width:auto}
+.awt{min-width:0}
+.awl{font-family:var(--cond);font-size:16px;font-weight:700;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--fnt)}
+.awn{margin-top:5px;font-size:28px;font-weight:700;letter-spacing:-.032em;line-height:1.07}
+.awm{margin-top:5px;font-size:15px;font-weight:500;color:var(--mut);letter-spacing:-.004em}
 </style></head><body>
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
@@ -80,9 +86,15 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
   <div class="hd"><p>Wild card</p><p>Divisional</p><p>Conference</p></div>
  </div>
  <div class="daw">
-  <div class="aw"><p class="awl">MVP</p><img class="face" src="headshots/joshallen.webp" alt=""><p class="awn">Josh Allen</p></div>
-  <div class="aw"><p class="awl">Offensive POY</p><img class="face" src="headshots/justinjefferson.webp" alt=""><p class="awn">Justin Jefferson</p></div>
-  <div class="aw"><p class="awl">Defensive POY</p><img class="face" src="headshots/mylesgarrett.webp" alt=""><p class="awn">Myles Garrett</p></div>
+  <div class="aw" style="--c:#003087"><span class="dish"><img src="headshots/joshallen.webp" alt=""></span>
+   <span class="awt"><p class="awl">MVP</p><p class="awn">Josh Allen</p>
+    <p class="awm">QB &middot; Buffalo Bills</p></span></div>
+  <div class="aw" style="--c:#582C83"><span class="dish"><img src="headshots/justinjefferson.webp" alt=""></span>
+   <span class="awt"><p class="awl">Offensive POY</p><p class="awn">Justin Jefferson</p>
+    <p class="awm">WR &middot; Minnesota Vikings</p></span></div>
+  <div class="aw" style="--c:#003594"><span class="dish"><img src="headshots/mylesgarrett.webp" alt=""></span>
+   <span class="awt"><p class="awl">Defensive POY</p><p class="awn">Myles Garrett</p>
+    <p class="awm">EDGE &middot; LA Rams</p></span></div>
  </div>
 </div><script>
 const T={PIT:'Pittsburgh Steelers',BUF:'Buffalo Bills',HOU:'Houston Texans',
@@ -139,4 +151,22 @@ const sb=R(br.querySelector('.gm[data-g="SB"]'));
  const y1=dir>0?c.b:c.t, y2=dir>0?sb.t:sb.b, m=(y1+y2)/2;
  d.push(`M${c.x} ${y1}V${m}H${sb.x}V${y2}`)});
 svg.innerHTML=d.map(p=>`<path d="${p}" fill="none" stroke="rgba(25,25,23,.24)" stroke-width="1.5"/>`).join('');
+
+/* One cutout is 176x128 and another 600x436, each with its own amount of empty
+   margin, so any fixed crop lines up on none of them. Measure the opaque box
+   in every headshot and fit that to the dish instead — the three busts then
+   sit at one scale on one baseline. */
+(async()=>{for(const dish of document.querySelectorAll('.dish')){
+ const img=dish.querySelector('img');await img.decode();
+ const w=img.naturalWidth,h=img.naturalHeight,c=document.createElement('canvas');
+ c.width=w;c.height=h;const g2=c.getContext('2d');g2.drawImage(img,0,0);
+ const px=g2.getImageData(0,0,w,h).data;
+ let x0=w,y0=h,x1=0,y1=0;
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(px[(y*w+x)*4+3]>12){
+  if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+ const bw=x1-x0+1,bh=y1-y0+1,D=dish.clientHeight,k=D*.97/bh;
+ img.style.height=h*k+'px';
+ img.style.left=D/2-(x0+bw/2)*k+'px';
+ img.style.bottom=-((h-1-y1)*k)+'px';
+}})();
 </script></body></html>
