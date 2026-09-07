@@ -41,16 +41,17 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  margin-bottom:8px}
 .dvl::after{content:"";flex:1;height:1px;background:var(--hr)}
 .dvg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.tl{height:158px;border-radius:9px;overflow:hidden;display:flex;flex-direction:column;
- align-items:center;justify-content:center;gap:12px;padding:10px 5px;
+.tl{position:relative;height:158px;border-radius:9px;overflow:hidden;display:flex;
+ flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px 5px;
  background:var(--tc);color:var(--tf)}
+.tl .dp{position:absolute;top:8px;left:10px;font-style:normal;font-family:var(--cond);
+ font-size:19px;font-weight:700;opacity:.62}
+.tl.miss .dp{color:#C3C2B8;opacity:1}
 .tl.miss{background:var(--card);color:var(--mut);box-shadow:inset 0 0 0 1px var(--ln)}
 .tl img{width:56px;height:56px;object-fit:contain;display:block}
 .tl.miss img{opacity:.45}
 .tn{font-size:16px;font-weight:600;letter-spacing:-.018em;text-align:center;
  line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sdb{font-family:var(--cond);font-size:12.5px;font-weight:700;letter-spacing:.11em;
- text-transform:uppercase;opacity:.66}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -161,9 +162,8 @@ const DIV={AFC:[['East',['MIA','BUF','NE','NYJ']],['North',['PIT','CLE','BAL','C
 document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
  `<div><p class="cfh">${cf}</p><div class="dvc">`
  +DIV[cf].map(([d,ts])=>`<div><p class="dvl">${d}</p><div class="dvg">`
-   +ts.map(k=>`<div class="tl${SEED[k]?'':' miss'}" style="--tc:${C[k]};--tf:${FG(k)}">`
-     +`${img(k)}<span class="tn">${N[k]}</span>`
-     +(SEED[k]?`<span class="sdb">${SEED[k]} seed</span>`:'')
+   +ts.map((k,i)=>`<div class="tl${SEED[k]?'':' miss'}" style="--tc:${C[k]};--tf:${FG(k)}">`
+     +`<i class="dp">${i+1}</i>${img(k)}<span class="tn">${N[k]}</span>`
      +`</div>`).join('')
    +`</div></div>`).join('')+`</div></div>`).join('');
 
