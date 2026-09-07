@@ -26,27 +26,31 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  padding-bottom:6px}
 
 /* ---- card one: how all thirty two finish -------------------------------- */
-.dvs{flex:1;padding:18px 36px 10px;display:grid;grid-template-columns:1fr 1fr;
- column-gap:34px;align-content:start}
+/* A division is four tiles, not four lines of type. Whether a club made the
+   field is carried by the tile itself — its own colour if it did, bare paper
+   if it did not. Finish order is left to right, so the only number on a tile
+   is the seed, and only the clubs that have one carry it. */
+.dvs{flex:1;padding:18px 34px 10px;display:grid;grid-template-columns:1fr 1fr;
+ column-gap:26px;align-content:start}
 .cfh{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
  text-transform:uppercase;padding-bottom:9px;border-bottom:1px solid var(--hr);
- margin-bottom:14px}
-.dvc{display:flex;flex-direction:column;gap:18px;min-width:0}
-.dv{min-width:0}
-.dvl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;
- text-transform:uppercase;color:var(--fnt);margin-bottom:6px}
-.dr{display:grid;grid-template-columns:20px 28px minmax(0,1fr) auto;align-items:center;
- gap:13px;height:44px;border-bottom:1px solid var(--hr)}
-.dv .dr:last-child{border-bottom:0}
-.dp{font-style:normal;font-size:13px;font-weight:600;color:var(--fnt);text-align:center}
-.dr img{width:28px;height:28px;object-fit:contain;display:block}
-.dn{font-size:25px;font-weight:600;letter-spacing:-.024em;white-space:nowrap;
- overflow:hidden;text-overflow:ellipsis}
-.sdb{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.1em;
- text-transform:uppercase;color:var(--tf);background:var(--tc);border-radius:5px;
- padding:4px 8px 3px}
-.dr.miss .dn{color:var(--mut);font-weight:400}
-.dr.miss img{opacity:.45}
+ margin-bottom:15px}
+.dvc{display:flex;flex-direction:column;gap:24px;min-width:0}
+.dvl{display:flex;align-items:center;gap:12px;font-family:var(--cond);font-size:16px;
+ font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fnt);
+ margin-bottom:8px}
+.dvl::after{content:"";flex:1;height:1px;background:var(--hr)}
+.dvg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.tl{height:158px;border-radius:9px;overflow:hidden;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:12px;padding:10px 5px;
+ background:var(--tc);color:var(--tf)}
+.tl.miss{background:var(--card);color:var(--mut);box-shadow:inset 0 0 0 1px var(--ln)}
+.tl img{width:56px;height:56px;object-fit:contain;display:block}
+.tl.miss img{opacity:.45}
+.tn{font-size:16px;font-weight:600;letter-spacing:-.018em;text-align:center;
+ line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sdb{font-family:var(--cond);font-size:12.5px;font-weight:700;letter-spacing:.11em;
+ text-transform:uppercase;opacity:.66}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -156,12 +160,12 @@ const DIV={AFC:[['East',['MIA','BUF','NE','NYJ']],['North',['PIT','CLE','BAL','C
                 ['South',['ATL','TB','CAR','NO']],['West',['LAR','SF','SEA','ARI']]]};
 document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
  `<div><p class="cfh">${cf}</p><div class="dvc">`
- +DIV[cf].map(([d,ts])=>`<div class="dv"><p class="dvl">${cf} ${d}</p>`
-   +ts.map((k,i)=>`<div class="dr${SEED[k]?'':' miss'}">`
-     +`<i class="dp">${i+1}</i>${img(k)}<span class="dn">${N[k]}</span>`
-     +(SEED[k]?`<span class="sdb" style="--tc:${C[k]};--tf:${FG(k)}">${SEED[k]} seed</span>`:'<span></span>')
+ +DIV[cf].map(([d,ts])=>`<div><p class="dvl">${d}</p><div class="dvg">`
+   +ts.map(k=>`<div class="tl${SEED[k]?'':' miss'}" style="--tc:${C[k]};--tf:${FG(k)}">`
+     +`${img(k)}<span class="tn">${N[k]}</span>`
+     +(SEED[k]?`<span class="sdb">${SEED[k]} seed</span>`:'')
      +`</div>`).join('')
-   +`</div>`).join('')+`</div></div>`).join('');
+   +`</div></div>`).join('')+`</div></div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
 const B={AFC:[
