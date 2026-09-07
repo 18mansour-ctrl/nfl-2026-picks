@@ -26,35 +26,37 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  padding-bottom:6px}
 
 /* ---- card one: how all thirty two finish -------------------------------- */
-/* The app's own divisions page, at the card's scale: four equal rows, the one
-   that won the division filled with its colour and wearing the crown, the
-   place in a circle at the left, city over nickname. No rule under the label —
-   every row carries its own edge, so proximity does the grouping there too. */
+/* The app's parts, arranged for a card. Its divisions page gives every team an
+   identical row because each one is a tap target — an interaction rule, not a
+   drawing rule, and nobody taps a PNG. So the club that won the division takes
+   a block in its colour and the other three keep the app's row exactly: place
+   in a circle, mark, city over nickname, and .rkr.on's fill on the winner. */
 .dvs{flex:1;padding:16px 34px 8px;display:grid;grid-template-columns:1fr 1fr;
  column-gap:26px;align-content:start}
-.dvc{display:flex;flex-direction:column;gap:18px;min-width:0}
-.dvl{padding-left:3px;padding-bottom:4px;font-family:var(--cond);font-size:16.5px;
+.dvc{display:flex;flex-direction:column;gap:26px;min-width:0}
+.dvl{padding-left:3px;padding-bottom:5px;font-family:var(--cond);font-size:16.5px;
  font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
-.rank{display:grid;gap:5px}
+.dv{display:grid;grid-template-columns:172px minmax(0,1fr);column-gap:11px;height:192px}
+.win{position:relative;background:var(--tc);color:var(--tf);border-radius:8px;
+ box-shadow:var(--cardsh);display:flex;flex-direction:column;align-items:center;
+ justify-content:center;gap:10px;padding:12px 10px}
+.win img{width:58px;height:58px;object-fit:contain;display:block}
+.wct{display:block;max-width:100%;text-align:center;font-size:21px;font-weight:700;
+ letter-spacing:-.022em;line-height:1.15;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crown{position:absolute;top:11px;left:12px;width:24px;height:21px;fill:var(--tf)}
+.rank{display:flex;flex-direction:column;justify-content:space-between;height:100%}
 .rkr{display:grid;grid-template-columns:26px 30px minmax(0,1fr) auto;
- grid-template-areas:"n m c w" "n m t w";gap:0 11px;align-items:center;
- min-height:46px;padding:6px 12px;border-radius:8px;background:var(--card);
- box-shadow:var(--cardsh)}
-.rkn{grid-area:n;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
+ gap:0 12px;align-items:center;height:60px;padding:0 13px;border-radius:8px;
+ background:var(--card);box-shadow:var(--cardsh)}
+.rkn{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
  font-style:normal;font-size:13px;font-weight:700;background:rgba(25,25,23,.07);
  color:var(--fnt)}
-.rkr>img{grid-area:m;width:30px;height:30px;object-fit:contain;display:block}
-.rkc{grid-area:c;font-size:12px;color:var(--mut);line-height:1.2;
+.rkr>img{width:30px;height:30px;object-fit:contain;display:block}
+.rkt{font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.15;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rkt{grid-area:t;font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.15;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rkw{grid-area:w;font-family:var(--cond);font-size:12px;font-weight:700;
+.rkw{font-family:var(--cond);font-size:12px;font-weight:700;
  letter-spacing:.11em;text-transform:uppercase;color:var(--fnt)}
-.crown{grid-area:w;width:22px;height:19px;flex:none;fill:var(--tf);margin-right:2px}
-.rkr.on{background:var(--tc)}
-.rkr.on .rkt{color:var(--tf);font-weight:700}
-.rkr.on .rkc{color:var(--tf);opacity:.72}
-.rkr.on .rkn{background:var(--tf);color:var(--tc)}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -176,12 +178,14 @@ const DIV={AFC:[['East',['MIA','BUF','NE','NYJ']],['North',['PIT','CLE','BAL','C
                 ['South',['ATL','TB','CAR','NO']],['West',['LAR','SF','SEA','ARI']]]};
 document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
  `<div><div class="dvc">`
- +DIV[cf].map(([d,ts])=>`<div><p class="dvl">${cf} ${d}</p><div class="rank">`
-   +ts.map((k,i)=>`<div class="rkr${i?'':' on'}" style="--tc:${C[k]};--tf:${FG(k)}">`
-     +`<i class="rkn">${i+1}</i>${img(k)}`
-     +`<span class="rkc">${CITY[k]}</span><span class="rkt">${N[k]}</span>`
-     +(i?(SEED[k]?'<span class="rkw">Wild card</span>':'<span></span>'):CROWN)
-     +`</div>`).join('')
+ +DIV[cf].map(([d,[w,...rest]])=>`<div><p class="dvl">${cf} ${d}</p><div class="dv">`
+   +`<div class="win" style="--tc:${C[w]};--tf:${FG(w)}">${CROWN}${img(w)}`
+   +`<span class="wct">${N[w]}</span></div>`
+   +`<div class="rank">`+rest.map((k,i)=>`<div class="rkr">`
+     +`<i class="rkn">${i+2}</i>${img(k)}`
+     +`<span class="rkt">${N[k]}</span>`
+     +(SEED[k]?'<span class="rkw">Wild card</span>':'<span></span>')
+     +`</div>`).join('')+`</div>`
    +`</div></div>`).join('')+`</div></div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
