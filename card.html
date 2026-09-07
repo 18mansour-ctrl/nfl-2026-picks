@@ -14,56 +14,58 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
  background:var(--paper);color:var(--ink)}
 
-.dh{background:var(--tc);color:var(--tf);height:178px;flex:none;padding:30px 40px 0;
+.dh{background:var(--tc);color:var(--tf);height:174px;flex:none;padding:30px 40px 0;
  display:flex;flex-direction:column;justify-content:space-between}
 .dhr{font-family:var(--cond);font-size:22px;font-weight:700;letter-spacing:.16em;
  text-transform:uppercase;opacity:.6}
-.dch{display:flex;align-items:center;gap:22px;padding-bottom:24px}
-.dlogo{width:92px;height:92px;flex:none;object-fit:contain;display:block}
-.dch h1{font-size:74px;font-weight:700;line-height:1;letter-spacing:-.034em}
+.dch{display:flex;align-items:center;gap:22px;padding-bottom:22px}
+.dlogo{width:90px;height:90px;flex:none;object-fit:contain;display:block}
+.dch h1{font-size:72px;font-weight:700;line-height:1;letter-spacing:-.034em}
 
-/* Four columns for four rounds. Each conference is a six-row grid, so a
-   divisional game sits on the axis of the two wild card games under it and a
-   conference final on the axis of all three — the alignment a bracket needs
-   and the thing the earlier passes never had. */
-.br{flex:1;position:relative;padding:20px 30px 14px;display:grid;
- grid-template-columns:repeat(4,1fr);grid-template-rows:auto auto 1fr auto 1fr;
- column-gap:18px}
+/* A bracket is a landscape shape; this frame is portrait. So it runs downward
+   instead — six wild card games across the full width, then four, then two,
+   then the final. Every row fills the frame, and the round a team reached is
+   the width of its card. AFC holds the left half throughout, NFC the right. */
+.br{flex:1;position:relative;padding:16px 32px 12px;display:flex;flex-direction:column}
 .lines{position:absolute;inset:0;pointer-events:none;z-index:0}
-.ch{grid-row:1;font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;
- text-transform:uppercase;color:var(--fnt);padding:0 1px 8px;border-bottom:1px solid var(--hr)}
-.cf{grid-column:1/4;font-family:var(--cond);font-size:24px;font-weight:700;
- letter-spacing:.13em;text-transform:uppercase;padding:13px 1px 6px;z-index:1}
-.cbl{grid-column:1/4;display:grid;grid-template-columns:repeat(3,1fr);
- grid-template-rows:repeat(6,1fr);column-gap:18px;z-index:1}
-.gm{align-self:center;background:var(--card);border:1px solid var(--ln);border-radius:10px;
- overflow:hidden}
-.sl{display:grid;grid-template-columns:17px 28px minmax(0,1fr);align-items:center;gap:11px;
- height:46px;padding:0 13px}
+.cfh{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:11px;
+ border-bottom:1px solid var(--hr)}
+.cfh p{font-family:var(--cond);font-size:24px;font-weight:700;letter-spacing:.14em;
+ text-transform:uppercase}
+.rw{display:grid;gap:10px;position:relative;z-index:1}
+.rl{font-family:var(--cond);font-size:16px;font-weight:700;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--fnt);padding:13px 1px 7px;position:relative;z-index:1}
+.gm{background:var(--card);border:1px solid var(--ln);border-radius:10px;overflow:hidden;
+ display:flex;flex-direction:column}
+.sl{flex:1;display:grid;align-items:center;padding:0 12px}
 .sl+.sl{border-top:1px solid var(--ln)}
-.sd{font-style:normal;font-size:13px;font-weight:600;color:var(--fnt);text-align:center}
-.mk{display:grid;place-items:center;height:28px}
-.mk img{width:28px;height:28px;object-fit:contain;display:block}
-.nm{font-size:23px;font-weight:600;letter-spacing:-.022em;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sd{font-style:normal;font-weight:600;color:var(--fnt);text-align:center}
+.mk{display:grid;place-items:center}
+.mk img{object-fit:contain;display:block;width:100%;height:100%}
+.nm{font-weight:600;letter-spacing:-.022em;white-space:nowrap;overflow:hidden;
+ text-overflow:ellipsis}
 .sl.w{background:var(--tc)}
 .sl.w .nm{color:var(--tf);font-weight:700}
 .sl.w .sd{color:var(--tf);opacity:.72}
 
-.fin{grid-column:4;grid-row:2/6;display:flex;flex-direction:column;justify-content:center;
- gap:18px;z-index:1}
-.fin .gm{border-radius:12px}
-.fin .sl{height:66px;grid-template-columns:17px 36px minmax(0,1fr)}
-.fin .mk,.fin .mk img{height:36px}.fin .mk img{width:36px}
-.fin .nm{font-size:31px}
-.daw{flex:none;height:262px;display:grid;grid-template-columns:repeat(3,1fr);
+.r0 .gm{height:136px}.r1 .gm{height:152px}.r2 .gm{height:164px}.r3 .gm{height:192px}
+.r0 .sl{grid-template-columns:14px 24px minmax(0,1fr);gap:8px;padding:0 10px}
+.r1 .sl{grid-template-columns:16px 30px minmax(0,1fr);gap:11px}
+.r2 .sl{grid-template-columns:17px 34px minmax(0,1fr);gap:13px}
+.r3 .sl{grid-template-columns:19px 44px minmax(0,1fr);gap:16px;padding:0 22px}
+.r0 .mk,.r0 .mk img{height:24px}.r1 .mk,.r1 .mk img{height:30px}
+.r2 .mk,.r2 .mk img{height:34px}.r3 .mk,.r3 .mk img{height:44px}
+.r0 .sd{font-size:12px}.r1 .sd{font-size:13px}.r2 .sd{font-size:14px}.r3 .sd{font-size:15px}
+.r0 .nm{font-size:18px}.r1 .nm{font-size:24px}.r2 .nm{font-size:28px}.r3 .nm{font-size:38px}
+
+.daw{flex:none;height:250px;display:grid;grid-template-columns:repeat(3,1fr);
  padding:0 34px;border-top:1px solid var(--hr)}
-.aw{position:relative;overflow:hidden;padding:20px 10px 0}
+.aw{position:relative;overflow:hidden;padding:18px 10px 0}
 .awl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;
  text-transform:uppercase;color:var(--fnt);position:relative;z-index:2}
-.awn{position:relative;z-index:2;margin-top:6px;font-size:32px;font-weight:700;
- letter-spacing:-.032em;line-height:1.06;max-width:164px}
-.face{position:absolute;right:-16px;bottom:0;height:190px;width:auto;z-index:1}
+.awn{position:relative;z-index:2;margin-top:6px;font-size:31px;font-weight:700;
+ letter-spacing:-.032em;line-height:1.06;max-width:160px}
+.face{position:absolute;right:-16px;bottom:0;height:182px;width:auto;z-index:1}
 </style></head><body>
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
@@ -71,7 +73,9 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
   <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
    <h1>Buffalo Bills</h1></div>
  </header>
- <div class="br" id="br"><svg class="lines" id="lines"></svg></div>
+ <div class="br" id="br"><svg class="lines" id="lines"></svg>
+  <div class="cfh"><p>AFC</p><p>NFC</p></div>
+ </div>
  <div class="daw">
   <div class="aw"><p class="awl">MVP</p><img class="face" src="headshots/joshallen.webp" alt=""><p class="awn">Josh Allen</p></div>
   <div class="aw"><p class="awl">Offensive POY</p><img class="face" src="headshots/justinjefferson.webp" alt=""><p class="awn">Justin Jefferson</p></div>
@@ -85,49 +89,41 @@ const T={PIT:['Steelers','#FFB81C','#fff'],BUF:['Bills','#003087','#fff'],
  GB:['Packers','#203731','#fff'],LAR:['Rams','#003594','#fff'],
  DAL:['Cowboys','#0C2340','#fff'],CHI:['Bears','#091F2C','#fff'],
  ATL:['Falcons','#A71930','#fff'],PHI:['Eagles','#004851','#fff']};
-/* [higher seed, lower seed, index of the winner] */
-const B={AFC:[
-  [[['PIT',2],['BUF',7],1],[['HOU',3],['CLE',6],0],[['MIA',4],['TEN',5],1]],
-  [[['LAC',1],['BUF',7],1],[['HOU',3],['TEN',5],1]],
-  [[['TEN',5],['BUF',7],1]]],
- NFC:[
-  [[['CHI',2],['NYG',7],1],[['ATL',3],['GB',6],1],[['PHI',4],['DAL',5],1]],
-  [[['LAR',1],['NYG',7],1],[['DAL',5],['GB',6],1]],
-  [[['GB',6],['NYG',7],1]]]};
-const SB=[['BUF',''],['NYG',''],0];
-const SPAN=[[1,2],[1,3],[1,6]];   /* rows each game holds, per round */
+/* each round left to right: the AFC games first, then the NFC games */
+const RDS=[['Wild card',[
+  [['PIT',2],['BUF',7],1],[['HOU',3],['CLE',6],0],[['MIA',4],['TEN',5],1],
+  [['CHI',2],['NYG',7],1],[['ATL',3],['GB',6],1],[['PHI',4],['DAL',5],1]]],
+ ['Divisional',[
+  [['LAC',1],['BUF',7],1],[['HOU',3],['TEN',5],1],
+  [['LAR',1],['NYG',7],1],[['DAL',5],['GB',6],1]]],
+ ['Conference championship',[
+  [['TEN',5],['BUF',7],1],[['GB',6],['NYG',7],1]]],
+ ['Super Bowl',[[['BUF',''],['NYG',''],0]]]];
 const slot=([k,s],win)=>{const t=T[k];
  return `<span class="sl${win?' w':''}" style="--tc:${t[1]};--tf:${t[2]}">`
   +`<i class="sd">${s}</i><span class="mk"><img src="logos/${k.toLowerCase()}.webp" alt=""></span>`
   +`<span class="nm">${t[0]}</span></span>`};
-const game=([a,b,w])=>slot(a,!w)+slot(b,!!w);
 const br=document.getElementById('br');
-br.insertAdjacentHTML('beforeend',
- ['Wild card','Divisional','Conference','Super Bowl']
-   .map(h=>`<p class="ch">${h}</p>`).join('')
- +['AFC','NFC'].map((cf,ci)=>`<p class="cf" style="grid-row:${2+ci*2}">${cf}</p>`
-   +`<div class="cbl" style="grid-row:${3+ci*2}">`
-   +B[cf].map((rd,r)=>rd.map((g,i)=>
-     `<div class="gm" data-g="${cf}${r}${i}" style="grid-column:${r+1};`
-     +`grid-row:${i*SPAN[r][1]+1}/span ${SPAN[r][1]}">${game(g)}</div>`).join('')).join('')
-   +`</div>`).join('')
- +`<div class="fin"><div class="gm" data-g="SB">${slot(SB[0],1)}${slot(SB[1],0)}</div></div>`);
+br.insertAdjacentHTML('beforeend',RDS.map(([l,gs],r)=>
+ `<p class="rl">${l}</p><div class="rw r${r}" style="grid-template-columns:repeat(${gs.length},1fr)">`
+ +gs.map(([a,b,w],i)=>`<div class="gm" data-r="${r}" data-i="${i}">${slot(a,!w)}${slot(b,!!w)}</div>`).join('')
+ +`</div>`).join(''));
 
-/* Square joints off card centres: one spine between two columns, stubs out of
-   every game on its left and into every game on its right. The wild card round
-   shares a single spine because reseeding makes it a re-draw, not a tree. */
+/* Square joints, drawn downward. The wild card round shares one spine per
+   conference because reseeding makes it a re-draw; everything after it pairs. */
 const svg=document.getElementById('lines'),bx=br.getBoundingClientRect();
 svg.setAttribute('viewBox',`0 0 ${bx.width} ${bx.height}`);
-const R=el=>{const r=el.getBoundingClientRect();
- return{l:r.left-bx.left,r:r.right-bx.left,y:r.top-bx.top+r.height/2}};
-const d=[],join=(A,Bx)=>{
- const x=(Math.max(...A.map(p=>p.r))+Math.min(...Bx.map(p=>p.l)))/2;
- const ys=[...A,...Bx].map(p=>p.y);
- if(Math.max(...ys)-Math.min(...ys)>1)d.push(`M${x} ${Math.min(...ys)}V${Math.max(...ys)}`);
- A.forEach(p=>d.push(`M${p.r} ${p.y}H${x}`));
- Bx.forEach(p=>d.push(`M${x} ${p.y}H${p.l}`))};
-const col=(cf,r)=>[...br.querySelectorAll(`.gm[data-g^="${cf}${r}"]`)].map(R);
-['AFC','NFC'].forEach(cf=>{join(col(cf,0),col(cf,1));join(col(cf,1),col(cf,2))});
-join([...col('AFC',2),...col('NFC',2)],[R(br.querySelector('.gm[data-g="SB"]'))]);
+const g=(r,i)=>{const e=br.querySelector(`.gm[data-r="${r}"][data-i="${i}"]`).getBoundingClientRect();
+ return{x:e.left-bx.left+e.width/2,t:e.top-bx.top,b:e.bottom-bx.top}};
+const d=[],join=(A,B)=>{
+ const y=(Math.max(...A.map(p=>p.b))+Math.min(...B.map(p=>p.t)))/2;
+ const xs=[...A,...B].map(p=>p.x);
+ if(Math.max(...xs)-Math.min(...xs)>1)d.push(`M${Math.min(...xs)} ${y}H${Math.max(...xs)}`);
+ A.forEach(p=>d.push(`M${p.x} ${p.b}V${y}`));
+ B.forEach(p=>d.push(`M${p.x} ${y}V${p.t}`))};
+[0,3].forEach((o,c)=>{                    /* c=0 AFC on the left, c=1 NFC */
+ join([g(0,o),g(0,o+1),g(0,o+2)],[g(1,c*2),g(1,c*2+1)]);
+ join([g(1,c*2),g(1,c*2+1)],[g(2,c)])});
+join([g(2,0),g(2,1)],[g(3,0)]);
 svg.innerHTML=d.map(p=>`<path d="${p}" fill="none" stroke="rgba(25,25,23,.24)" stroke-width="1.5"/>`).join('');
 </script></body></html>
