@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Export card</title>
+<!doctype html><html><head><meta charset="utf-8"><title>Export cards</title>
 <style>
 @font-face{font-family:'Sohne';src:url('fonts/Sohne-Buch.woff2') format('woff2');font-weight:400}
 @font-face{font-family:'Sohne';src:url('fonts/Sohne-Kraftig.woff2') format('woff2');font-weight:500}
@@ -9,10 +9,10 @@
  --paper:#FAFAF6;--card:#FFFDF7;--ink:#191917;--mut:#605F58;--fnt:#9C9B92;
  --hr:rgba(25,25,23,.09);--ln:rgba(25,25,23,.13)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#D8D8D2;padding:16px;font-family:var(--sans)}
-body{zoom:.5} /* review only — authored at 1080x1350 */
+body{background:#D8D8D2;padding:16px;font-family:var(--sans);display:flex;gap:16px}
+body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
- background:var(--paper);color:var(--ink)}
+ background:var(--paper);color:var(--ink);flex:none}
 
 .dh{background:var(--tc);color:var(--tf);height:164px;flex:none;padding:26px 36px 0;
  display:flex;flex-direction:column;justify-content:space-between}
@@ -21,52 +21,69 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .dch{display:flex;align-items:center;gap:20px;padding-bottom:22px}
 .dlogo{width:82px;height:82px;flex:none;object-fit:contain;display:block}
 .dch h1{font-size:68px;font-weight:700;line-height:1;letter-spacing:-.034em}
+.pg{margin-left:auto;font-family:var(--cond);font-size:22px;font-weight:700;
+ letter-spacing:.16em;text-transform:uppercase;opacity:.55;align-self:flex-end;
+ padding-bottom:6px}
 
-/* Three rounds across, one conference at a time, the final in the seam between
-   them. Of the ways a fourteen team bracket can be drawn this is the only one
-   whose natural shape is taller than it is wide, which is why the mirrored and
-   left-to-right versions never sat in this frame. Three columns instead of
-   seven also means a card is wide enough for a team's full name. */
-.br{flex:1;position:relative;padding:16px 36px 12px;display:flex;flex-direction:column}
+/* ---- card one: how all thirty two finish -------------------------------- */
+.dvs{flex:1;padding:18px 36px 10px;display:grid;grid-template-columns:1fr 1fr;
+ column-gap:34px;align-content:start}
+.cfh{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
+ text-transform:uppercase;padding-bottom:9px;border-bottom:1px solid var(--hr);
+ margin-bottom:14px}
+.dvc{display:flex;flex-direction:column;gap:18px;min-width:0}
+.dv{min-width:0}
+.dvl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--fnt);margin-bottom:6px}
+.dr{display:grid;grid-template-columns:20px 28px minmax(0,1fr) auto;align-items:center;
+ gap:13px;height:44px;border-bottom:1px solid var(--hr)}
+.dv .dr:last-child{border-bottom:0}
+.dp{font-style:normal;font-size:13px;font-weight:600;color:var(--fnt);text-align:center}
+.dr img{width:28px;height:28px;object-fit:contain;display:block}
+.dn{font-size:25px;font-weight:600;letter-spacing:-.024em;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis}
+.sdb{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--tf);background:var(--tc);border-radius:5px;
+ padding:4px 8px 3px}
+.dr.miss .dn{color:var(--mut);font-weight:400}
+.dr.miss img{opacity:.45}
+
+/* ---- card two: the bracket ---------------------------------------------- */
+.br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
 .lines{position:absolute;inset:0;pointer-events:none;z-index:0}
 .hd{display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
- padding-bottom:9px;
- border-bottom:1px solid var(--hr)}
-.hd p,.cf{font-family:var(--cond);font-weight:700;text-transform:uppercase}
-.hd p{font-size:16px;letter-spacing:.14em;color:var(--fnt)}
-.cf{font-size:23px;letter-spacing:.13em;padding:12px 0 6px;position:relative;z-index:1}
+ padding-bottom:9px;border-bottom:1px solid var(--hr)}
+.hd p{font-family:var(--cond);font-size:16px;font-weight:700;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--fnt)}
+.cf{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
+ text-transform:uppercase;padding:14px 0 8px;position:relative;z-index:1}
 .bn{flex:1;display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
  grid-template-rows:repeat(6,1fr);position:relative;z-index:1}
 .gm{align-self:center;background:var(--card);border:1px solid var(--ln);border-radius:10px;
  overflow:hidden}
-.sl{display:grid;grid-template-columns:18px 30px minmax(0,1fr);align-items:center;gap:12px;
- height:42px;padding:0 13px}
+.sl{display:grid;grid-template-columns:18px 32px minmax(0,1fr);align-items:center;gap:13px;
+ height:54px;padding:0 15px}
 .sl+.sl{border-top:1px solid var(--ln)}
-.sd{font-style:normal;font-size:13px;font-weight:600;text-align:center;color:var(--fnt)}
-.mk{display:grid;place-items:center;height:30px}
-.mk img{width:30px;height:30px;object-fit:contain;display:block}
-.nm{font-size:26px;font-weight:600;letter-spacing:-.024em;
+.sd{font-style:normal;font-size:14px;font-weight:600;text-align:center;color:var(--fnt)}
+.mk{display:grid;place-items:center;height:32px}
+.mk img{width:32px;height:32px;object-fit:contain;display:block}
+.nm{font-size:29px;font-weight:600;letter-spacing:-.024em;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sl.w .nm{font-weight:700}
 .sl.out .nm{color:var(--mut);font-weight:400}
 .sl.out .mk img{opacity:.5}
 .sl.out .sd{color:#BBBAB0}
-
-/* the seam: both conference finals drop straight into it */
-.sm{flex:none;height:118px;display:grid;grid-template-columns:1fr 650px;
- align-items:center;position:relative;z-index:1}
+.sm{flex:none;height:158px;display:grid;grid-template-columns:1fr 650px;align-items:center;
+ position:relative;z-index:1}
 .sml{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
  text-transform:uppercase}
-.sm .gm{align-self:center}
-.sm .sl{height:58px;grid-template-columns:18px 38px minmax(0,1fr);padding:0 20px}
-.sm .mk,.sm .mk img{height:38px}.sm .mk img{width:38px}
-.sm .nm{font-size:30px}
+.sm .sl{height:70px;grid-template-columns:18px 42px minmax(0,1fr);padding:0 22px}
+.sm .mk,.sm .mk img{height:42px}.sm .mk img{width:42px}
+.sm .nm{font-size:36px}
 
+/* ---- the awards row, on card one ---------------------------------------- */
 .daw{flex:none;height:210px;display:grid;grid-template-columns:repeat(3,1fr);
  column-gap:22px;align-items:center;padding:0 36px;border-top:1px solid var(--hr)}
-/* The cutouts are framed differently from one another, so bleeding them off
-   the card cut each player at a different point and put a head through every
-   name. Each sits in its own dish instead, which normalises the framing. */
 .aw{display:flex;align-items:center;gap:17px;min-width:0}
 .dish{flex:none;width:116px;height:116px;border-radius:50%;overflow:hidden;position:relative;
  background:var(--c)}
@@ -78,15 +95,14 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .awm{margin-top:5px;font-size:15px;font-weight:500;color:var(--mut);letter-spacing:-.004em}
 .awm i{font-style:normal;font-weight:400;color:var(--fnt);padding:0 7px}
 </style></head><body>
+
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
-  <p class="dhr">Nick&rsquo;s picks &middot; 2026 NFL playoffs</p>
+  <p class="dhr">Nick&rsquo;s picks &middot; 2026 NFL</p>
   <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
-   <h1>Buffalo Bills</h1></div>
+   <h1>Buffalo Bills</h1><p class="pg">One of two &middot; the season</p></div>
  </header>
- <div class="br" id="br"><svg class="lines" id="lines"></svg>
-  <div class="hd"><p>Wild card</p><p>Divisional</p><p>Conference</p></div>
- </div>
+ <div class="dvs" id="dvs"></div>
  <div class="daw">
   <div class="aw" style="--c:#003087"><span class="dish"><img src="headshots/joshallen.webp" alt=""></span>
    <span class="awt"><p class="awl">MVP</p><p class="awn">Josh Allen</p>
@@ -98,11 +114,56 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
    <span class="awt"><p class="awl">Defensive POY</p><p class="awn">Myles Garrett</p>
     <p class="awm">EDGE<i>|</i>Rams</p></span></div>
  </div>
-</div><script>
-const T={PIT:'Steelers',BUF:'Bills',HOU:'Texans',CLE:'Browns',MIA:'Dolphins',
- TEN:'Titans',LAC:'Chargers',NYG:'Giants',GB:'Packers',LAR:'Rams',
- DAL:'Cowboys',CHI:'Bears',ATL:'Falcons',PHI:'Eagles'};
-/* [higher seed, lower seed, index of the winner] */
+</div>
+
+<div class="card" style="--tc:#003087;--tf:#fff">
+ <header class="dh">
+  <p class="dhr">Nick&rsquo;s picks &middot; 2026 NFL</p>
+  <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
+   <h1>Buffalo Bills</h1><p class="pg">Two of two &middot; the playoffs</p></div>
+ </header>
+ <div class="br" id="br"><svg class="lines" id="lines"></svg>
+  <div class="hd"><p>Wild card</p><p>Divisional</p><p>Conference</p></div>
+ </div>
+</div>
+
+<script>
+const N={ARI:'Cardinals',ATL:'Falcons',BAL:'Ravens',BUF:'Bills',CAR:'Panthers',
+ CHI:'Bears',CIN:'Bengals',CLE:'Browns',DAL:'Cowboys',DEN:'Broncos',DET:'Lions',
+ GB:'Packers',HOU:'Texans',IND:'Colts',JAX:'Jaguars',KC:'Chiefs',LAC:'Chargers',
+ LAR:'Rams',LV:'Raiders',MIA:'Dolphins',MIN:'Vikings',NE:'Patriots',NO:'Saints',
+ NYG:'Giants',NYJ:'Jets',PHI:'Eagles',PIT:'Steelers',SEA:'Seahawks',SF:'49ers',
+ TB:'Buccaneers',TEN:'Titans',WAS:'Commanders'};
+const C={BUF:'#003087',MIA:'#008C95',NE:'#0C2340',NYJ:'#115740',PIT:'#FFB81C',
+ CLE:'#311D00',BAL:'#24125F',CIN:'#FB4F14',HOU:'#E4002B',TEN:'#418FDE',
+ IND:'#002C5F',JAX:'#006778',LAC:'#0072CE',DEN:'#FB4F14',KC:'#C8102E',LV:'#000000',
+ PHI:'#004851',DAL:'#0C2340',NYG:'#001E62',WAS:'#651C32',CHI:'#091F2C',
+ GB:'#203731',DET:'#0069B1',MIN:'#582C83',ATL:'#A71930',TB:'#A6192E',
+ CAR:'#0085CA',NO:'#D3BC8D',LAR:'#003594',SF:'#A6192E',SEA:'#0C2340',ARI:'#9B2743'};
+const FG=k=>['PIT','NO','TEN','ARI'].includes(k)?'#fff'
+ :(n=>{const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
+   return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)>.42?'#191917':'#fff'})
+   (parseInt(C[k].slice(1),16));
+const img=k=>`<img src="logos/${k.toLowerCase()}.webp" alt="">`;
+
+/* ---- card one ----------------------------------------------------------- */
+/* every division in order of finish; the seed is carried by whoever made it */
+const SEED={LAC:1,PIT:2,HOU:3,MIA:4,TEN:5,CLE:6,BUF:7,
+            LAR:1,CHI:2,ATL:3,PHI:4,DAL:5,GB:6,NYG:7};
+const DIV={AFC:[['East',['MIA','BUF','NE','NYJ']],['North',['PIT','CLE','BAL','CIN']],
+                ['South',['HOU','TEN','IND','JAX']],['West',['LAC','DEN','KC','LV']]],
+           NFC:[['East',['PHI','DAL','NYG','WAS']],['North',['CHI','GB','DET','MIN']],
+                ['South',['ATL','TB','CAR','NO']],['West',['LAR','SF','SEA','ARI']]]};
+document.getElementById('dvs').innerHTML=['AFC','NFC'].map(cf=>
+ `<div><p class="cfh">${cf}</p><div class="dvc">`
+ +DIV[cf].map(([d,ts])=>`<div class="dv"><p class="dvl">${cf} ${d}</p>`
+   +ts.map((k,i)=>`<div class="dr${SEED[k]?'':' miss'}">`
+     +`<i class="dp">${i+1}</i>${img(k)}<span class="dn">${N[k]}</span>`
+     +(SEED[k]?`<span class="sdb" style="--tc:${C[k]};--tf:${FG(k)}">${SEED[k]} seed</span>`:'<span></span>')
+     +`</div>`).join('')
+   +`</div>`).join('')+`</div></div>`).join('');
+
+/* ---- card two ----------------------------------------------------------- */
 const B={AFC:[
   [[['PIT',2],['BUF',7],1],[['HOU',3],['CLE',6],0],[['MIA',4],['TEN',5],1]],
   [[['LAC',1],['BUF',7],1],[['HOU',3],['TEN',5],1]],
@@ -111,10 +172,10 @@ const B={AFC:[
   [[['CHI',2],['NYG',7],1],[['ATL',3],['GB',6],1],[['PHI',4],['DAL',5],1]],
   [[['LAR',1],['NYG',7],1],[['DAL',5],['GB',6],1]],
   [[['GB',6],['NYG',7],1]]]};
-const SPAN=[2,3,6];                        /* rows a game holds, per round */
+const SPAN=[2,3,6];
 const slot=([k,s],win)=>`<span class="sl ${win?'w':'out'}">`
- +`<i class="sd">${s}</i><span class="mk"><img src="logos/${k.toLowerCase()}.webp" alt=""></span>`
- +`<span class="nm">${T[k]}</span></span>`;
+ +`<i class="sd">${s}</i><span class="mk">${img(k)}</span>`
+ +`<span class="nm">${N[k]}</span></span>`;
 const game=([a,b,w])=>slot(a,!w)+slot(b,!!w);
 const band=cf=>`<p class="cf">${cf}</p><div class="bn" data-cf="${cf}">`
  +B[cf].map((rd,r)=>rd.map((g,i)=>
@@ -124,12 +185,8 @@ const band=cf=>`<p class="cf">${cf}</p><div class="bn" data-cf="${cf}">`
 document.getElementById('br').insertAdjacentHTML('beforeend',
  band('AFC')
  +`<div class="sm"><p class="sml">Super Bowl</p><div class="gm" data-g="SB">`
- +slot([['BUF'],''][0],1).replace('undefined','')
- +`</div></div>`
+ +slot(['BUF',''],1)+slot(['NYG',''],0)+`</div></div>`
  +band('NFC'));
-/* the final, written out rather than squeezed through the band helper */
-document.querySelector('.sm .gm').innerHTML=
- slot(['BUF',''],1)+slot(['NYG',''],0);
 
 const br=document.getElementById('br'),svg=document.getElementById('lines');
 const bx=br.getBoundingClientRect();
@@ -145,28 +202,25 @@ const d=[],join=(A,Bt)=>{
  Bt.forEach(p=>d.push(`M${x} ${p.y}H${p.l}`))};
 const col=(cf,r)=>[...br.querySelectorAll(`.gm[data-g^="${cf}${r}"]`)].map(R);
 ['AFC','NFC'].forEach(cf=>{join(col(cf,0),col(cf,1));join(col(cf,1),col(cf,2))});
-/* both conference finals drop straight down or up into the seam */
 const sb=R(br.querySelector('.gm[data-g="SB"]'));
 [['AFC',1],['NFC',-1]].forEach(([cf,dir])=>{const c=col(cf,2)[0];
  const y1=dir>0?c.b:c.t, y2=dir>0?sb.t:sb.b, m=(y1+y2)/2;
  d.push(`M${c.x} ${y1}V${m}H${sb.x}V${y2}`)});
 svg.innerHTML=d.map(p=>`<path d="${p}" fill="none" stroke="rgba(25,25,23,.24)" stroke-width="1.5"/>`).join('');
 
-/* One cutout is 176x128 and another 600x436, each with its own amount of empty
-   margin, so any fixed crop lines up on none of them. Measure the opaque box
-   in every headshot and fit that to the dish instead — the three busts then
-   sit at one scale on one baseline. */
+/* fit each headshot by its own opaque box, so differently framed cutouts
+   still land at one scale on one baseline */
 (async()=>{for(const dish of document.querySelectorAll('.dish')){
- const img=dish.querySelector('img');await img.decode();
- const w=img.naturalWidth,h=img.naturalHeight,c=document.createElement('canvas');
- c.width=w;c.height=h;const g2=c.getContext('2d');g2.drawImage(img,0,0);
+ const im=dish.querySelector('img');await im.decode();
+ const w=im.naturalWidth,h=im.naturalHeight,c=document.createElement('canvas');
+ c.width=w;c.height=h;const g2=c.getContext('2d');g2.drawImage(im,0,0);
  const px=g2.getImageData(0,0,w,h).data;
  let x0=w,y0=h,x1=0,y1=0;
  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(px[(y*w+x)*4+3]>12){
   if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
  const bw=x1-x0+1,bh=y1-y0+1,D=dish.clientHeight,k=D*.97/bh;
- img.style.height=h*k+'px';
- img.style.left=D/2-(x0+bw/2)*k+'px';
- img.style.bottom=-((h-1-y1)*k)+'px';
+ im.style.height=h*k+'px';
+ im.style.left=D/2-(x0+bw/2)*k+'px';
+ im.style.bottom=-((h-1-y1)*k)+'px';
 }})();
 </script></body></html>
