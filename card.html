@@ -6,17 +6,15 @@
 @font-face{font-family:'Sohne';src:url('fonts/Sohne-Dreiviertelfett.woff2') format('woff2');font-weight:700}
 @font-face{font-family:'Sohne Schmal';src:url('fonts/SohneSchmal-Dreiviertelfett.woff2') format('woff2');font-weight:700}
 :root{--sans:'Sohne',system-ui,sans-serif;--cond:'Sohne Schmal','Sohne',sans-serif;
- --paper:#FAFAF6;--card:#FFFDF7;--ink:#191917;--mut:#605F58;--fnt:#9C9B92;
- --hr:rgba(25,25,23,.09);
- --cardsh:0 1px 1px rgba(25,25,23,.04),0 6px 16px -10px rgba(25,25,23,.3)}
+ --paper:#FAFAF6;--ink:#191917;--mut:#605F58;--fnt:#9C9B92;--hr:rgba(25,25,23,.09)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#D8D8D2;padding:16px;font-family:var(--sans)}
 body{zoom:.5} /* review only — authored at 1080x1350 */
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
  background:var(--paper);color:var(--ink)}
 
-/* the only colour on the card outside the bracket fills */
-.dh{background:var(--tc);color:#fff;height:200px;flex:none;padding:36px 54px 0;
+/* the only colour on the card */
+.dh{background:var(--tc);color:#fff;height:196px;flex:none;padding:36px 54px 0;
  display:flex;flex-direction:column;justify-content:space-between}
 .dhr{font-family:var(--cond);font-size:24px;font-weight:700;letter-spacing:.15em;
  text-transform:uppercase;opacity:.62}
@@ -25,83 +23,93 @@ body{zoom:.5} /* review only — authored at 1080x1350 */
 .dch h1{font-family:var(--cond);font-size:92px;font-weight:700;line-height:.86;
  letter-spacing:.005em;text-transform:uppercase}
 
-/* the bracket: four labelled rounds, AFC left and NFC right, read top down */
-.bkt{flex:1;padding:30px 46px 34px;display:flex;flex-direction:column;
- justify-content:space-between}
-.cfh{display:grid;grid-template-columns:1fr 1fr;gap:30px}
-.cfh p{font-family:var(--cond);font-size:32px;font-weight:700;letter-spacing:.15em;
- text-transform:uppercase;color:var(--ink)}
-.rd{display:flex;flex-direction:column;gap:12px}
-.rdl{display:flex;align-items:center;gap:14px;font-family:var(--cond);font-size:19px;
- font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--fnt)}
-.rdl::after{content:"";flex:1;height:1px;background:var(--hr)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:17px 30px}
-.bgm{border-radius:11px;background:var(--card);overflow:hidden;box-shadow:var(--cardsh)}
-.bsl{display:grid;grid-template-columns:19px 30px minmax(0,1fr);align-items:center;gap:13px;
- height:38px;padding:0 15px}
-.bsl+.bsl{border-top:1px solid var(--hr)}
-.bsd{font-style:normal;font-size:14px;font-weight:600;color:var(--fnt);text-align:center}
-.mark{display:grid;place-items:center;height:30px}
-.mark img{width:30px;height:30px;object-fit:contain;display:block;opacity:.9}
-.bnm{font-family:var(--cond);font-size:27px;font-weight:700;letter-spacing:.02em;
- text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bsl.lost{opacity:.4}
-.bsl.w{background:var(--tc)}
-.bsl.w .bnm{color:var(--tf)}
-.bsl.w .bsd{color:var(--tf);opacity:.7}
-.bsl.w .mark img{opacity:1}
-.sb .bsl{height:56px;grid-template-columns:19px 40px minmax(0,1fr)}
-.sb .mark,.sb .mark img{height:40px}.sb .mark img{width:40px}
-.sb .bnm{font-size:36px}
-.sb .rdl{font-size:22px;color:var(--ink)}
-.sb .rdl::after{background:var(--ink);opacity:.16}
+/* the matchup, facing each other */
+.sbm{flex:none;padding:44px 54px 50px;border-bottom:1px solid var(--hr)}
+.lbl{font-family:var(--cond);font-size:20px;font-weight:700;letter-spacing:.16em;
+ text-transform:uppercase;color:var(--fnt)}
+.sbg{display:grid;grid-template-columns:1fr 64px 1fr;align-items:center;margin-top:26px}
+.sbt{display:flex;align-items:center;gap:28px}
+.sbt img{width:138px;height:138px;object-fit:contain;display:block;flex:none}
+.sbt.a{justify-content:flex-end}
+.sbt.b{flex-direction:row-reverse;text-align:right}
+.sbc{font-size:21px;font-weight:600;color:var(--mut);letter-spacing:.03em}
+.sbn{font-family:var(--cond);font-size:72px;font-weight:700;line-height:.9;
+ letter-spacing:.01em;text-transform:uppercase;margin-top:3px}
+.vs{font-family:var(--cond);font-size:26px;font-weight:700;color:var(--fnt);
+ text-align:center;letter-spacing:.1em}
 
-.daw{flex:none;height:300px;display:grid;grid-template-columns:repeat(3,1fr);
- padding:0 40px;border-top:1px solid var(--hr)}
+/* one row per playoff team, deepest run first — no team appears twice */
+.ldr{flex:1;padding:42px 54px 0;display:grid;grid-template-columns:1fr 1fr;gap:0 44px;
+ align-content:start}
+.lch{font-family:var(--cond);font-size:30px;font-weight:700;letter-spacing:.15em;
+ text-transform:uppercase;margin-bottom:14px}
+.lr{display:grid;grid-template-columns:20px 34px minmax(0,1fr) auto;align-items:center;
+ gap:0 16px;height:66px;padding:0 12px;border-radius:9px}
+.lr+.lr{border-top:1px solid var(--hr)}
+.lr img{width:34px;height:34px;object-fit:contain;display:block}
+.ls{font-style:normal;font-size:14px;font-weight:600;color:var(--fnt);text-align:center}
+.ln{font-family:var(--cond);font-size:29px;font-weight:700;letter-spacing:.02em;
+ text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lx{font-family:var(--cond);font-size:16px;font-weight:700;letter-spacing:.11em;
+ text-transform:uppercase;color:var(--fnt);white-space:nowrap}
+.lr.out{opacity:.46}
+.lr.chp{background:var(--tc);border-top-color:transparent}
+.lr.chp+.lr{border-top-color:transparent}
+.lr.chp .ln,.lr.chp .lx{color:var(--tf)}
+.lr.chp .ls{color:var(--tf);opacity:.7}
+.lr.chp .lx{opacity:.85}
+
+.daw{flex:none;height:296px;display:grid;grid-template-columns:repeat(3,1fr);
+ padding:0 44px;border-top:1px solid var(--hr)}
 .awc{position:relative;overflow:hidden;padding:22px 12px 0}
 .awl{font-family:var(--cond);font-size:19px;font-weight:700;letter-spacing:.14em;
  text-transform:uppercase;color:var(--fnt);position:relative;z-index:2}
-.face{position:absolute;right:-14px;bottom:0;height:214px;width:auto;z-index:1}
+.face{position:absolute;right:-14px;bottom:0;height:212px;width:auto;z-index:1}
 .awn{position:relative;z-index:2;margin-top:9px;font-family:var(--cond);font-size:44px;
  font-weight:700;letter-spacing:.02em;text-transform:uppercase;line-height:.9;max-width:170px}
 </style></head><body>
-<div class="card" id="card" style="--tc:#003087">
+<div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
   <p class="dhr">Nick&rsquo;s picks &middot; 2026 NFL playoffs</p>
   <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
    <h1>Buffalo Bills</h1></div>
  </header>
- <div class="bkt" id="bkt"></div>
+
+ <section class="sbm">
+  <p class="lbl">Super Bowl</p>
+  <div class="sbg">
+   <div class="sbt a"><img src="logos/buf.webp" alt="">
+    <div><p class="sbc">Buffalo</p><p class="sbn">Bills</p></div></div>
+   <p class="vs">vs</p>
+   <div class="sbt b"><img src="logos/nyg.webp" alt="">
+    <div><p class="sbc">New York</p><p class="sbn">Giants</p></div></div>
+  </div>
+ </section>
+
+ <div class="ldr" id="ldr"></div>
+
  <div class="daw">
   <div class="awc"><p class="awl">MVP</p><img class="face" src="headshots/joshallen.webp" alt=""><p class="awn">Josh Allen</p></div>
   <div class="awc"><p class="awl">Offensive POY</p><img class="face" src="headshots/justinjefferson.webp" alt=""><p class="awn">Justin Jefferson</p></div>
   <div class="awc"><p class="awl">Defensive POY</p><img class="face" src="headshots/mylesgarrett.webp" alt=""><p class="awn">Myles Garrett</p></div>
  </div>
 </div><script>
-const T={PIT:['Pittsburgh Steelers','#FFB81C','#191917'],BUF:['Buffalo Bills','#003087','#fff'],
- HOU:['Houston Texans','#E4002B','#fff'],CLE:['Cleveland Browns','#311D00','#fff'],
- MIA:['Miami Dolphins','#008C95','#fff'],TEN:['Tennessee Titans','#418FDE','#fff'],
- LAC:['LA Chargers','#0072CE','#fff'],NYG:['New York Giants','#001E62','#fff'],
- GB:['Green Bay Packers','#203731','#fff'],LAR:['LA Rams','#003594','#fff'],
- DAL:['Dallas Cowboys','#0C2340','#fff'],CHI:['Chicago Bears','#091F2C','#fff'],
- ATL:['Atlanta Falcons','#A71930','#fff'],PHI:['Philadelphia Eagles','#004851','#fff']};
-/* [higher seed, lower seed, index of the winner] */
-const RDS=[
- ['Wild Card',[[['PIT',2],['BUF',7],1],[['HOU',3],['CLE',6],0],[['MIA',4],['TEN',5],1]],
-             [[['CHI',2],['NYG',7],1],[['ATL',3],['GB',6],1],[['PHI',4],['DAL',5],1]]],
- ['Divisional',[[['LAC',1],['BUF',7],1],[['HOU',3],['TEN',5],1]],
-               [[['LAR',1],['NYG',7],1],[['DAL',5],['GB',6],1]]],
- ['Conference Championship',[[['TEN',5],['BUF',7],1]],[[['GB',6],['NYG',7],1]]]];
-const SB=[['BUF',''],['NYG',''],0];
-const slot=([k,s],win)=>{const t=T[k];
- return `<span class="bsl ${win?'w':'lost'}" style="--tc:${t[1]};--tf:${t[2]}">`
-  +`<i class="bsd">${s}</i><span class="mark"><img src="logos/${k.toLowerCase()}.webp" alt=""></span>`
-  +`<span class="bnm">${t[0]}</span></span>`};
-const game=([a,b,w])=>`<div class="bgm">${slot(a,!w)}${slot(b,!!w)}</div>`;
-document.getElementById('bkt').innerHTML=
- `<div class="cfh"><p>AFC</p><p>NFC</p></div>`
- +RDS.map(([l,afc,nfc])=>`<section class="rd"><p class="rdl">${l}</p><div class="two">`
-   +`<div>${afc.map(game).join('')}</div><div>${nfc.map(game).join('')}</div>`
-   +`</div></section>`).join('')
- +`<section class="rd sb"><p class="rdl">Super Bowl</p>${game(SB)}</section>`;
+const NM={PIT:'Pittsburgh Steelers',BUF:'Buffalo Bills',HOU:'Houston Texans',
+ CLE:'Cleveland Browns',MIA:'Miami Dolphins',TEN:'Tennessee Titans',LAC:'LA Chargers',
+ NYG:'New York Giants',GB:'Green Bay Packers',LAR:'LA Rams',DAL:'Dallas Cowboys',
+ CHI:'Chicago Bears',ATL:'Atlanta Falcons',PHI:'Philadelphia Eagles'};
+/* [team, seed, how far it got] — ordered by finish, so the top row is the champion */
+const RUN=[
+ ['AFC',[['BUF',7,'Champion'],['TEN',5,'Conf final'],['LAC',1,'Divisional'],
+         ['HOU',3,'Divisional'],['PIT',2,'Wild card'],['CLE',6,'Wild card'],
+         ['MIA',4,'Wild card']]],
+ ['NFC',[['NYG',7,'Super Bowl'],['GB',6,'Conf final'],['LAR',1,'Divisional'],
+         ['DAL',5,'Divisional'],['CHI',2,'Wild card'],['ATL',3,'Wild card'],
+         ['PHI',4,'Wild card']]]];
+document.getElementById('ldr').innerHTML=RUN.map(([cf,ts])=>
+ `<div><p class="lch">${cf}</p>`+ts.map(([k,s,x],i)=>
+  `<div class="lr ${i===0&&x==='Champion'?'chp':i>3?'out':''}">`
+  +`<i class="ls">${s}</i><img src="logos/${k.toLowerCase()}.webp" alt="">`
+  +`<span class="ln">${NM[k]}</span><span class="lx">${x}</span></div>`).join('')
+ +`</div>`).join('');
 </script></body></html>
