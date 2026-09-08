@@ -22,10 +22,10 @@
 }
 *{box-sizing:border-box}
 /* The browser hides [hidden] with display:none from its own stylesheet, which
-   any author rule setting display quietly beats. .cnd is a grid and .dvr an
-   inline-flex, so hiding either did nothing you could see — the award search
-   had been marking rows hidden and painting them anyway. Author it once, here,
-   rather than remembering it at every call site. */
+   any author rule setting display quietly beats. .cnd is a grid, so hiding it
+   did nothing you could see — the award search had been marking rows hidden
+   and painting them anyway. Author it once, here, rather than remembering it
+   at every call site. */
 [hidden]{display:none!important}
 html,body{margin:0;background:var(--paper)}
 /* The browser paints its own colour over a tapped control before ours arrives —
@@ -133,64 +133,6 @@ h1,h2,h3,h4,p{margin:0}
 .mark.lg{width:46px;height:46px}
 .mark.lg.tile i{font-size:14px}
 
-/* ---- ranking a division ---------------------------------------------------
-   A list that sorts itself. Placed teams rise to the top in order and wear
-   their own colour; the ones still to be placed sit under them on paper. The
-   row keeps its element through the rewrite so the FLIP in divisions.js has
-   something to animate. */
-.divs{display:grid;gap:24px}
-/* No rule under the label: every card below carries its own edge, so a hairline
-   here just doubles the line ten pixels above a card boundary. Proximity does
-   the grouping — the label sits close to its four, and .divs keeps 24px between
-   divisions, so the gap itself says where one ends. */
-.dvl{display:flex;align-items:center;justify-content:space-between;gap:12px;
- padding-left:3px;
- font-family:var(--cond);font-size:16.5px;font-weight:700;letter-spacing:.05em;
- text-transform:uppercase;color:var(--mut);padding-bottom:3px}
-/* Set like the label it shares the row with — same condensed caps, same
-   tracking, no fill — so it reads as part of that line rather than a control
-   dropped on top of it. The arrow is what says it is a button; the pill only
-   appears under the pointer. Text aligns to the card edge, so the hover fill
-   overhangs by its own padding, which is fine for a state nobody sees at rest. */
-.dvr{display:inline-flex;align-items:center;gap:4px;flex:none;cursor:pointer;
- font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.05em;
- text-transform:uppercase;color:var(--fnt);border:0;background:none;
- padding:6px 3px 6px 10px;margin:-6px 0;
- opacity:0;transform:translateY(-3px);
- transition:color .15s var(--e-out),background .15s var(--e-out),
-  opacity .18s var(--e-out),transform .24s var(--e-out)}
-.dvr.in{opacity:1;transform:none}
-.dvr:hover{color:var(--mut)}
-.dvr.in:active{transform:scale(.93)}
-.dvri{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;stroke-width:2.9;
- stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--e-out)}
-.dvr:hover .dvri{transform:rotate(-40deg)}
-.dvr.spin .dvri{animation:respin .52s cubic-bezier(.45,.05,.2,1)}
-@keyframes respin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.rank{display:grid;gap:5px;margin-top:10px}
-.rkr{display:grid;grid-template-columns:26px auto minmax(0,1fr) auto;
- grid-template-areas:"n m c w" "n m t w";gap:0 10px;align-items:center;text-align:left;
- padding:8px 12px;border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
- transition:background 180ms var(--e-out)}
-.rkn{grid-area:n;display:grid;place-items:center;width:26px;height:26px;
- border-radius:50%;font-style:normal;font-size:13px;font-weight:700;
- background:rgba(25,25,23,.07);color:var(--fnt);
- transition:background 180ms var(--e-out),color 180ms var(--e-out)}
-.rkr>.mark{grid-area:m}
-.rkc{grid-area:c;font-size:11.5px;color:var(--mut);line-height:1.25;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
- transition:color 180ms var(--e-out),opacity 180ms var(--e-out)}
-.rkt{grid-area:t;font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.2;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
- transition:color 180ms var(--e-out)}
-.rkr:active{transform:scale(.99)}
-.rkr.on{background:var(--tc)}
-.rkr.on .rkt{color:var(--tf);font-weight:700}
-.rkr.on .rkc{color:var(--tf);opacity:.72}
-.rkr.on .rkn{background:var(--tf);color:var(--tc)}
-.rkr.on .mark.tile{background:var(--tf)}
-.rkr.on .mark.tile i{color:var(--tc)}
-.crown{grid-area:w;width:22px;height:19px;flex:none;fill:var(--tf);margin-right:2px}
 
 /* ---- seeding --------------------------------------------------------------
    The top four are placed rather than picked, so the row is a thing you move
@@ -416,7 +358,6 @@ h1,h2,h3,h4,p{margin:0}
 @media(min-width:601px){
  .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
  .pool{grid-template-columns:repeat(4,minmax(0,1fr))}
- .divs{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 26px}
  .bkt{--bgap:40px}
  .bsl{grid-template-columns:18px auto minmax(0,1fr);min-height:44px;gap:8px}
  .bnm{font-size:15px}

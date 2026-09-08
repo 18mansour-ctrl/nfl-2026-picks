@@ -354,5 +354,5 @@ after(root){
  root.querySelector('#dl2').onclick=()=>download($('#card2'),'bracket');
  root.querySelector('#again').onclick=()=>{
   if(!confirm('Clear every pick and start again?'))return;
-  S=blank();save();location.hash='divisions';render()}}};
+  S=blank();save();location.hash='seeds';render()}}};
 })();

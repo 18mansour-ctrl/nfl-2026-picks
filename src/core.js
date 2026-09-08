@@ -114,7 +114,7 @@ const KEY='nflpicks.2026';
    picking another — reconcile could not tell a stale winner from a wild card
    and cleared the lot. Changing your mind about one division should not cost
    you three wild cards. */
-const blank=()=>({name:'',fin:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
+const blank=()=>({name:'',divw:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
  win:{},award:{mvp:{},opoy:{},dpoy:{}}});
 let S=blank();
 
@@ -123,10 +123,12 @@ function load(){try{const r=localStorage.getItem(KEY);if(!r)return;
  /* sheets written before the split still open */
  if(j.seed&&!j.ord){j.ord={};j.wild={};
   CONFS.forEach(c=>{const a=j.seed[c]||[];j.ord[c]=a.slice(0,4);j.wild[c]=a.slice(4)})}
- /* sheets that only recorded a division winner keep it as first place */
- if(j.div&&!j.fin){j.fin={};
-  Object.keys(j.div).forEach(k=>{if(j.div[k])j.fin[k]=[j.div[k]]})}
- S=Object.assign(blank(),j);delete S.seed;delete S.div}
+ /* sheets that ordered a division in full keep only its winner, which is the
+    one part of that answer the seeding ever used */
+ if(j.fin&&!j.divw){j.divw={};
+  Object.keys(j.fin).forEach(k=>{const a=j.fin[k];if(a&&a[0])j.divw[k]=a[0]})}
+ if(j.div&&!j.divw)j.divw=j.div;
+ S=Object.assign(blank(),j);delete S.seed;delete S.div;delete S.fin}
  catch(e){/* a private window, or cleared data. A blank sheet is the right answer. */}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -136,18 +138,18 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
    played game. A pick that is no longer legal — a division winner swapped out
    from under a seed — is dropped rather than left to render as a ghost. */
 const divKey=(conf,div)=>conf+' '+div;
-/* A division is predicted in full — first through fourth — not just at the top.
-   The winner is simply whoever you put first, so there is no second place to
-   keep in step with anything. */
-const finOf=(conf,div)=>(S.fin[divKey(conf,div)]||[]).filter(Boolean);
-const finDone=(conf,div)=>finOf(conf,div).length===4;
-const winnersOf=conf=>DIVS.map(d=>finOf(conf,d)[0]).filter(Boolean);
+/* Only the winner of each division is asked for. Predicting all four places
+   was thirty two taps to produce eight answers the rest of the app used, and
+   the other twenty four never appeared anywhere again. */
+const winOfDiv=(conf,div)=>S.divw[divKey(conf,div)]||null;
+const divDone=conf=>DIVS.every(d=>!!winOfDiv(conf,d));
+const winnersOf=conf=>DIVS.map(d=>winOfDiv(conf,d)).filter(Boolean);
 /* the winners in the order you put them, and the wild cards in the order you
    added them; the seeding is the two concatenated, and only once all four
    divisions are decided */
 const ordOf=conf=>(S.ord[conf]||[]).filter(Boolean);
 const wildOf=conf=>(S.wild[conf]||[]).filter(Boolean);
-const seedsOf=conf=>winnersOf(conf).length===4?ordOf(conf).concat(wildOf(conf)):[];
+const seedsOf=conf=>divDone(conf)?ordOf(conf).concat(wildOf(conf)):[];
 const seededAll=conf=>seedsOf(conf).length===7;
 /* A division winner can never fall below the fourth seed and a wild card can
    never rise above the fifth. That is the actual rule, so it is the only
@@ -157,9 +159,9 @@ const seededAll=conf=>seedsOf(conf).length===7;
 /* Seeds 1-4 are the division winners by rule, so a changed division winner
    invalidates the seeding it was part of. */
 function reconcile(){
- /* a team can only place once in its own division */
- Object.keys(S.fin).forEach(k=>{
-  S.fin[k]=(S.fin[k]||[]).filter((t,i,a)=>t&&a.indexOf(t)===i).slice(0,4)});
+ /* a winner has to actually play in the division it was filed under */
+ Object.keys(S.divw).forEach(k=>{const t=T[S.divw[k]];
+  if(!t||divKey(t.conf,t.div)!==k)delete S.divw[k]});
  CONFS.forEach(conf=>{
   const w=winnersOf(conf);
   /* the order keeps whatever is still a winner and picks up any that are new,
@@ -230,14 +232,14 @@ function roadOf(k){
 /* ---- progress ------------------------------------------------------------
    Each step reports its own completeness, so the rail and the export gate
    read from one place rather than each re-deriving what "done" means. */
-const STEPS=[['divisions','Divisions'],['seeds','Seeding'],['bracket','Bracket'],
+const STEPS=[['seeds','Seeding'],['bracket','Bracket'],
  ['awards','Awards'],['share','Share']];
-const doneDiv=()=>CONFS.every(c=>DIVS.every(d=>finDone(c,d)));
-const doneSeed=()=>doneDiv()&&CONFS.every(seededAll);
+
+const doneSeed=()=>CONFS.every(c=>divDone(c)&&seededAll(c));
 const doneBracket=()=>doneSeed()&&!!champion();
 const doneAward=()=>['mvp','opoy','dpoy'].every(k=>(S.award[k]||{}).player);
 const doneAll=()=>doneBracket()&&doneAward();
-const stepDone=k=>k==='divisions'?doneDiv():k==='seeds'?doneSeed()
+const stepDone=k=>k==='seeds'?doneSeed()
  :k==='bracket'?doneBracket():k==='awards'?doneAward():doneAll();
 /* A step opens when the one before it is finished. Sharing waits for all of it. */
 const stepOpen=k=>{const i=STEPS.findIndex(s=>s[0]===k);
@@ -245,9 +247,9 @@ const stepOpen=k=>{const i=STEPS.findIndex(s=>s[0]===k);
 
 /* ---- shell ---------------------------------------------------------------- */
 const SEC={};
-let STEP='divisions';
-const route=()=>{const k=(location.hash||'#divisions').slice(1);
- return SEC[k]&&stepOpen(k)?k:'divisions'};
+let STEP='seeds';
+const route=()=>{const k=(location.hash||'#seeds').slice(1);
+ return SEC[k]&&stepOpen(k)?k:'seeds'};
 
 function rail(){
  return `<nav class="rail" aria-label="Progress">${STEPS.map(([k,l],i)=>{
@@ -410,11 +412,11 @@ const CLEARERS={
     division — it would otherwise hold three teams picked against a board that
     no longer exists, and hand them back as seeds the moment four winners
     reappear. S.ord is derived from the winners and clears itself. */
- divisions:()=>{S.fin={};S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
+ seeds:()=>{S.divw={};S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
  bracket:()=>{S.win={}},
  awards:()=>{S.award={mvp:{},opoy:{},dpoy:{}}}};
 const HASPICKS={
- divisions:()=>Object.values(S.fin).some(a=>a&&a.length),
+ seeds:()=>Object.keys(S.divw).length>0||CONFS.some(c=>wildOf(c).length>0),
  bracket:()=>Object.keys(S.win).length>0,
  awards:()=>['mvp','opoy','dpoy'].some(k=>(S.award[k]||{}).player)};
 function wireClear(root){

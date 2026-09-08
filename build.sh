@@ -4,7 +4,7 @@
 set -eu
 cd "$(dirname "$0")"
 
-ORDER='core logos shots players roster divisions seeds bracket awards share'
+ORDER='core logos shots players roster seeds bracket awards share'
 
 # logos.js is generated from the logos/ directory: drop a <key>.webp in and
 # rebuild. A team with no file gets the designed mark instead, so the set can

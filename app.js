@@ -117,7 +117,7 @@ const KEY='nflpicks.2026';
    picking another — reconcile could not tell a stale winner from a wild card
    and cleared the lot. Changing your mind about one division should not cost
    you three wild cards. */
-const blank=()=>({name:'',fin:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
+const blank=()=>({name:'',divw:{},ord:{AFC:[],NFC:[]},wild:{AFC:[],NFC:[]},
  win:{},award:{mvp:{},opoy:{},dpoy:{}}});
 let S=blank();
 
@@ -126,10 +126,12 @@ function load(){try{const r=localStorage.getItem(KEY);if(!r)return;
  /* sheets written before the split still open */
  if(j.seed&&!j.ord){j.ord={};j.wild={};
   CONFS.forEach(c=>{const a=j.seed[c]||[];j.ord[c]=a.slice(0,4);j.wild[c]=a.slice(4)})}
- /* sheets that only recorded a division winner keep it as first place */
- if(j.div&&!j.fin){j.fin={};
-  Object.keys(j.div).forEach(k=>{if(j.div[k])j.fin[k]=[j.div[k]]})}
- S=Object.assign(blank(),j);delete S.seed;delete S.div}
+ /* sheets that ordered a division in full keep only its winner, which is the
+    one part of that answer the seeding ever used */
+ if(j.fin&&!j.divw){j.divw={};
+  Object.keys(j.fin).forEach(k=>{const a=j.fin[k];if(a&&a[0])j.divw[k]=a[0]})}
+ if(j.div&&!j.divw)j.divw=j.div;
+ S=Object.assign(blank(),j);delete S.seed;delete S.div;delete S.fin}
  catch(e){/* a private window, or cleared data. A blank sheet is the right answer. */}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -139,18 +141,18 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
    played game. A pick that is no longer legal — a division winner swapped out
    from under a seed — is dropped rather than left to render as a ghost. */
 const divKey=(conf,div)=>conf+' '+div;
-/* A division is predicted in full — first through fourth — not just at the top.
-   The winner is simply whoever you put first, so there is no second place to
-   keep in step with anything. */
-const finOf=(conf,div)=>(S.fin[divKey(conf,div)]||[]).filter(Boolean);
-const finDone=(conf,div)=>finOf(conf,div).length===4;
-const winnersOf=conf=>DIVS.map(d=>finOf(conf,d)[0]).filter(Boolean);
+/* Only the winner of each division is asked for. Predicting all four places
+   was thirty two taps to produce eight answers the rest of the app used, and
+   the other twenty four never appeared anywhere again. */
+const winOfDiv=(conf,div)=>S.divw[divKey(conf,div)]||null;
+const divDone=conf=>DIVS.every(d=>!!winOfDiv(conf,d));
+const winnersOf=conf=>DIVS.map(d=>winOfDiv(conf,d)).filter(Boolean);
 /* the winners in the order you put them, and the wild cards in the order you
    added them; the seeding is the two concatenated, and only once all four
    divisions are decided */
 const ordOf=conf=>(S.ord[conf]||[]).filter(Boolean);
 const wildOf=conf=>(S.wild[conf]||[]).filter(Boolean);
-const seedsOf=conf=>winnersOf(conf).length===4?ordOf(conf).concat(wildOf(conf)):[];
+const seedsOf=conf=>divDone(conf)?ordOf(conf).concat(wildOf(conf)):[];
 const seededAll=conf=>seedsOf(conf).length===7;
 /* A division winner can never fall below the fourth seed and a wild card can
    never rise above the fifth. That is the actual rule, so it is the only
@@ -160,9 +162,9 @@ const seededAll=conf=>seedsOf(conf).length===7;
 /* Seeds 1-4 are the division winners by rule, so a changed division winner
    invalidates the seeding it was part of. */
 function reconcile(){
- /* a team can only place once in its own division */
- Object.keys(S.fin).forEach(k=>{
-  S.fin[k]=(S.fin[k]||[]).filter((t,i,a)=>t&&a.indexOf(t)===i).slice(0,4)});
+ /* a winner has to actually play in the division it was filed under */
+ Object.keys(S.divw).forEach(k=>{const t=T[S.divw[k]];
+  if(!t||divKey(t.conf,t.div)!==k)delete S.divw[k]});
  CONFS.forEach(conf=>{
   const w=winnersOf(conf);
   /* the order keeps whatever is still a winner and picks up any that are new,
@@ -233,14 +235,14 @@ function roadOf(k){
 /* ---- progress ------------------------------------------------------------
    Each step reports its own completeness, so the rail and the export gate
    read from one place rather than each re-deriving what "done" means. */
-const STEPS=[['divisions','Divisions'],['seeds','Seeding'],['bracket','Bracket'],
+const STEPS=[['seeds','Seeding'],['bracket','Bracket'],
  ['awards','Awards'],['share','Share']];
-const doneDiv=()=>CONFS.every(c=>DIVS.every(d=>finDone(c,d)));
-const doneSeed=()=>doneDiv()&&CONFS.every(seededAll);
+
+const doneSeed=()=>CONFS.every(c=>divDone(c)&&seededAll(c));
 const doneBracket=()=>doneSeed()&&!!champion();
 const doneAward=()=>['mvp','opoy','dpoy'].every(k=>(S.award[k]||{}).player);
 const doneAll=()=>doneBracket()&&doneAward();
-const stepDone=k=>k==='divisions'?doneDiv():k==='seeds'?doneSeed()
+const stepDone=k=>k==='seeds'?doneSeed()
  :k==='bracket'?doneBracket():k==='awards'?doneAward():doneAll();
 /* A step opens when the one before it is finished. Sharing waits for all of it. */
 const stepOpen=k=>{const i=STEPS.findIndex(s=>s[0]===k);
@@ -248,9 +250,9 @@ const stepOpen=k=>{const i=STEPS.findIndex(s=>s[0]===k);
 
 /* ---- shell ---------------------------------------------------------------- */
 const SEC={};
-let STEP='divisions';
-const route=()=>{const k=(location.hash||'#divisions').slice(1);
- return SEC[k]&&stepOpen(k)?k:'divisions'};
+let STEP='seeds';
+const route=()=>{const k=(location.hash||'#seeds').slice(1);
+ return SEC[k]&&stepOpen(k)?k:'seeds'};
 
 function rail(){
  return `<nav class="rail" aria-label="Progress">${STEPS.map(([k,l],i)=>{
@@ -413,11 +415,11 @@ const CLEARERS={
     division — it would otherwise hold three teams picked against a board that
     no longer exists, and hand them back as seeds the moment four winners
     reappear. S.ord is derived from the winners and clears itself. */
- divisions:()=>{S.fin={};S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
+ seeds:()=>{S.divw={};S.ord={AFC:[],NFC:[]};S.wild={AFC:[],NFC:[]}},
  bracket:()=>{S.win={}},
  awards:()=>{S.award={mvp:{},opoy:{},dpoy:{}}}};
 const HASPICKS={
- divisions:()=>Object.values(S.fin).some(a=>a&&a.length),
+ seeds:()=>Object.keys(S.divw).length>0||CONFS.some(c=>wildOf(c).length>0),
  bracket:()=>Object.keys(S.win).length>0,
  awards:()=>['mvp','opoy','dpoy'].some(k=>(S.award[k]||{}).player)};
 function wireClear(root){
@@ -1238,178 +1240,14 @@ const ROSTER=[
 const rosterFor=side=>ROSTER.filter(r=>!side||r[3]===side)
  .map(([n,t,p])=>({n,t,p,o:''}));
 
-/* ===== divisions.js ===== */
-/* Step one: how each division finishes, first through fourth.
-
-   Tap to place, and the list physically reorders as you do.
-
-   The research is against drag here. Karth's comparison of ranking questions
-   found drag-and-drop scored no better on usability than entering the order,
-   and was no faster; the guidance for small lists on a phone is click-to-rank,
-   with drag reserved as the thing you reach for to *adjust* an order that
-   already exists — which is what the seeding step is. Four items is also well
-   inside the 3-7 that ranking questions are meant to stay within.
-
-   What drag does have over a bare tap-to-rank is that you can see the order
-   you are building. So the list sorts itself into the finish order — but only
-   once all four are placed, and back to league order if one is taken out. The
-   sort is the confirmation, not a running commentary.
-   Nothing is randomised — these are teams with a conventional order, and
-   shuffling them to dodge a primacy effect would just read as broken. */
-(()=>{
-const ORD=['1st','2nd','3rd','4th'];
-
-/* first place wears a crown rather than a ring on its number: the badge is
-   the place, the crown is what the place wins you */
-/* The arrow is the gesture, not decoration — it turns once, clockwise, when
-   the division is put back. */
-const RESET_ICON='<svg class="dvri" viewBox="0 0 24 24" aria-hidden="true">'
- +'<path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.9 1 6.7 2.7L21 8"/>'
- +'<path d="M21 3v5h-5"/></svg>';
-
-const CROWN='<svg class="crown" viewBox="0 0 24 20" aria-hidden="true">'
- +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
-const rowOf=(t,rank)=>`<button class="rkr${rank?' on':''}" data-pick="${t.k}"
- data-team="${t.k}" style="--tc:${t.c};--tf:${t.f}" aria-pressed="${!!rank}"
- aria-label="${esc(t.city)} ${esc(t.name)}${rank===1?', wins the division':rank?', '+ORD[rank-1]:', not placed'}">
-<i class="rkn">${rank||''}</i>${mark(t,'sm')}
-<span class="rkc">${esc(t.city)}</span><span class="rkt">${esc(t.name)}</span>
-${rank===1?CROWN:''}</button>`;
-
-/* The list holds its league order while you are still deciding — only the
-   badges change — and drops into finish order the moment the fourth place is
-   set. Reordering on every tap meant the rows you had not judged yet kept
-   moving under your finger, which is the opposite of helpful; this way the
-   sort is the thing that tells you the division is done. Take one back out and
-   it returns to league order, because the answer is no longer complete. */
-function listHTML(conf,div){
- const fin=finOf(conf,div);
- return orderOf(conf,div).map(t=>rowOf(t,fin.indexOf(t.k)+1)).join('')}
-
-const orderOf=(conf,div)=>{const fin=finOf(conf,div);
- return fin.length===4?fin.map(k=>T[k]):divTeams(conf,div)};
-
-/* Rewriting the list was throwing away the very elements whose transitions
-   were supposed to carry the change: a replaced row starts life already filled,
-   so background and colour arrive instantly however long the transition says.
-   Every row is kept and edited in place instead — the fill, the badge and the
-   text then cross under the CSS transitions they already declare, and the FLIP
-   only has to carry the move. Keeping the nodes also keeps their handlers, so
-   there is nothing to rewire. */
-function setRow(r,t,rank){
- const on=!!rank;
- r.classList.toggle('on',on);
- r.setAttribute('aria-pressed',String(on));
- r.setAttribute('aria-label',`${t.city} ${t.name}`+
-  (rank===1?', wins the division':rank?', '+ORD[rank-1]:', not placed'));
- const n=r.querySelector('.rkn');
- if(n.textContent!==(rank?String(rank):''))n.textContent=rank?String(rank):'';
- const had=r.querySelector('.crown');
- if(rank===1&&!had){r.insertAdjacentHTML('beforeend',CROWN);
-  const c=r.querySelector('.crown');
-  if(!REDUCED)c.animate([{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'none'}],
-   {duration:240,easing:'cubic-bezier(.2,.8,.3,1)'})}
- else if(rank!==1&&had){
-  if(REDUCED){had.remove();return}
-  had.animate([{opacity:1,transform:'none'},{opacity:0,transform:'scale(.6)'}],
-   {duration:140,easing:'ease-in',fill:'forwards'}).onfinish=()=>had.remove()}}
-
-const REDUCED=matchMedia('(prefers-reduced-motion:reduce)').matches;
-
-/* Order first, then state, and only reorder when the order actually changed.
-   Re-inserting an element cancels the transitions running on it, and the old
-   version re-appended all four rows on every tap — so the fill was being
-   cancelled a moment after it started, on taps where nothing moved at all.
-   Now three of four taps touch the DOM order not at all, and on the fourth the
-   colour is set after the move rather than before it, so it still has a
-   transition to run. */
-function relist(box){
- const conf=box.dataset.conf,div=box.dataset.name;
- const list=box.querySelector('.rank'),fin=finOf(conf,div);
- flip(list,()=>{
-  const want=orderOf(conf,div).map(t=>t.k);
-  if(want.join()!==[...list.children].map(r=>r.dataset.team).join())
-   want.forEach(k=>list.appendChild(list.querySelector(`[data-team="${k}"]`)));
-  [...list.children].forEach(r=>
-   setRow(r,T[r.dataset.team],fin.indexOf(r.dataset.team)+1))})}
-
-const division=(conf,div)=>{
- const fin=finOf(conf,div),key=divKey(conf,div);
- return `<div class="dv" data-div="${esc(key)}" data-conf="${conf}" data-name="${esc(div)}">
-<p class="dvl">${esc(div)}<button class="dvr" type="button"
- aria-label="Reset ${conf} ${esc(div)}"${fin.length?'':' hidden'}>${RESET_ICON}Reset</button></p>
-<div class="rank">${listHTML(conf,div)}</div></div>`};
-
-SEC.divisions={render(){
- return `<div class="sheet">
-<header class="phx">
-${clearBtn("divisions")}
-<h1>Division standings</h1>
-<p class="lede">Tap the teams in the order you think they will finish.</p>
-</header>
-${CONFS.map(conf=>`<section class="sect">
-<div class="sh"><h4>${conf}</h4></div>
-<div class="divs">${DIVS.map(d=>division(conf,d)).join('')}</div></section>`).join('')}
-${nextBar('divisions','Seed the conferences','#seeds')}
-</div>`},
-after(root){wireRank(root);root.querySelectorAll('.dv').forEach(wireReset)}};
-
-/* Per-division reset. Tapping a placed team already removes it, so this is the
-   shortcut for redoing a whole division rather than an undo — it needs no
-   confirm, because it costs four taps at most and sits next to what it clears.
-   The header Clear keeps its two-tap confirm: that one wipes all thirty-two. */
-function wireReset(box){
- const r=box.querySelector('.dvr');if(!r)return;
- const key=box.dataset.div;
- toggleCtl(r,!!(S.fin[key]||[]).length);
- r.onclick=()=>{
-  S.fin[key]=[];reconcile();save();
-  relist(box);
-  /* Let the arrow finish its turn before the chip leaves — cutting the spin
-     off halfway reads as a glitch. The hide is guarded because a fresh pick
-     inside those 300ms puts something back worth resetting. */
-  if(matchMedia('(prefers-reduced-motion:reduce)').matches)toggleCtl(r,false);
-  else{r.classList.add('spin');
-   setTimeout(()=>{if(!(S.fin[key]||[]).length)toggleCtl(r,false)},300);
-   setTimeout(()=>r.classList.remove('spin'),560)}
-  syncChrome()}}
-
-function wireRank(root){
- root.querySelectorAll('.dv [data-pick]').forEach(b=>b.onclick=()=>{
-  const box=b.closest('.dv'),key=box.dataset.div,k=b.dataset.pick;
-  const fin=(S.fin[key]||[]).slice(),at=fin.indexOf(k);
-  if(at>=0)fin.splice(at,1); else if(fin.length<4)fin.push(k); else return;
-  S.fin[key]=fin;reconcile();save();
-  relist(box);
-  wireReset(box);syncChrome()})}
-
-/* First, Last, Invert, Play. Measure where every row is, let the list reorder,
-   then put each row back where it was and release it — so the rows travel to
-   their new places instead of teleporting. */
-/* The move is animated through the Web Animations API rather than an inline
-   transition. The inline version wrote transition:transform onto the row and
-   never took it off, so from a row's first move onward its transition property
-   was transform and nothing else — the fill and the text colour had no
-   transition left to run under, however long the stylesheet said. An animate()
-   call leaves the element's own styles alone, so the move and the colour cross
-   at the same time. */
-function flip(list,mutate){
- const before=new Map([...list.children].map(r=>[r.dataset.team,r.getBoundingClientRect().top]));
- mutate();
- if(REDUCED)return;
- [...list.children].forEach(r=>{
-  const was=before.get(r.dataset.team);if(was==null)return;
-  const dy=was-r.getBoundingClientRect().top;
-  if(!dy)return;
-  r.animate([{transform:`translateY(${dy}px)`},{transform:'none'}],
-   {duration:300,easing:'cubic-bezier(.2,.7,.3,1)'})})}
-})();
-
 /* ===== seeds.js ===== */
-/* Step two: the order, not the teams.
-   The four division winners are already decided, so asking you to tap them
-   again was data entry rather than a decision. They are placed for you and you
-   drag them; the only thing left to choose is the three wild cards.
+/* Step one: the seeds.
+   Predicting all four places in all eight divisions was thirty two taps to
+   produce eight answers the rest of the app used — the winners — and twenty
+   four that never appeared anywhere again. The winners are picked here
+   directly, and the order you pick them in is the order they seed: tapping
+   four clubs across four divisions answers who wins and who is better in one
+   gesture rather than two passes. The drag is still there to correct it.
 
    Two separate lists rather than one of seven, because a division winner can
    never fall below the fourth seed and a wild card can never rise above the
@@ -1421,33 +1259,49 @@ const GRIP='<span class="gripd"></span><span class="gripd"></span><span class="g
 
 function row(conf,k,i){
  const t=T[k];
+ const drop=i>=4?`data-drop="${esc(k)}"`:`data-unwin="${conf}|${t.div}"`;
  return `<div class="sd full" style="--tc:${t.c};--tf:${t.f}" data-row="${i}"
  data-team="${esc(k)}" data-flip="row:${conf}:${esc(k)}">
 <i class="sdn">${i+1}</i>${mark(t,'sm')}
 <span class="sdt">${esc(t.city)} ${esc(t.name)}</span>
-${i===0?'<em class="sdb">bye</em>':''}
-${i>=4?`<button class="sdx" data-drop="${esc(k)}" aria-label="Remove ${esc(t.name)}">✕</button>`:''}
+${i<4?`<em class="sdb">${esc(t.div)}</em>`:''}
+<button class="sdx" ${drop} aria-label="Remove ${esc(t.name)}">✕</button>
 <button class="grip" data-grip aria-label="Reorder ${esc(t.name)}"
  aria-describedby="griphelp">${GRIP}</button></div>`}
 
 const hole=(i,txt,conf)=>`<div class="sd open" data-row="${i}"
  data-flip="hole:${conf}:${i}"><i class="sdn">${i+1}</i>
-<span class="sdt empty">${esc(txt||'Wild card — tap a team below')}</span></div>`;
+<span class="sdt empty">${esc(txt)}</span></div>`;
+
+const chip=(t,attr)=>`<button class="tm" ${attr} data-flip="tm:${t.k}"
+ style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span>
+<span class="tnm">${esc(t.name)}</span></button>`;
+
+/* one pool a division, and a division's pool leaves the page the moment it has
+   an answer — so what is left on screen is always what is left to decide */
+function divPools(conf){
+ const need=DIVS.filter(d=>!winOfDiv(conf,d));
+ if(!need.length)return '';
+ return need.map(d=>`<div data-flip="dp:${conf}:${d}">
+<p class="bandl wc">${conf} ${esc(d)}</p>
+<div class="tms pool">${confTeams(conf).filter(t=>t.div===d)
+ .map(t=>chip(t,`data-win="${conf}|${esc(d)}|${t.k}"`)).join('')}</div></div>`).join('')}
 
 function conference(conf){
- const ord=ordOf(conf),wild=wildOf(conf);
- const w=new Set(winnersOf(conf));
- const left=3-wild.length;
+ const ord=ordOf(conf),wild=wildOf(conf),done=divDone(conf);
  const taken=new Set(ord.concat(wild));
- const pool=confTeams(conf).filter(t=>!taken.has(t.k)&&!w.has(t.k));
+ const pool=confTeams(conf).filter(t=>!taken.has(t.k));
  return `<section class="sect" data-flip="sect:${conf}">
 <div class="sh"><h4>${conf}</h4></div>
-<p class="bandl">Division winners <em>drag to order</em></p>
-<div class="seeds" data-band="${conf}:ord">${[0,1,2,3].map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Win a division first',conf)).join('')}</div>
-<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards</p>
-<div class="seeds" data-band="${conf}:wild">${[0,1,2].map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4,'',conf)).join('')}</div>
-${left?`<div class="tms pool" data-flip="pool:${conf}">${pool.map(t=>`<button class="tm" data-seed="${conf}" data-k="${t.k}"
- data-flip="tm:${conf}:${t.k}" style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span><span class="tnm">${esc(t.name)}</span></button>`).join('')}</div>`:''}
+<p class="bandl">Division winners${ord.length>1?' <em>drag to order</em>':''}</p>
+<div class="seeds" data-band="${conf}:ord">${[0,1,2,3]
+ .map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Pick a division winner below',conf)).join('')}</div>
+${divPools(conf)}
+${done?`<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards</p>
+<div class="seeds" data-band="${conf}:wild">${[0,1,2]
+ .map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4,'Wild card — tap a team below',conf)).join('')}</div>
+${wild.length<3?`<div class="tms pool" data-flip="pool:${conf}">${pool
+ .map(t=>chip(t,`data-seed="${conf}" data-k="${t.k}"`)).join('')}</div>`:''}`:''}
 </section>`}
 
 SEC.seeds={render(){
@@ -1461,6 +1315,16 @@ ${CONFS.map(conference).join('')}
 ${nextBar('seeds','Play the bracket','#bracket')}
 </div>`},
 after(root){
+ /* the pick and the seed are one tap: a winner takes the next slot going down,
+    and the drag is what changes its mind */
+ root.querySelectorAll('[data-win]').forEach(b=>b.onclick=()=>{
+  const [conf,div,k]=b.dataset.win.split('|');
+  flipRender(()=>{S.divw[divKey(conf,div)]=k;
+   const o=(S.ord[conf]||[]).filter(Boolean);
+   if(!o.includes(k))o.push(k);S.ord[conf]=o})});
+ root.querySelectorAll('[data-unwin]').forEach(b=>b.onclick=()=>{
+  const [conf,div]=b.dataset.unwin.split('|');
+  flipRender(()=>{delete S.divw[divKey(conf,div)]})});
  root.querySelectorAll('[data-seed]').forEach(b=>b.onclick=()=>{
   const conf=b.dataset.seed,wl=S.wild[conf]||[];
   if(wl.length<3)flipRender(()=>{wl.push(b.dataset.k);S.wild[conf]=wl})});
@@ -2264,7 +2128,7 @@ after(root){
  root.querySelector('#dl2').onclick=()=>download($('#card2'),'bracket');
  root.querySelector('#again').onclick=()=>{
   if(!confirm('Clear every pick and start again?'))return;
-  S=blank();save();location.hash='divisions';render()}}};
+  S=blank();save();location.hash='seeds';render()}}};
 })();
 
 boot();
