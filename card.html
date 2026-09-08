@@ -78,9 +78,14 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .smk img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .srt{font-weight:600;letter-spacing:-.028em;min-width:0;white-space:nowrap;
  overflow:hidden;text-overflow:ellipsis}
-.srw{display:flex;align-items:center;justify-content:flex-end;gap:9px;
- font-size:16px;font-weight:500;letter-spacing:-.012em;color:var(--mut);white-space:nowrap}
-.srw svg{width:21px;height:18px;fill:var(--tc);display:block;flex:none}
+/* The tag is one unit, so the mark takes the text's colour rather than the
+   club's — four differently coloured crowns down a column read as noise, and
+   Pittsburgh's gold barely holds on cream. Team colour stays on the numeral,
+   which is the one place it earns its keep. */
+.srw{display:flex;align-items:center;justify-content:flex-end;gap:8px;
+ font-size:14px;font-weight:600;letter-spacing:.045em;text-transform:uppercase;
+ color:var(--fnt);white-space:nowrap}
+.srw svg{width:17px;height:15px;fill:currentColor;display:block;flex:none}
 .sr{height:84px}
 .srn{font-size:52px}
 .smk{width:48px;height:48px}
@@ -214,7 +219,10 @@ const smk=k=>{const l=k.toLowerCase();
 const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
  +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
 const why=(cf,k,i)=>i<4?`${cf} ${DIVOF[k]}${CROWN}`:'';
-const seed=(cf,k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${C[k]}">`
+/* Cleveland leads with its brown, which at numeral size reads as black — the
+   seed takes the club's second colour instead. Same idea as the app's c2. */
+const NUMC={CLE:'#EB3300'};
+const seed=(cf,k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${NUMC[k]||C[k]}">`
  +`<i class="srn">${i+1}</i>${smk(k)}<span class="srt">${N[k]}</span>`
  +`<span class="srw">${why(cf,k,i)}</span></div>`;
 const grp=(t,wc)=>`<p class="bandl${wc?' wc':''}"><b>${t}</b></p>`;
