@@ -29,9 +29,12 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .dch{display:flex;align-items:center;gap:20px}
 .dlogo{width:86px;height:86px;flex:none;object-fit:contain;display:block}
 .dch h1{font-size:82px;font-weight:700;line-height:1;letter-spacing:-.036em}
-.dcs{margin-top:12px;padding-left:106px;font-size:20px;font-weight:500;
- letter-spacing:-.012em;opacity:.7}
-.dcs i{font-style:normal;opacity:.45;padding:0 9px}
+/* colour-mix rather than opacity, so the champion half can sit at full
+   strength over a parent that is held back */
+.dcs{margin-top:12px;padding-left:106px;font-size:22px;font-weight:500;
+ letter-spacing:-.014em;color:color-mix(in srgb,var(--tf) 70%,transparent)}
+.dcs b{font-size:26px;font-weight:700;letter-spacing:-.024em;color:var(--tf)}
+.dcs i{font-style:normal;color:color-mix(in srgb,var(--tf) 42%,transparent);padding:0 10px}
 .dvs2{font-size:44px;font-weight:600;letter-spacing:-.02em;opacity:.55;padding:0 4px}
 
 /* ---- card one: the seeds ------------------------------------------------ */
@@ -111,7 +114,12 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  display:flex;flex-direction:column;gap:34px}
 /* the app's section heading: sentence case, tight, no rule under it */
 .dawl{font-size:35px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
-.awrow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:28px;align-items:center}
+/* The outer two blocks hold their column, and only the middle one moves: a
+   long name in the middle used to push right and crowd the third, but
+   distributing all three instead sent the third out to the card's edge. The
+   script below centres the middle block in the space the other two leave. */
+.awrow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:28px;
+ align-items:center;justify-items:start}
 .aw{display:flex;align-items:center;gap:16px;min-width:0}
 .dish{flex:none;width:110px;height:110px;border-radius:50%;overflow:hidden;position:relative;
  background:var(--c)}
@@ -129,7 +137,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
   <p class="dhr">My 2026 NFL predictions</p>
   <div class="dcw"><div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
     <h1>Buffalo Bills</h1></div>
-   <p class="dcs">Super Bowl champion<i>&middot;</i>over the New York Giants</p></div>
+   <p class="dcs"><b>Super Bowl Champion</b><i>|</i>over the New York Giants</p></div>
  </header>
  <div class="sds" id="sds"></div>
  <div class="daw">
@@ -154,7 +162,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
   <div class="dcw"><div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
     <h1>Bills</h1><span class="dvs2">vs</span><h1>Giants</h1>
     <img class="dlogo" src="logos/nyg.webp" alt=""></div>
-   <p class="dcs">My Super Bowl matchup</p></div>
+   <p class="dcs"><b>My Super Bowl matchup</b></p></div>
  </header>
  <div class="br" id="br"><svg class="lines" id="lines"></svg>
   <div class="hd"><p>Wild card</p><p>Divisional</p><p>Conference</p></div>
@@ -252,6 +260,13 @@ const sb=R(br.querySelector('.gm[data-g="SB"]'));
  const y1=dir>0?c.b:c.t, y2=dir>0?sb.t:sb.b, m=(y1+y2)/2;
  d.push(`M${c.x} ${y1}V${m}H${sb.x}V${y2}`)});
 svg.innerHTML=d.map(p=>`<path d="${p}" fill="none" stroke="rgba(25,25,23,.24)" stroke-width="1.5"/>`).join('');
+
+/* optical, not arithmetic: the middle award sits halfway between the block on
+   its left and the block on its right, whatever their names happen to be */
+(()=>{const a=[...document.querySelectorAll('.aw')];if(a.length!==3)return;
+ const l=a[0].getBoundingClientRect(),m=a[1].getBoundingClientRect(),
+       r=a[2].getBoundingClientRect();
+ a[1].style.transform=`translateX(${l.right+(r.left-l.right-m.width)/2-m.left}px)`})();
 
 /* fit each headshot by its own opaque box, so differently framed cutouts
    still land at one scale on one baseline */
