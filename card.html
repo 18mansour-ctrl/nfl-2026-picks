@@ -99,29 +99,26 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  font-variant-numeric:tabular-nums}
 .br>.dawl{margin-bottom:20px;position:relative;z-index:1}
 .lines{position:absolute;inset:0;pointer-events:none;z-index:0}
-.hd{display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
- padding:0 1px 4px;position:relative;z-index:1}
-.hd p{font-size:14px;font-weight:600;letter-spacing:.045em;text-transform:uppercase;
- color:var(--fnt)}
 .cf{font-size:28px;font-weight:700;letter-spacing:.025em;text-transform:uppercase;
- padding:12px 1px 10px;border-bottom:2px solid var(--ink);position:relative;z-index:1}
+ padding:14px 1px 6px;position:relative;z-index:1}
 .bn{flex:1;display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
  grid-template-rows:repeat(6,1fr);position:relative;z-index:1}
-.gm{align-self:center;background:var(--card);border:1px solid var(--ln);border-radius:10px;
- overflow:hidden}
-.sl{display:grid;grid-template-columns:18px 32px minmax(0,1fr);align-items:center;gap:13px;
- height:54px;padding:0 15px}
-.sl+.sl{border-top:1px solid var(--ln)}
-.sd{font-style:normal;font-size:18px;font-weight:700;letter-spacing:-.03em;
- text-align:center;color:var(--tc)}
-.mk{display:grid;place-items:center;height:32px}
-.mk img{width:32px;height:32px;object-fit:contain;display:block}
-.nm{font-size:29px;font-weight:600;letter-spacing:-.024em;
+/* The app's own game card: paper on a soft shadow, no border. A border plus
+   an internal rule put three lines around every pairing; the shadow lifts the
+   card off the page and leaves one. */
+.gm{align-self:center;background:var(--card);border-radius:12px;overflow:hidden;
+ box-shadow:var(--cardsh)}
+.sl{display:grid;grid-template-columns:22px 34px minmax(0,1fr);align-items:center;gap:14px;
+ height:58px;padding:0 18px}
+.sl+.sl{border-top:1px solid var(--hr)}
+.sd{font-style:normal;font-size:23px;font-weight:700;letter-spacing:-.035em;
+ text-align:left;color:var(--tc)}
+.mk{display:grid;place-items:center;height:34px}
+.mk img{width:34px;height:34px;object-fit:contain;display:block}
+.nm{font-size:28px;font-weight:400;letter-spacing:-.026em;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sl.w .nm{font-weight:700}
-.sl.out .nm{color:var(--mut);font-weight:400}
-.sl.out .mk img{opacity:.5}
-.sl.out .sd{opacity:.5}
+.sl.out .sd{opacity:.55}
 /* The final sits in the third column, under the two games that feed it, so
    both connectors are straight drops instead of diagonals across an empty
    band. The label holds the first column, where the bracket has no games. */
@@ -190,7 +187,6 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    <p class="dcs"><b>My Super Bowl matchup</b></p></div>
  </header>
  <div class="br" id="br"><svg class="lines" id="lines"></svg>
-  <div class="hd"><p>Wild card</p><p>Divisional</p><p>Conference</p></div>
  </div>
 </div>
 
@@ -263,11 +259,9 @@ const band=cf=>`<p class="cf">${cf}</p><div class="bn" data-cf="${cf}">`
    `<div class="gm" data-g="${cf}${r}${i}" style="grid-column:${r+1};`
    +`grid-row:${i*SPAN[r]+1}/span ${SPAN[r]}">${game(g)}</div>`).join('')).join('')
  +`</div>`;
-/* .hd is in the markup, so the head goes in before it rather than after */
-document.querySelector('.br .hd')
- .insertAdjacentHTML('beforebegin','<p class="dawl">Playoff bracket</p>');
 document.getElementById('br').insertAdjacentHTML('beforeend',
- band('AFC')
+ '<p class="dawl">Playoff bracket</p>'
+ +band('AFC')
  +`<div class="sm"><p class="sml">Super Bowl</p><div class="gm" data-g="SB">`
  +slot(['BUF',''],1)+slot(['NYG',''],0)+`</div></div>`
  +band('NFC'));
