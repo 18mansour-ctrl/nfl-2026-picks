@@ -1882,6 +1882,11 @@ function dish(c,x,y,d,t,im,key,initialsFor){
 /* ---- the header, shared ---------------------------------------------------
    Left aligned on the card's own margin, not right — the block is as wide as
    its widest line and hangs off x=40 like everything under it. */
+/* The name starts at 180, past the mark, and the trophy's own edge is at 892.
+   Washington Commanders is the longest in the league and runs 776 wide at the
+   size the rest of them are set at, so the ten or so clubs whose full name
+   does not fit step down to the size that does rather than run under it. */
+const NAMEW=680;
 /* the card is whoever filled the name in, and mine when nobody did */
 const kicker=()=>{const n=(S.name||'').trim();
  return (n?n+'\u2019s':'My')+' 2026 NFL predictions'};
@@ -1943,7 +1948,7 @@ function seedColumn(c,conf,x,top){
 const AWARDS=[['mvp','MVP'],['opoy','OPOY'],['dpoy','DPOY']];
 function awardsRow(c){
  txBox(c,'Award predictions',40,1114,{size:35,weight:700,lh:38.5,track:-1.05});
- const D=110,dy=1186.5,gapT=16;
+ const D=100,dy=1191.5,gapT=16;
  const blocks=AWARDS.map(([k,label])=>{
   const a=S.award[k]||{},t=a.team?T[a.team]:null;
   const name=(a.player||'').trim()||'Not picked';
@@ -1975,7 +1980,8 @@ function drawSeason(c){
  const tf=T1?T1.f:'#fff';
  header(c,{tc:T1?T1.c:INK,tf,watermark:true,
   items:[{logo:1,k:ch,y:83,size:120},
-   {text:T1?T1.city+' '+T1.name:'Not picked',y:93,size:82,weight:700,lh:82,track:-2.95}],
+   {text:T1?T1.city+' '+T1.name:'Not picked',y:93,size:74,weight:700,lh:82,
+    track:-2.66,max:NAMEW}],
   subX:180,subTop:178,subLh:35,
   subBold:T1?'Super Bowl Champion':'',
   sub:T2?'over the '+T2.city+' '+T2.name:''});
@@ -2034,11 +2040,20 @@ function drawBracket(c){
  c.fillStyle=PAPER;c.fillRect(0,0,W,H);
  const B=bracket(),sb=B.sb,a=sb.home?T[sb.home]:null,n=sb.away?T[sb.away]:null;
  const ch=champion(),T1=ch?T[ch]:null,tf=T1?T1.f:'#fff';
+ /* Two marks, two names, a vs and four gaps have to cross the card: Commanders
+    against Buccaneers runs off the right edge at the size Bills against Jets
+    sits at comfortably. Both names come down together and by the same step, or
+    one club ends up set larger than the one it is playing. */
+ const an=a?a.name:'—',nn=n?n.name:'—';
+ const room=W-40-40-86-86-20*4-measure(c,'vs',{size:40,weight:600,track:-.82});
+ let ns=74;
+ while(ns>44&&measure(c,an,{size:ns,weight:700,track:-.036*ns})
+  +measure(c,nn,{size:ns,weight:700,track:-.036*ns})>room)ns-=1;
  header(c,{tc:T1?T1.c:INK,tf,
   items:[{logo:1,k:sb.home,y:87,size:86},
-   {text:a?a.name:'—',y:89,size:82,weight:700,lh:82,track:-2.95},
-   {text:'vs',y:100.5,size:44,weight:600,lh:59,color:fade(tf,.55),track:-.9},
-   {text:n?n.name:'—',y:89,size:82,weight:700,lh:82,track:-2.95},
+   {text:an,y:89,size:ns,weight:700,lh:82,track:-.036*ns},
+   {text:'vs',y:100.5,size:40,weight:600,lh:59,color:fade(tf,.55),track:-.82},
+   {text:nn,y:89,size:ns,weight:700,lh:82,track:-.036*ns},
    {logo:1,k:sb.away,y:87,size:86}],
   subX:146,subTop:183,subLh:27,subBold:'Super Bowl matchup'});
 
@@ -2125,21 +2140,20 @@ SEC.share={render(){
  placeholder="Your name" autocomplete="name" spellcheck="false" aria-label="Your name">
 </section>
 <section class="sect">
-<div class="sh"><h4>The season</h4></div>
+<div class="sh"><h4>The season</h4><span>Tap to see it full size</span></div>
 <div class="cardwrap"><canvas id="card1" role="img"
  aria-label="Your 2026 conference seeding and award picks"></canvas></div>
 <div class="acts"><button class="next" id="dl1">Save the season card</button></div>
 </section>
 <section class="sect">
-<div class="sh"><h4>The playoffs</h4></div>
+<div class="sh"><h4>The playoffs</h4><span>Tap to see it full size</span></div>
 <div class="cardwrap"><canvas id="card2" role="img"
  aria-label="Your 2026 playoff bracket"></canvas></div>
 <div class="acts">
 <button class="next" id="dl2">Save the bracket</button>
 <button class="ghost" id="again">Start over</button>
 </div>
-<p class="hint">Tap a picture to see it full size. On a phone you can also press
-and hold one to save or send it.</p>
+<p class="hint">On a phone you can also press and hold a picture to save or send it.</p>
 </section>
 </div>`},
 after(root){

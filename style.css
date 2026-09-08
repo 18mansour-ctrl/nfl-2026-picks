@@ -323,11 +323,13 @@ h1,h2,h3,h4,p{margin:0}
 /* ---- the pictures ---------------------------------------------------------
    A 1080px card drawn into a phone's 335px column is at 31% of its size — the
    scale where the team name across the header still reads and the seed rows
-   under it turn to grain. The preview takes the gutters back on a narrow
-   screen, and tapping it opens the card as tall as the screen is, panned
-   sideways rather than shrunk to fit. */
-.cardwrap{overflow:hidden;box-shadow:var(--cardsh);background:var(--card);
- cursor:zoom-in;margin:0 calc(var(--pad)*-1)}
+   under it turn to grain. Widening the preview does not fix that: running it
+   to the edges buys twelve percent and costs the card its edge, its shadow and
+   its alignment with the heading above it, so it stops reading as a picture of
+   something and starts reading as the page. It stays a thumbnail, and tapping
+   it opens the card at a size you can actually read. */
+.cardwrap{border-radius:10px;overflow:hidden;box-shadow:var(--cardsh);
+ background:var(--card);cursor:zoom-in}
 #card1,#card2{display:block;width:100%;height:auto}
 
 .lightbox{position:fixed;inset:0;z-index:60;background:rgba(25,25,23,.94);
@@ -384,7 +386,6 @@ h1,h2,h3,h4,p{margin:0}
 @media(min-width:601px){
  .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
  .pool{grid-template-columns:repeat(4,minmax(0,1fr))}
- .cardwrap{margin:0;border-radius:10px}
  .bkt{--bgap:40px}
  .bsl{grid-template-columns:18px auto minmax(0,1fr);min-height:44px;gap:8px}
  .bnm{font-size:15px}
