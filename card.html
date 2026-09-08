@@ -122,14 +122,17 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 /* The final sits in the third column, under the two games that feed it, so
    both connectors are straight drops instead of diagonals across an empty
    band. The label holds the first column, where the bracket has no games. */
-.sm{flex:none;height:100px;display:grid;grid-template-columns:repeat(3,292px);
- justify-content:space-between;align-items:center;position:relative;z-index:1}
-.sml{grid-column:2;text-align:right;padding-right:14px;font-size:28px;
- font-weight:700;letter-spacing:.025em;text-transform:uppercase}
-.sm .gm{grid-column:3}
-.sm .sl{height:48px;grid-template-columns:18px 38px minmax(0,1fr);padding:0 18px}
-.sm .mk,.sm .mk img{height:34px}.sm .mk img{width:34px}
-.sm .nm{font-size:29px}
+/* The seam was a full-width row 100px tall to hold a card that only occupies
+   its right third, which pushed the two conferences apart everywhere. It is a
+   thin band now and the final floats in it, overhanging into the third column
+   of each band — the one column that is nearly empty in both. */
+.sm{flex:none;height:34px;position:relative;z-index:2}
+.sml{position:absolute;top:50%;right:306px;transform:translateY(-50%);
+ font-size:28px;font-weight:700;letter-spacing:.025em;text-transform:uppercase}
+.sm .gm{position:absolute;top:50%;right:0;transform:translateY(-50%);width:292px}
+.sm .sl{height:62px;grid-template-columns:18px 38px minmax(0,1fr);padding:0 18px}
+.sm .mk,.sm .mk img{height:38px}.sm .mk img{width:38px}
+.sm .nm{font-size:32px}
 
 /* ---- the awards row, on card one ---------------------------------------- */
 .daw{flex:none;height:262px;padding:26px 40px 0;display:flex;flex-direction:column;
