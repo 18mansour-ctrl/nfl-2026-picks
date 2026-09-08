@@ -39,41 +39,33 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 
 .dcs{margin-top:3px;font-size:19px;font-weight:500;letter-spacing:-.012em;opacity:.66}
 
-/* ---- card one: how all thirty two finish -------------------------------- */
-/* The app's parts, arranged for a card. Its divisions page gives every team an
-   identical row because each one is a tap target — an interaction rule, not a
-   drawing rule, and nobody taps a PNG. So the club that won the division takes
-   a block in its colour and the other three keep the app's row exactly: place
-   in a circle, mark, city over nickname, and .rkr.on's fill on the winner. */
-.dvs{flex:1;padding:34px 40px 8px;display:grid;grid-template-columns:1fr 1fr;
- column-gap:28px;align-content:start}
-.dvc{display:flex;flex-direction:column;gap:26px;min-width:0}
-.dvl{padding-left:3px;padding-bottom:8px;font-size:17px;font-weight:700;
- letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
-.dv{display:grid;grid-template-columns:164px 292px;column-gap:11px;height:148px}
-.win{position:relative;background:var(--tc);color:var(--tf);border-radius:8px;
- box-shadow:var(--cardsh);display:flex;flex-direction:column;align-items:center;
- justify-content:center;gap:8px;padding:10px 10px}
-.win img{width:50px;height:50px;object-fit:contain;display:block}
-.wct{display:block;max-width:100%;text-align:center;font-size:21px;font-weight:700;
- letter-spacing:-.022em;line-height:1.15;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.crown{position:absolute;top:11px;left:12px;width:24px;height:21px;fill:var(--tf)}
-.rank{display:flex;flex-direction:column;gap:6px;height:100%}
-.rkr{display:grid;grid-template-columns:24px 26px minmax(0,1fr) auto;
- gap:0 12px;align-items:center;flex:1;padding:0 13px;border-radius:8px;
- background:var(--card);box-shadow:var(--cardsh)}
-/* a wild card carries the faintest wash of the club's own colour behind the
-   label, so the row is marked twice over at a glance and up close */
-.rkr.wc{background:color-mix(in srgb,var(--tc) 11%,var(--card))}
-.rkw{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
- color:var(--mut)}
-.rkn{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
- font-style:normal;font-size:13px;font-weight:700;background:rgba(25,25,23,.07);
+/* ---- card one: the seeds ------------------------------------------------ */
+/* Seven clubs a conference in the order the bracket runs on, which is both
+   less to read than thirty two and the thing that actually decides the
+   playoffs. Division winners take their colour and the top four slots; wild
+   cards sit on paper under their own band, the way the app's seeding page
+   splits them. */
+.sds{flex:1;padding:30px 40px 0;display:grid;grid-template-columns:1fr 1fr;
+ column-gap:30px;align-content:start}
+.dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
+.sds>.dawl{grid-column:1/-1;margin-bottom:18px}
+.sdh{font-size:19px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+ padding-left:3px;margin-bottom:12px}
+.bandl{padding-left:3px;padding-bottom:7px;font-size:14px;font-weight:600;
+ letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+.bandl.wc{padding-top:20px}
+.seeds{display:flex;flex-direction:column;gap:6px}
+.sdr{display:flex;align-items:center;gap:14px;height:86px;padding:0 18px;border-radius:10px;
+ background:var(--card);box-shadow:var(--cardsh);min-width:0}
+.sdr.full{background:var(--tc)}
+.sdn{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;flex:none;
+ font-style:normal;font-size:16px;font-weight:700;background:rgba(25,25,23,.07);
  color:var(--fnt)}
-.rkr>img{width:31px;height:31px;object-fit:contain;display:block}
-.rkt{font-size:21px;font-weight:600;letter-spacing:-.02em;line-height:1.15;
+.sdr.full .sdn{background:var(--tf);color:var(--tc)}
+.sdr img{width:46px;height:46px;object-fit:contain;display:block;flex:none}
+.sdt{font-size:30px;font-weight:600;letter-spacing:-.026em;min-width:0;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sdr.full .sdt{color:var(--tf);font-weight:700}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -109,11 +101,10 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sm .nm{font-size:36px}
 
 /* ---- the awards row, on card one ---------------------------------------- */
-.daw{flex:none;height:262px;padding:31px 40px 0;
+.daw{flex:none;height:214px;padding:26px 40px 0;
  display:flex;flex-direction:column;gap:34px}
 /* the app's section heading: sentence case, tight, no rule under it */
 .dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
-.dvs>.dawl{grid-column:1/-1;margin-bottom:20px}
 .awrow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:16px;align-items:center}
 .aw{display:flex;align-items:center;gap:17px;min-width:0}
 .dish{flex:none;width:108px;height:108px;border-radius:50%;overflow:hidden;position:relative;
@@ -135,7 +126,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
     <h1>Buffalo Bills</h1></div>
    <p class="dcs">over the New York Giants</p></div>
  </header>
- <div class="dvs" id="dvs"></div>
+ <div class="sds" id="sds"></div>
  <div class="daw">
   <p class="dawl">Award predictions</p>
   <div class="awrow">
@@ -196,26 +187,17 @@ const img=k=>{const l=k.toLowerCase();
  return `<img src="logos/${l}.${EXT[l]||'webp'}" alt="">`};
 
 /* ---- card one ----------------------------------------------------------- */
-/* every division in order of finish; the seed is carried by whoever made it */
-const SEED={LAC:1,PIT:2,HOU:3,MIA:4,TEN:5,CLE:6,BUF:7,
-            LAR:1,CHI:2,ATL:3,PHI:4,DAL:5,GB:6,NYG:7};
-const DIV={AFC:[['East',['MIA','BUF','NE','NYJ']],['North',['PIT','CLE','BAL','CIN']],
-                ['South',['HOU','TEN','IND','JAX']],['West',['LAC','DEN','KC','LV']]],
-           NFC:[['East',['PHI','DAL','NYG','WAS']],['North',['CHI','GB','DET','MIN']],
-                ['South',['ATL','TB','CAR','NO']],['West',['LAR','SF','SEA','ARI']]]};
-document.getElementById('dvs').innerHTML='<p class="dawl">Division standings</p>'
- +['AFC','NFC'].map(cf=>
- `<div><div class="dvc">`
- +DIV[cf].map(([d,[w,...rest]])=>`<div><p class="dvl">${cf} ${d}</p><div class="dv">`
-   +`<div class="win" style="--tc:${C[w]};--tf:${FG(w)}">${CROWN}${img(w)}`
-   +`<span class="wct">${N[w]}</span></div>`
-   +`<div class="rank">`+rest.map((k,i)=>
-     `<div class="rkr${SEED[k]?' wc':''}" style="--tc:${C[k]}">`
-     +`<i class="rkn">${i+2}</i>${img(k)}`
-     +`<span class="rkt">${N[k]}</span>`
-     +(SEED[k]?'<span class="rkw">Wild card</span>':'<span></span>')
-     +`</div>`).join('')+`</div>`
-   +`</div></div>`).join('')+`</div></div>`).join('');
+/* seeds one to seven; the first four won a division, the last three did not */
+const ORDER={AFC:['LAC','PIT','HOU','MIA','TEN','CLE','BUF'],
+             NFC:['LAR','CHI','ATL','PHI','DAL','GB','NYG']};
+const seed=(k,i)=>`<div class="sdr${i<4?' full':''}" style="--tc:${C[k]};--tf:${FG(k)}">`
+ +`<i class="sdn">${i+1}</i>${img(k)}<span class="sdt">${N[k]}</span></div>`;
+document.getElementById('sds').innerHTML='<p class="dawl">Conference seeding</p>'
+ +['AFC','NFC'].map(cf=>`<div><p class="sdh">${cf}</p>`
+   +`<p class="bandl">Division winners</p><div class="seeds">`
+   +ORDER[cf].slice(0,4).map((k,i)=>seed(k,i)).join('')+`</div>`
+   +`<p class="bandl wc">Wild cards</p><div class="seeds">`
+   +ORDER[cf].slice(4).map((k,i)=>seed(k,i+4)).join('')+`</div></div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
 const B={AFC:[
