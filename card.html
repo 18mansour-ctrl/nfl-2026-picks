@@ -74,7 +74,6 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .srw{display:flex;align-items:center;justify-content:flex-end;gap:9px;
  font-size:16px;font-weight:500;letter-spacing:-.012em;color:var(--mut);white-space:nowrap}
 .srw svg{width:21px;height:18px;fill:var(--tc);display:block;flex:none}
-.srw u{text-decoration:none;color:var(--fnt);padding-left:1px}
 .sr{height:86px}
 .srn{font-size:52px}
 .smk{width:48px;height:48px}
@@ -198,11 +197,10 @@ const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',
 const smk=k=>{const l=k.toLowerCase();
  return `<span class="smk"><img src="logos/${l}.${EXT[l]||'webp'}" alt=""></span>`};
 /* a winner's line names its division and wears the same crown the app puts
-   on a club that won one; the top seed's bye rides after it */
+   on a club that won one */
 const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
  +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
-const why=(cf,k,i)=>i>3?''
- :`${cf} ${DIVOF[k]}${CROWN}`+(i===0?'<u>&middot; bye</u>':'');
+const why=(cf,k,i)=>i>3?'':`${cf} ${DIVOF[k]}${CROWN}`;
 const seed=(cf,k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${C[k]}">`
  +`<i class="srn">${i+1}</i>${smk(k)}<span class="srt">${N[k]}</span>`
  +`<span class="srw">${why(cf,k,i)}</span></div>`;
