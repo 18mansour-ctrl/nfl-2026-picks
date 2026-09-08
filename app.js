@@ -2021,9 +2021,12 @@ function dish(c,x,y,d,t,im,key,initialsFor){
 const DH=248;
 function header(c,{tc,tf,items,gap=20,sub,subBold,subX,subTop,subLh,watermark}){
  c.fillStyle=tc;c.fillRect(0,0,W,DH);
+ /* the band clips it, the way .dh's overflow does in the mockup — otherwise
+    the trophy's base spills onto the paper below the header */
  if(watermark&&IMG['@trophy']){const im=IMG['@trophy'],h=330;
   const w=im.naturalWidth*(h/im.naturalHeight);
-  c.save();c.globalAlpha=.3;c.drawImage(im,W-44-w,-24,w,h);c.restore()}
+  c.save();c.beginPath();c.rect(0,0,W,DH);c.clip();
+  c.globalAlpha=.3;c.drawImage(im,W-44-w,-24,w,h);c.restore()}
  txBox(c,'My 2026 NFL predictions',40,32,
   {size:32,weight:600,lh:42,color:fade(tf,.62),track:-.7});
  let x=40;
@@ -2063,7 +2066,9 @@ function seedColumn(c,conf,x,top){
     const w=txBox(c,lab,x+152,ry+53.5,{size:15,weight:500,lh:20,color:MUT,track:-.12});
     crown(c,x+152+w+8,ry+56,16,FNT)}}
   else txBox(c,'Not picked',x+152,ry+21.5,{size:31,weight:400,lh:41,color:FNT,track:-.87});
-  rule(c,ry+83,x,x+COLW,HR,1)};
+  /* the four seed and the seven both end a group, so neither draws a rule —
+     the band below one and the card edge below the other close them */
+  if(i!==3&&i!==6)rule(c,ry+83,x,x+COLW,HR,1)};
  bandAt('Division winners',top+68);
  for(let i=0;i<4;i++)row(s[i],i,top+94+i*SROW);
  bandAt('Wild cards',top+460);
