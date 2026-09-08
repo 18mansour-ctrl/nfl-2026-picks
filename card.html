@@ -40,32 +40,43 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .dcs{margin-top:3px;font-size:19px;font-weight:500;letter-spacing:-.012em;opacity:.66}
 
 /* ---- card one: the seeds ------------------------------------------------ */
-/* Seven clubs a conference in the order the bracket runs on, which is both
-   less to read than thirty two and the thing that actually decides the
-   playoffs. Division winners take their colour and the top four slots; wild
-   cards sit on paper under their own band, the way the app's seeding page
-   splits them. */
-.sds{flex:1;padding:30px 40px 0;display:grid;grid-template-columns:1fr 1fr;
- column-gap:30px;align-content:start}
+/* The ledger's restraint with the ladder's hierarchy: nothing is filled — the
+   seed numeral carries the club's colour and a hairline carries the rhythm —
+   but the row height steps down by seed, so a bye is worth more of the column
+   than a wild card. The right-hand column says why a club is seeded where it
+   is, and the wild cards keep full-strength type under their own band. */
+.sds{flex:1;padding:32px 40px 0;display:grid;grid-template-columns:1fr 1fr;
+ column-gap:34px;align-content:start;font-variant-numeric:tabular-nums}
 .dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
-.sds>.dawl{grid-column:1/-1;margin-bottom:18px}
-.sdh{font-size:19px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
- padding-left:3px;margin-bottom:12px}
-.bandl{padding-left:3px;padding-bottom:7px;font-size:14px;font-weight:600;
- letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
-.bandl.wc{padding-top:20px}
-.seeds{display:flex;flex-direction:column;gap:6px}
-.sdr{display:flex;align-items:center;gap:14px;height:86px;padding:0 18px;border-radius:10px;
- background:var(--card);box-shadow:var(--cardsh);min-width:0}
-.sdr.full{background:var(--tc)}
-.sdn{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;flex:none;
- font-style:normal;font-size:16px;font-weight:700;background:rgba(25,25,23,.07);
+.sds>.dawl{grid-column:1/-1;margin-bottom:22px}
+.sdh{display:flex;align-items:baseline;justify-content:space-between;
+ padding:0 2px 11px;border-bottom:2px solid var(--ink);margin-bottom:4px}
+.sdh b{font-size:31px;font-weight:700;letter-spacing:.035em;text-transform:uppercase}
+.sdh span{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
  color:var(--fnt)}
-.sdr.full .sdn{background:var(--tf);color:var(--tc)}
-.sdr img{width:46px;height:46px;object-fit:contain;display:block;flex:none}
-.sdt{font-size:30px;font-weight:600;letter-spacing:-.026em;min-width:0;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sdr.full .sdt{color:var(--tf);font-weight:700}
+.bandl{display:flex;align-items:center;gap:13px;padding:20px 2px 8px;
+ font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--mut)}
+.bandl::after{content:"";flex:1;height:1px;background:var(--hr)}
+.sr{display:grid;grid-template-columns:66px auto minmax(0,1fr) auto;align-items:center;
+ gap:0 18px;border-bottom:1px solid var(--hr)}
+.sr:last-child{border-bottom:0}
+.sr.brk{border-bottom:0}
+.srn{font-style:normal;font-weight:700;letter-spacing:-.045em;line-height:1;
+ color:var(--tc);text-align:center}
+.smk{display:grid;place-items:center;flex:none}
+.smk img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.srt{font-weight:600;letter-spacing:-.028em;min-width:0;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis}
+.srw{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--fnt);white-space:nowrap;text-align:right}
+/* the slot is the seed */
+.sr.s1{height:132px}.sr.s1 .srn{font-size:64px}.sr.s1 .smk{width:62px;height:62px}
+.sr.s1 .srt{font-size:38px}.sr.s1 .srw{color:var(--mut)}
+.sr.s2{height:108px}.sr.s2 .srn{font-size:56px}.sr.s2 .smk{width:52px;height:52px}
+.sr.s2 .srt{font-size:32px}
+.sr.s3{height:90px}.sr.s3 .srn{font-size:46px}.sr.s3 .smk{width:44px;height:44px}
+.sr.s3 .srt{font-size:27px}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -190,14 +201,18 @@ const img=k=>{const l=k.toLowerCase();
 /* seeds one to seven; the first four won a division, the last three did not */
 const ORDER={AFC:['LAC','PIT','HOU','MIA','TEN','CLE','BUF'],
              NFC:['LAR','CHI','ATL','PHI','DAL','GB','NYG']};
-const seed=(k,i)=>`<div class="sdr${i<4?' full':''}" style="--tc:${C[k]};--tf:${FG(k)}">`
- +`<i class="sdn">${i+1}</i>${img(k)}<span class="sdt">${N[k]}</span></div>`;
+const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',
+             LAR:'West',CHI:'North',ATL:'South',PHI:'East'};
+const smk=k=>{const l=k.toLowerCase();
+ return `<span class="smk"><img src="logos/${l}.${EXT[l]||'webp'}" alt=""></span>`};
+const seed=(cf,k,i)=>`<div class="sr s${i===0?1:i<4?2:3}${i===3?' brk':''}" `
+ +`style="--tc:${C[k]}"><i class="srn">${i+1}</i>${smk(k)}`
+ +`<span class="srt">${N[k]}</span>`
+ +`<span class="srw">${i===0?'First-round bye':i<4?cf+' '+DIVOF[k]:''}</span></div>`;
 document.getElementById('sds').innerHTML='<p class="dawl">Conference seeding</p>'
- +['AFC','NFC'].map(cf=>`<div><p class="sdh">${cf}</p>`
-   +`<p class="bandl">Division winners</p><div class="seeds">`
-   +ORDER[cf].slice(0,4).map((k,i)=>seed(k,i)).join('')+`</div>`
-   +`<p class="bandl wc">Wild cards</p><div class="seeds">`
-   +ORDER[cf].slice(4).map((k,i)=>seed(k,i+4)).join('')+`</div></div>`).join('');
+ +['AFC','NFC'].map(cf=>`<div><div class="sdh"><b>${cf}</b><span>Seeds 1&ndash;7</span></div>`
+   +ORDER[cf].map((k,i)=>(i===4?'<p class="bandl">Wild cards</p>':'')+seed(cf,k,i)).join('')
+   +`</div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
 const B={AFC:[
