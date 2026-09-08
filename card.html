@@ -117,20 +117,17 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  background:var(--c)}
 .dish img{position:absolute;display:block;width:auto}
 .awt{min-width:0}
-.awl{display:inline-block;padding-bottom:7px;border-bottom:2px solid currentColor;
- font-size:16.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+.awl{font-size:16.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
  color:var(--mut)}
-.awn{margin-top:9px;font-size:27px;font-weight:700;letter-spacing:-.032em;line-height:1.07}
+.awn{margin-top:6px;font-size:27px;font-weight:700;letter-spacing:-.032em;line-height:1.07}
 .awm{margin-top:5px;font-size:15px;font-weight:500;color:var(--mut);letter-spacing:-.004em}
 .awm i{font-style:normal;font-weight:400;color:var(--fnt);padding:0 7px}
 </style></head><body>
 
 <div class="card" style="--tc:#003087;--tf:#fff">
- <header class="dh"><svg class="dwm" viewBox="0 0 244 430" aria-hidden="true">
-   <ellipse cx="124" cy="106" rx="106" ry="67" transform="rotate(-32 124 106)"/>
-   <path d="M104 166c-6 84-24 154-46 194h128c-22-40-40-110-46-194a86 86 0 0 1-36 0Z"/>
-   <rect x="44" y="356" width="160" height="30" rx="6"/>
-   <rect x="24" y="390" width="200" height="34" rx="7"/></svg>
+ <header class="dh"><svg class="dwm" viewBox="0 0 234 430" aria-hidden="true">
+   <!-- traced from vince-lombardi-trophy_234-430.png, outer contour only -->
+   <path d="M137 0 164 1 190 9 197 19 202 35 203 74 195 101 181 124 167 138 148 151 148 160 180 367 217 374 219 376 219 396 233 402 233 418 211 424 155 429 74 429 8 421 0 418 0 402 13 397 13 376 20 372 46 367 74 167 72 158 47 151 30 140 26 115 31 83 47 51 68 28 99 9Z"/></svg>
   <p class="dhr">My 2026 NFL predictions</p>
   <div class="dcw"><div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
     <h1>Buffalo Bills</h1></div>
@@ -200,7 +197,7 @@ const smk=k=>{const l=k.toLowerCase();
    on a club that won one */
 const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
  +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
-const why=(cf,k,i)=>`${cf} ${DIVOF[k]}`+(i<4?CROWN:'');
+const why=(cf,k,i)=>i<4?`${cf} ${DIVOF[k]}${CROWN}`:'';
 const seed=(cf,k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${C[k]}">`
  +`<i class="srn">${i+1}</i>${smk(k)}<span class="srt">${N[k]}</span>`
  +`<span class="srw">${why(cf,k,i)}</span></div>`;
