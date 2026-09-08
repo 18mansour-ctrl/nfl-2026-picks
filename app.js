@@ -297,8 +297,21 @@ function render(){
  wire(root);
  const sheet=root.querySelector('.sheet');
  if(sheet){sheet.classList.remove('enter');void sheet.offsetWidth;sheet.classList.add('enter')}
+ turnMark();
  window.scrollTo(0,0);
 }
+
+/* The mark turns over when the step changes, and only then — not on the first
+   paint, which is not a change from anything, and not on the renders that put
+   you back where you already were. Removing the class and forcing a reflow
+   before adding it is what restarts an animation already running: tapping
+   through three steps quickly should turn three times, not once. */
+let MARKSTEP=null;
+function turnMark(){
+ const m=document.querySelector('.wm');if(!m)return;
+ const was=MARKSTEP;MARKSTEP=STEP;
+ if(was===null||was===STEP)return;
+ m.classList.remove('turn');void m.offsetWidth;m.classList.add('turn')}
 function wire(root){
  root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
  if(SEC[STEP].after)SEC[STEP].after(root);

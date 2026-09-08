@@ -50,8 +50,31 @@ h1,h2,h3,h4,p{margin:0}
  padding:14px var(--pad);background:rgba(250,250,246,.9);
  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
  border-bottom:1px solid var(--hr)}
-.wm{width:17px;height:22px;flex:none;
- background:url('art/nfl.png') center/contain no-repeat}
+/* The mark turns over when the step does. The shield is the thing at rest and
+   the thing you come back to; the clover is what it passes through — four
+   petals meeting at a point, borrowed whole from the fantasy app, where a mark
+   with fourfold symmetry is what let a turn read as a turn without ever coming
+   to rest somewhere arbitrary. A square box so both sit on the same centre:
+   the shield is contained inside it and keeps its own portrait proportion. */
+.wm{position:relative;width:22px;height:22px;flex:none;color:var(--ink)}
+.wm>*{position:absolute;inset:0}
+.wms{background:url('art/nfl.png') center/contain no-repeat}
+.wmc{display:block;width:100%;height:100%;opacity:0;padding:1px}
+/* The turn is on the box and the swap is on its two faces, so the shield is
+   already gone before the rotation is far enough along to read as a shield
+   lying over. The dip in scale is what makes it a change of state rather than
+   a spinning picture. */
+@keyframes wmturn{
+ 0%{transform:rotate(0) scale(1)}
+ 50%{transform:rotate(180deg) scale(.84)}
+ 100%{transform:rotate(360deg) scale(1)}}
+@keyframes wmshield{0%,100%{opacity:1}16%,84%{opacity:0}}
+@keyframes wmclover{0%,100%{opacity:0}16%,84%{opacity:1}}
+.wm.turn{animation:wmturn 760ms cubic-bezier(.62,.02,.28,1)}
+.wm.turn .wms{animation:wmshield 760ms cubic-bezier(.62,.02,.28,1)}
+.wm.turn .wmc{animation:wmclover 760ms cubic-bezier(.62,.02,.28,1)}
+@media(prefers-reduced-motion:reduce){
+ .wm.turn,.wm.turn .wms,.wm.turn .wmc{animation:none}}
 .mt{font-size:17px;font-weight:700;letter-spacing:-.03em}
 
 /* ---- the sheet and its rhythm ------------------------------------------- */
