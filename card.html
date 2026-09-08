@@ -122,12 +122,17 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sl.out .nm{color:var(--mut);font-weight:400}
 .sl.out .mk img{opacity:.5}
 .sl.out .sd{opacity:.5}
-.sm{flex:none;height:140px;display:grid;grid-template-columns:1fr 650px;align-items:center;
- position:relative;z-index:1}
-.sml{font-size:28px;font-weight:700;letter-spacing:.025em;text-transform:uppercase}
-.sm .sl{height:70px;grid-template-columns:18px 42px minmax(0,1fr);padding:0 22px}
-.sm .mk,.sm .mk img{height:42px}.sm .mk img{width:42px}
-.sm .nm{font-size:36px}
+/* The final sits in the third column, under the two games that feed it, so
+   both connectors are straight drops instead of diagonals across an empty
+   band. The label holds the first column, where the bracket has no games. */
+.sm{flex:none;height:150px;display:grid;grid-template-columns:repeat(3,292px);
+ justify-content:space-between;align-items:center;position:relative;z-index:1}
+.sml{grid-column:2;text-align:right;padding-right:14px;font-size:28px;
+ font-weight:700;letter-spacing:.025em;text-transform:uppercase}
+.sm .gm{grid-column:3}
+.sm .sl{height:62px;grid-template-columns:18px 38px minmax(0,1fr);padding:0 18px}
+.sm .mk,.sm .mk img{height:38px}.sm .mk img{width:38px}
+.sm .nm{font-size:32px}
 
 /* ---- the awards row, on card one ---------------------------------------- */
 .daw{flex:none;height:262px;padding:26px 40px 0;display:flex;flex-direction:column;
