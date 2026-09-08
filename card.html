@@ -130,10 +130,6 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    thin band now and the final floats in it, overhanging into the third column
    of each band — the one column that is nearly empty in both. */
 .sm{flex:none;height:34px;position:relative;z-index:2}
-/* above the final, the way AFC and NFC sit above their bands, rather than
-   floating beside it in the middle of the card */
-.sml{position:absolute;right:0;bottom:calc(50% + 72px);width:292px;white-space:nowrap;
- font-size:28px;font-weight:700;letter-spacing:.025em;text-transform:uppercase}
 .sm .gm{position:absolute;top:50%;right:0;transform:translateY(-50%);width:292px}
 .sm .sl{height:62px;grid-template-columns:18px 38px minmax(0,1fr);padding:0 18px}
 /* the champion is the one row on either card that fills */
@@ -275,7 +271,7 @@ const band=cf=>`<p class="cf">${cf}</p><div class="bn" data-cf="${cf}">`
 document.getElementById('br').insertAdjacentHTML('beforeend',
  '<p class="dawl">Playoff bracket</p>'
  +band('AFC')
- +`<div class="sm"><p class="sml">Super Bowl</p><div class="gm" data-g="SB">`
+ +`<div class="sm"><div class="gm" data-g="SB">`
  +slot(['BUF',''],1)+slot(['NYG',''],0)+`</div></div>`
  +band('NFC'));
 
