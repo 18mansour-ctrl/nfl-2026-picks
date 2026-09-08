@@ -51,14 +51,18 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
 .sds>.dawl{grid-column:1/-1;margin-bottom:22px}
 .sdh{display:flex;align-items:baseline;justify-content:space-between;
- padding:0 2px 11px;border-bottom:2px solid var(--ink);margin-bottom:4px}
+ padding:0 2px 11px;border-bottom:2px solid var(--ink);margin-bottom:0}
 .sdh b{font-size:31px;font-weight:700;letter-spacing:.035em;text-transform:uppercase}
-.sdh span{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
- color:var(--fnt)}
-.bandl{display:flex;align-items:center;gap:13px;padding:20px 2px 8px;
- font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
- color:var(--mut)}
-.bandl::after{content:"";flex:1;height:1px;background:var(--hr)}
+/* named rather than tagged: a band says what the group is, and the rule
+   carries it across to the column's edge */
+.bandl{display:flex;align-items:baseline;gap:14px;padding:6px 2px 9px;
+ font-size:17px;font-weight:600;letter-spacing:-.018em;color:var(--ink)}
+.bandl.wc{padding-top:22px}
+.bandl b{font-weight:600}
+.bandl em{font-style:normal;font-size:13px;font-weight:600;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--fnt);white-space:nowrap}
+.bandl::after{content:"";flex:1;height:1px;background:var(--hr);
+ transform:translateY(-5px)}
 .sr{display:grid;grid-template-columns:66px auto minmax(0,1fr) auto;align-items:center;
  gap:0 18px;border-bottom:1px solid var(--hr)}
 .sr:last-child{border-bottom:0}
@@ -69,13 +73,14 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .smk img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .srt{font-weight:600;letter-spacing:-.028em;min-width:0;white-space:nowrap;
  overflow:hidden;text-overflow:ellipsis}
-.srw{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
- color:var(--fnt);white-space:nowrap;text-align:right}
-.sr{height:102px}
-.srn{font-size:56px}
-.smk{width:52px;height:52px}
-.srt{font-size:32px}
-.sr.s1 .srw{color:var(--mut)}
+.srw{font-size:16px;font-weight:500;letter-spacing:-.012em;color:var(--mut);
+ white-space:nowrap;text-align:right}
+.srw i{font-style:normal;color:var(--fnt);padding:0 8px}
+.srw u{text-decoration:none;color:var(--fnt)}
+.sr{height:96px}
+.srn{font-size:52px}
+.smk{width:48px;height:48px}
+.srt{font-size:30px}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -204,13 +209,20 @@ const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',
              LAR:'West',CHI:'North',ATL:'South',PHI:'East'};
 const smk=k=>{const l=k.toLowerCase();
  return `<span class="smk"><img src="logos/${l}.${EXT[l]||'webp'}" alt=""></span>`};
-const seed=(cf,k,i)=>`<div class="sr s${i===0?1:i<4?2:3}${i===3?' brk':''}" `
- +`style="--tc:${C[k]}"><i class="srn">${i+1}</i>${smk(k)}`
- +`<span class="srt">${N[k]}</span>`
- +`<span class="srw">${i===0?'First-round bye':i<4?cf+' '+DIVOF[k]:''}</span></div>`;
+/* the conference is already the column head, so a winner's tag names the
+   division alone; the one seed's bye rides on the same line */
+const why=(k,i)=>i>3?''
+ :`Won the ${DIVOF[k]}`+(i===0?'<i>&middot;</i><u>bye</u>':'');
+const seed=(k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${C[k]}">`
+ +`<i class="srn">${i+1}</i>${smk(k)}<span class="srt">${N[k]}</span>`
+ +`<span class="srw">${why(k,i)}</span></div>`;
+const grp=(t,r)=>`<p class="bandl${r?' wc':''}"><b>${t}</b><em>${r||'Seeds 1&ndash;4'}</em></p>`;
 document.getElementById('sds').innerHTML='<p class="dawl">Conference seeding</p>'
- +['AFC','NFC'].map(cf=>`<div><div class="sdh"><b>${cf}</b><span>Seeds 1&ndash;7</span></div>`
-   +ORDER[cf].map((k,i)=>(i===4?'<p class="bandl">Wild cards</p>':'')+seed(cf,k,i)).join('')
+ +['AFC','NFC'].map(cf=>`<div><div class="sdh"><b>${cf}</b></div>`
+   +grp('Division winners')
+   +ORDER[cf].slice(0,4).map((k,i)=>seed(k,i)).join('')
+   +grp('Wild cards','Seeds 5&ndash;7')
+   +ORDER[cf].slice(4).map((k,i)=>seed(k,i+4)).join('')
    +`</div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
