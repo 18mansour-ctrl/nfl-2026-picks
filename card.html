@@ -44,8 +44,11 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    sub-line that does not need the champion's emphasis */
 .p2 .dlogo{width:86px;height:86px;top:0}
 .p2 .dch{align-items:center;height:auto}
-.p2 .dcs{margin-top:10px;padding-left:106px;font-size:20px}
-.p2 .dcs b{font-size:20px;font-weight:600}
+/* card one's size, in card two's line box: pinning the height to the 27px it
+   already occupied keeps the lockup and the kicker above it exactly where
+   they are */
+.p2 .dcs{margin-top:10px;padding-left:106px;font-size:26px;line-height:27px}
+.p2 .dcs b{font-size:26px;font-weight:700;line-height:27px}
 
 /* ---- card one: the seeds ------------------------------------------------ */
 /* The ledger's restraint with the ladder's hierarchy: nothing is filled — the
