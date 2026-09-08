@@ -1,201 +1,321 @@
-/* Step five: the card. Drawn on a canvas rather than screenshotted, so it is
-   the same on every phone, crisp at any size, and needs nothing loaded from
-   anywhere. 1080 x 1620 at two times, which is a portrait that fills a phone
-   and survives a group chat's compression. */
+/* Step five: the two cards. Drawn on canvas rather than screenshotted, so they
+   are the same on every phone, crisp at any size, and need nothing loaded from
+   anywhere at share time.
+
+   Two pictures, each 1080 x 1350 at two times. One is the season — the seven
+   seeds a conference and the three awards. The other is the playoffs — the
+   bracket those seeds produce. Thirty two clubs and thirteen games are two
+   different jobs, and one frame doing both was the whole reason the old card
+   never worked.
+
+   Everything here is a port of card.html, which is the mockup those two were
+   designed in. Values that look arbitrary were arrived at there against the
+   real marks and the real names; changing one in isolation will usually break
+   an alignment that was measured rather than guessed. */
 (()=>{
-/* --- the card -------------------------------------------------------------
-   One object. The real NFL bracket: AFC running in from the left, NFC in from
-   the right, the champion in the middle where the trophy goes. A name, and
-   three awards along the foot.
+const W=1080,H=1350,SCALE=2;
+const PAPER='#FAFAF6',CARD='#FFFDF7',INK='#191917',MUT='#605F58',FNT='#9C9B92';
+const HR='rgba(25,25,23,.09)',LN='rgba(25,25,23,.13)';
+const SANS='Sohne';
 
-   Everything else went. Earlier versions had a masthead, a dateline, a
-   champion band, two section heads, a super bowl block, a leader table and a
-   colophon — fifteen things, each with its own label and rule, which is how a
-   card ends up looking like every other generated card. A bracket is already a
-   recognisable object. It does not need a frame around it. */
-const W=1080,H=1080,PAD=34,SCALE=2;
-const INK='#191917',MUT='#605F58',FNT='#9C9B92',PAPER='#FAFAF6';
-const HAIR='rgba(25,25,23,.22)';
-const COND='Sohne Schmal',SANS='Sohne';
+/* Cleveland leads with a brown that at numeral size is indistinguishable from
+   black, so its seed takes the club's second colour. The fill behind a
+   champion still uses the primary — this is a foreground override only. */
+const NUMC={CLE:'#EB3300'};
+const numc=k=>NUMC[k]||(T[k]?T[k].c:INK);
 
-function tx(c,s,x,y,{size=16,weight=400,face=SANS,color=INK,align='left',track=0,max=0}={}){
+/* ---- drawing helpers -----------------------------------------------------
+   Every position below is a box top and a line height lifted straight off
+   card.html, which is where these two were designed. txBox turns a CSS box
+   into a canvas baseline using the font's own metrics, so a value measured in
+   the mockup can be typed in here unchanged — the alternative is eyeballing
+   baselines, which is how the first port came out wrong in a dozen places. */
+function tx(c,s,x,y,{size=16,weight=400,color=INK,align='left',track=0,max=0,
+ base='alphabetic'}={}){
  let sz=size;
- c.textAlign=align;c.textBaseline='alphabetic';c.fillStyle=color;
+ c.textAlign=align;c.textBaseline=base;c.fillStyle=color;
  c.letterSpacing=track?track+'px':'0px';
- c.font=`${weight} ${sz}px "${face}", sans-serif`;
+ c.font=`${weight} ${sz}px "${SANS}", sans-serif`;
  if(max){while(sz>9&&c.measureText(s).width>max){sz-=1;
-  c.font=`${weight} ${sz}px "${face}", sans-serif`}}
- c.fillText(s,x,y);c.letterSpacing='0px';
- return c.measureText(s).width}
-const rule=(c,y,x1,x2,col=HAIR,h=1)=>{c.fillStyle=col;c.fillRect(x1,y,x2-x1,h)};
-const onDark=hex=>lum(hex)>.42;
-const over=(hex,a)=>onDark(hex)?`rgba(25,25,23,${a})`:`rgba(255,255,255,${a})`;
+  c.font=`${weight} ${sz}px "${SANS}", sans-serif`}}
+ c.fillText(s,x,y);
+ const w=c.measureText(s).width;c.letterSpacing='0px';return w}
+function measure(c,s,{size=16,weight=400,track=0}={}){
+ c.letterSpacing=track?track+'px':'0px';
+ c.font=`${weight} ${size}px "${SANS}", sans-serif`;
+ const w=c.measureText(s).width;c.letterSpacing='0px';return w}
+function baseOf(c,size,weight,lh){
+ c.font=`${weight} ${size}px "${SANS}", sans-serif`;
+ const m=c.measureText('Hg');
+ const a=m.fontBoundingBoxAscent,d=m.fontBoundingBoxDescent;
+ return ((lh||size)-(a+d))/2+a}
+function txBox(c,s,x,top,o){
+ return tx(c,s,x,top+baseOf(c,o.size,o.weight||400,o.lh),o)}
+const rule=(c,y,x1,x2,col=HR,h=1)=>{c.fillStyle=col;c.fillRect(x1,y,x2-x1,h)};
+function rrect(c,x,y,w,h,r){c.beginPath();
+ if(c.roundRect)c.roundRect(x,y,w,h,r);
+ else{c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}}
+const fade=(hex,a)=>{const n=parseInt(hex.slice(1),16);
+ return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
 
-const CW=128,GAP=12,ROW=84,GAME=ROW*2,GGAP=50;
-
-/* A cell mirrors on the NFC side — logo outboard, text reading in towards the
-   middle — so both halves point at the champion rather than both pointing
-   right. */
-function cell(c,g,id,x,y,flip){
- c.fillStyle='#FFFFFF';c.fillRect(x,y,CW,GAME);
- ['home','away'].forEach((side,i)=>{
-  const k=g[side],t=k?T[k]:null,won=S.win[id]===k;
-  const sy=y+i*ROW,seed=side==='home'?g.hs:g.as;
-  if(won){c.fillStyle=t.c;c.fillRect(x,sy,CW,ROW)}
-  if(!t){tx(c,'—',x+CW/2,sy+ROW/2+6,{size:16,weight:400,color:FNT,align:'center'});return}
-  const lost=!!S.win[id]&&!won;
-  if(lost){c.save();c.globalAlpha=.4}
-  const lx=flip?x+CW-38:x+8;
-  logo(c,t,lx,sy+10,30);
-  if(seed)tx(c,String(seed),flip?x+CW-46:x+46,sy+28,
-   {size:13,weight:600,face:COND,color:won?over(t.c,.6):FNT,track:.6,
-    align:flip?'right':'left'});
-  tx(c,t.k,flip?x+CW-10:x+10,sy+ROW-18,
-   {size:32,weight:700,face:COND,color:won?t.f:INK,track:.8,
-    align:flip?'right':'left'});
-  if(lost)c.restore()});
- c.fillStyle=HAIR;
- c.fillRect(x,y,CW,1);c.fillRect(x,y+GAME-1,CW,1);
- c.fillRect(x,y,1,GAME);c.fillRect(x+CW-1,y,1,GAME);
- c.fillRect(x,y+ROW,CW,1)}
-
-function elbow(c,a,b){const mid=(a.x+b.x)/2;
- c.beginPath();c.moveTo(a.x,a.y);c.lineTo(mid,a.y);
- c.lineTo(mid,b.y);c.lineTo(b.x,b.y);c.stroke()}
-
-/* one half of the bracket, running inwards */
-function half(c,B,conf,x0,top,flip){
- const ids=[[conf+'-wc0',conf+'-wc1',conf+'-wc2'],[conf+'-dv0',conf+'-dv1'],[conf+'-cc']];
- const span=3*GAME+2*GGAP;
- const cols=ids.map((col,ci)=>{
-  const cx=flip?x0-ci*(CW+GAP):x0+ci*(CW+GAP);
-  const h=col.length*GAME+(col.length-1)*GGAP,off=(span-h)/2;
-  return col.map((id,i)=>{
-   const gy=top+off+i*(GAME+GGAP),g=B[id];
-   return {id,g,x:cx,y:gy,
-    rows:['home','away'].map((side,j)=>({team:g[side],won:S.win[id]===g[side],
-     x:flip?cx:cx+CW,y:gy+j*ROW+ROW/2}))}})});
- c.save();c.strokeStyle=HAIR;c.lineWidth=1;
- for(let ci=1;ci<cols.length;ci++){
-  const prev=cols[ci-1].flatMap(g=>g.rows).filter(r=>r.won);
-  cols[ci].forEach(g=>g.rows.forEach(r=>{
-   if(!r.team)return;const src=prev.find(p=>p.team===r.team);
-   if(src)elbow(c,src,{x:flip?r.x+CW:r.x-CW,y:r.y})}))}
- c.restore();
- ['Wild Card','Divisional','Championship'].forEach((l,ci)=>{
-  const cx=flip?x0-ci*(CW+GAP):x0+ci*(CW+GAP);
-  tx(c,l,flip?cx+CW:cx,top-16,{size:12,weight:600,face:COND,color:FNT,
-   track:1,align:flip?'right':'left'})});
- cols.forEach(col=>col.forEach(g=>cell(c,g.g,g.id,g.x,g.y,flip)));
- return span}
-
-function draw(c){
- c.setTransform(SCALE,0,0,SCALE,0,0);
- c.fillStyle=PAPER;c.fillRect(0,0,W,H);
- const B=bracket(),ch=champion(),T1=ch?T[ch]:null;
-
- tx(c,((S.name||'').trim()||'My picks').toUpperCase(),PAD,58,
-  {size:26,weight:700,face:COND,track:1.6,max:520});
- tx(c,'2026 NFL PREDICTIONS',W-PAD,58,
-  {size:26,weight:700,face:COND,color:T1?T1.c:INK,track:1.6,align:'right'});
- rule(c,76,PAD,W-PAD,'rgba(25,25,23,.9)',2);
-
- const top=176;
- tx(c,'AFC',PAD,132,{size:30,weight:700,face:COND,track:1});
- tx(c,'NFC',W-PAD,132,{size:30,weight:700,face:COND,track:1,align:'right'});
- const span=half(c,B,'AFC',PAD,top,false);
- half(c,B,'NFC',W-PAD-CW,top,true);
-
- /* the middle, where the trophy goes */
- const mx=PAD+3*(CW+GAP),mw=W-PAD*2-6*(CW+GAP)-GAP*2,cx=mx+GAP+mw/2;
- const my=top+span/2;
- if(T1){
-  logo(c,T1,cx-72,my-134,144);
-  tx(c,'CHAMPION',cx,my+22,{size:15,weight:700,face:COND,color:MUT,
-   track:2.4,align:'center'});
-  tx(c,T1.city.toUpperCase(),cx,my+62,{size:22,weight:600,face:COND,color:MUT,
-   track:1,align:'center',max:mw+80});
-  tx(c,T1.name.toUpperCase(),cx,my+110,{size:46,weight:700,face:COND,color:T1.c,
-   track:.8,align:'center',max:mw+110});
- }else{
-  tx(c,'CHAMPION',cx,my-6,{size:14,weight:700,face:COND,color:FNT,track:2.2,align:'center'});
-  tx(c,'—',cx,my+34,{size:34,weight:700,face:COND,color:FNT,align:'center'})}
-
- /* the three names, along the foot, on one line each */
- /* three cards along the foot, each in its man's colours with his face on it */
- const gapA=16,cwA=(W-PAD*2-gapA*2)/3,chA=182,ay=top+span+74;
- [['mvp','MVP'],['opoy','OPOY'],['dpoy','DPOY']].forEach(([k,l],i)=>{
-  const a=S.award[k]||{},t=a.team?T[a.team]:null;
-  const x=PAD+i*(cwA+gapA);
-  tx(c,l,x,ay-14,{size:17,weight:700,face:COND,color:MUT,track:2});
-  const bg=t?t.c:'#E8E7E0',fg=t?t.f:MUT;
-  c.fillStyle=bg;c.fillRect(x,ay,cwA,chA);
-  const im=a.player&&IMG['@'+shotKey(a.player)];
-  const ps=132;
-  if(im){/* face bled off the right edge, cropped square to the head */
-   c.save();c.beginPath();c.rect(x+cwA-ps-6,ay+chA-ps-2,ps,ps);c.clip();
-   const r=ps/Math.min(im.naturalWidth,im.naturalHeight);
-   const w=im.naturalWidth*r,h=im.naturalHeight*r;
-   c.drawImage(im,x+cwA-ps-6+(ps-w)/2,ay+chA-ps-2+(ps-h)/2,w,h);c.restore()}
-  else if(a.player){c.save();c.globalAlpha=.22;c.fillStyle=fg;
-   c.beginPath();c.arc(x+cwA-72,ay+chA-64,52,0,6.29);c.fill();c.restore();
-   tx(c,initials(a.player),x+cwA-72,ay+chA-50,
-    {size:38,weight:700,face:COND,color:fg,align:'center'})}
-  if(a.pos)tx(c,a.pos,x+16,ay+34,{size:15,weight:700,face:COND,
-   color:over(bg,.72),track:1.6});
-  const nm=((a.player||'').trim()||'Not picked');
-  const parts=nm.split(/\s+/),last=parts.length>1?parts.pop():'',first=parts.join(' ');
-  if(last){
-   tx(c,first.toUpperCase(),x+16,ay+chA-52,{size:20,weight:600,face:COND,
-    color:over(bg,.78),track:1,max:cwA-150});
-   tx(c,last.toUpperCase(),x+16,ay+chA-20,{size:34,weight:700,face:COND,
-    color:fg,track:.6,max:cwA-150})}
-  else tx(c,nm.toUpperCase(),x+16,ay+chA-20,{size:30,weight:700,face:COND,
-   color:fg,track:.6,max:cwA-150})});
-}
-
-/* Every face the card uses has to be resident before the first stroke, or the
-   browser silently falls back and the whole thing is set in the system sans.
-   The logos are the same problem in image form: drawImage on a half-loaded
-   image draws nothing and reports no error. */
-const FACES=['700 26px "Sohne Schmal"','600 19px "Sohne Schmal"','400 16px Sohne'];
-const IMG={};
-const pic=src=>new Promise(res=>{const im=new Image();
- im.onload=()=>res(im);im.onerror=()=>res(null);im.src=src});
-function loadLogos(){
- const jobs=TEAMS.map(t=>{const src=logoOf(t);
-  return src?pic(src).then(im=>{if(im)IMG[t.k]=im}):null}).filter(Boolean);
- /* and the three faces the awards are currently pointing at */
- ['mvp','opoy','dpoy'].forEach(k=>{const a=S.award[k]||{};
-  const src=a.player&&shotOf(a.player);
-  if(src)jobs.push(pic(src).then(im=>{if(im)IMG['@'+shotKey(a.player)]=im}))});
- return Promise.all(jobs)}
-let READY=null;
-const ready=()=>READY||(READY=Promise.all([
-  Promise.all(FACES.map(f=>document.fonts.load(f))).then(()=>document.fonts.ready),
-  loadLogos()]).catch(()=>{}));
 /* contain, so a wide wordmark and a tall shield both sit in the same square */
 function logo(c,t,x,y,box){
  const im=t&&IMG[t.k];
- if(!im){c.save();rrect(c,x,y,box,box,box*.2);c.fillStyle=t?t.c:LINE;c.fill();
-  if(t){c.fillStyle='#fff';c.textAlign='center';c.textBaseline='middle';
-   c.font=`700 ${Math.round(box*.34)}px "Sohne", sans-serif`;c.fillText(t.k,x+box/2,y+box/2+1)}
+ if(!im){c.save();rrect(c,x,y,box,box,box*.2);c.fillStyle=t?t.c:LN;c.fill();
+  if(t)tx(c,t.k,x+box/2,y+box/2,{size:Math.round(box*.32),weight:700,
+   color:t.f,align:'center',base:'middle'});
   c.restore();return}
  const r=Math.min(box/im.naturalWidth,box/im.naturalHeight);
  const w=im.naturalWidth*r,h=im.naturalHeight*r;
  c.drawImage(im,x+(box-w)/2,y+(box-h)/2,w,h)}
 
+const CROWN_D='M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z';
+let CROWN=null;
+function crown(c,x,y,w,col){
+ if(!CROWN&&window.Path2D)CROWN=new Path2D(CROWN_D);
+ if(!CROWN)return;
+ const s=w/24;
+ c.save();c.translate(x,y);c.scale(s,s);c.fillStyle=col;c.fill(CROWN);c.restore()}
+
+/* A headshot is a cutout with its own amount of empty margin — one file is
+   176x128 and another 600x436 — so a fixed crop lines up on none of them. The
+   opaque box is measured once per image and the bust fitted to the dish from
+   that, which puts every face at one scale on one baseline. */
+const BBOX={};
+function bbox(im,key){
+ if(BBOX[key])return BBOX[key];
+ const w=im.naturalWidth,h=im.naturalHeight;
+ const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+ const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(im,0,0);
+ let x0=w,y0=h,x1=0,y1=0;
+ try{const px=g.getImageData(0,0,w,h).data;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(px[(y*w+x)*4+3]>12){
+   if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
+ catch(e){x0=0;y0=0;x1=w-1;y1=h-1}
+ if(x1<x0){x0=0;y0=0;x1=w-1;y1=h-1}
+ return BBOX[key]={x0,y0,x1,y1,w,h}}
+function dish(c,x,y,d,t,im,key,initialsFor){
+ c.save();c.beginPath();c.arc(x+d/2,y+d/2,d/2,0,6.2832);c.clip();
+ c.fillStyle=t?t.c:'#E8E7E0';c.fillRect(x,y,d,d);
+ if(im){const b=bbox(im,key),bh=b.y1-b.y0+1,bw=b.x1-b.x0+1;
+  const k=d*.86/bh;
+  c.drawImage(im,x+d/2-(b.x0+bw/2)*k,y+d-(b.y1+1)*k,b.w*k,b.h*k)}
+ else if(initialsFor)tx(c,initials(initialsFor),x+d/2,y+d/2,
+  {size:Math.round(d*.34),weight:700,color:t?t.f:MUT,align:'center',base:'middle'});
+ c.restore()}
+
+/* ---- the header, shared ---------------------------------------------------
+   Left aligned on the card's own margin, not right — the block is as wide as
+   its widest line and hangs off x=40 like everything under it. */
+const DH=248;
+function header(c,{tc,tf,items,gap=20,sub,subBold,subX,subTop,subLh,watermark}){
+ c.fillStyle=tc;c.fillRect(0,0,W,DH);
+ if(watermark&&IMG['@trophy']){const im=IMG['@trophy'],h=330;
+  const w=im.naturalWidth*(h/im.naturalHeight);
+  c.save();c.globalAlpha=.3;c.drawImage(im,W-44-w,-24,w,h);c.restore()}
+ txBox(c,'My 2026 NFL predictions',40,32,
+  {size:32,weight:600,lh:42,color:fade(tf,.62),track:-.7});
+ let x=40;
+ items.forEach(it=>{
+  if(it.logo){logo(c,T[it.k]||null,x,it.y,it.size);x+=it.size+gap;return}
+  const w=txBox(c,it.text,x,it.y,{size:it.size,weight:it.weight,lh:it.lh,
+   color:it.color||tf,track:it.track||0});
+  x+=w+gap});
+ let cx=subX;
+ if(subBold)cx+=txBox(c,subBold,cx,subTop,{size:26,weight:700,lh:subLh,
+  color:tf,track:-.62});
+ if(sub){if(subBold){txBox(c,'|',cx+10,subTop,{size:22,weight:500,lh:subLh,
+   color:fade(tf,.42)});
+   cx+=10+measure(c,'|',{size:22,weight:500})+10}
+  txBox(c,sub,cx,subTop,{size:22,weight:500,lh:subLh,color:fade(tf,.7),track:-.3})}}
+
+/* ---- card one: the seeds --------------------------------------------------
+   Offsets are relative to the conference head's box top, which the mockup puts
+   at 340.5 on a 1350 card. */
+const COLW=472,SROW=84;
+function seedColumn(c,conf,x,top){
+ const s=seedsOf(conf);
+ txBox(c,conf,x+1,top,{size:28,weight:700,lh:41,track:.7});
+ rule(c,top+46,x,x+COLW,INK,2);
+ const bandAt=(label,y)=>{
+  const w=txBox(c,label,x+2,y,{size:18,weight:600,lh:22,track:-.32});
+  rule(c,y+11,x+2+w+14,x+COLW,HR,1)};
+ const row=(k,i,ry)=>{
+  const t=k?T[k]:null,two=i<4&&!!t;
+  txBox(c,String(i+1),x+20,ry+15.5,{size:52,weight:700,lh:52,
+   color:t?numc(k):'#D8D7CE',track:-2.3});
+  if(t){
+   logo(c,t,x+84,ry+17.5,48);
+   const ny=two?ry+9.5:ry+21.5;
+   txBox(c,t.name,x+152,ny,{size:31,weight:600,lh:41,track:-.87,max:COLW-192});
+   if(two){const lab=conf+' '+t.div;
+    const w=txBox(c,lab,x+152,ry+53.5,{size:15,weight:500,lh:20,color:MUT,track:-.12});
+    crown(c,x+152+w+8,ry+56,16,FNT)}}
+  else txBox(c,'Not picked',x+152,ry+21.5,{size:31,weight:400,lh:41,color:FNT,track:-.87});
+  rule(c,ry+83,x,x+COLW,HR,1)};
+ bandAt('Division winners',top+68);
+ for(let i=0;i<4;i++)row(s[i],i,top+94+i*SROW);
+ bandAt('Wild cards',top+460);
+ for(let i=4;i<7;i++)row(s[i],i,top+486+(i-4)*SROW)}
+
+const AWARDS=[['mvp','MVP'],['opoy','OPOY'],['dpoy','DPOY']];
+function awardsRow(c){
+ txBox(c,'Award predictions',40,1114,{size:35,weight:700,lh:38.5,track:-1.05});
+ const D=110,dy=1186.5,gapT=16;
+ const blocks=AWARDS.map(([k,label])=>{
+  const a=S.award[k]||{},t=a.team?T[a.team]:null;
+  const name=(a.player||'').trim()||'Not picked';
+  const meta=[a.pos,t&&t.name].filter(Boolean);
+  const w=Math.max(measure(c,name,{size:27,weight:700,track:-.86}),
+   measure(c,label,{size:19,weight:700,track:.86}),
+   meta.length?measure(c,meta.join('   ')+'  ',{size:15,weight:500}):0);
+  return {a,t,label,name,meta,w:D+gapT+w}});
+ /* the outer two hold their column and only the middle block moves, so a long
+    name in the middle stops crowding the third */
+ const colW=(W-80-56)/3,x0=40,x2=40+2*(colW+28);
+ const x1=x0+blocks[0].w+((x2-(x0+blocks[0].w))-blocks[1].w)/2;
+ [x0,x1,x2].forEach((x,i)=>{const b=blocks[i];
+  const key=b.a.player?'@'+shotKey(b.a.player):null;
+  dish(c,x,dy,D,b.t,key&&IMG[key],key,b.a.player);
+  const tx0=x+D+gapT;
+  txBox(c,b.label,tx0,1199.1,{size:19,weight:700,lh:25,color:MUT,track:.86});
+  txBox(c,b.name,tx0,1230.1,{size:27,weight:700,lh:28.9,track:-.86,max:W-40-tx0});
+  if(b.meta.length){let mx=tx0;
+   mx+=txBox(c,b.meta[0],mx,1263.9,{size:15,weight:500,lh:20,color:MUT})+7;
+   if(b.meta[1]){mx+=txBox(c,'|',mx,1263.9,{size:15,weight:400,lh:20,color:FNT})+7;
+    txBox(c,b.meta[1],mx,1263.9,{size:15,weight:500,lh:20,color:MUT})}}})}
+
+function drawSeason(c){
+ c.setTransform(SCALE,0,0,SCALE,0,0);
+ c.fillStyle=PAPER;c.fillRect(0,0,W,H);
+ const B=bracket(),ch=champion(),T1=ch?T[ch]:null;
+ const other=ch?(B.sb.home===ch?B.sb.away:B.sb.home):null,T2=other?T[other]:null;
+ const tf=T1?T1.f:'#fff';
+ header(c,{tc:T1?T1.c:INK,tf,watermark:true,
+  items:[{logo:1,k:ch,y:83,size:120},
+   {text:T1?T1.city+' '+T1.name:'Not picked',y:93,size:82,weight:700,lh:82,track:-2.95}],
+  subX:180,subTop:178,subLh:35,
+  subBold:T1?'Super Bowl Champion':'',
+  sub:T2?'over the '+T2.city+' '+T2.name:''});
+ txBox(c,'Conference seeding',40,280,{size:35,weight:700,lh:38.5,track:-1.05});
+ seedColumn(c,'AFC',40,340.5);
+ seedColumn(c,'NFC',W-40-COLW,340.5);
+ awardsRow(c)}
+
+/* ---- card two: the bracket ------------------------------------------------ */
+const GW=292,GROW=58,GH=GROW*2;
+function game(c,g,id,x,y,big){
+ const rowH=big?62:GROW,h=rowH*2;
+ rrect(c,x,y,GW,h,12);c.fillStyle=CARD;c.fill();
+ const mkW=big?38:34,nmS=big?32:28,nmL=big?42:37;
+ const sdX=18,mkX=big?50:54,nmX=102;
+ ['home','away'].forEach((side,i)=>{
+  const k=g[side],t=k?T[k]:null,won=!!k&&S.win[id]===k;
+  const ry=y+i*rowH,seed=side==='home'?g.hs:g.as;
+  if(!t){txBox(c,'—',x+nmX,ry+(rowH-nmL)/2,{size:nmS,weight:400,lh:nmL,color:FNT});return}
+  if(big&&won){c.save();rrect(c,x,y,GW,h,12);c.clip();
+   c.fillStyle=t.c;c.fillRect(x,ry,GW,rowH);c.restore()}
+  const on=big&&won,fg=on?t.f:INK;
+  if(seed)txBox(c,String(seed),x+sdX,ry+(rowH-31)/2,{size:23,weight:700,lh:31,
+   track:-.8,color:on?fade(t.f,.8):(S.win[id]&&!won?fade(numc(k),.55):numc(k))});
+  logo(c,t,x+mkX,ry+(rowH-mkW)/2,mkW);
+  txBox(c,t.name,x+nmX,ry+(rowH-nmL)/2,{size:nmS,weight:won?700:400,lh:nmL,
+   color:fg,track:-.026*nmS,max:GW-nmX-18})});
+ rule(c,y+rowH,x,x+GW,HR,1);
+ c.save();rrect(c,x+.5,y+.5,GW-1,h-1,12);c.strokeStyle=LN;c.lineWidth=1;c.stroke();c.restore()}
+
+const SPAN=[2,3,6],GX=[40,394,748];
+function conference(c,B,conf,cfTop,bandH){
+ txBox(c,conf,41,cfTop,{size:28,weight:700,lh:41,track:.7});
+ const bt=cfTop+41,rows=bandH/6,out=[];
+ [0,1,2].forEach(r=>{
+  const n=[3,2,1][r],span=SPAN[r];
+  for(let i=0;i<n;i++){
+   const id=conf+'-'+['wc','dv','cc'][r]+(r===2?'':i);
+   const gy=bt+(i*span)*rows+(span*rows-GH)/2;
+   game(c,B[id],id,GX[r],gy);
+   out.push({r,id,x:GX[r],y:gy,cx:GX[r]+GW/2,cy:gy+GH/2})}});
+ return {games:out,bottom:bt+bandH}}
+
+function joints(c,A,B){
+ if(!A.length||!B.length)return;
+ const x=(Math.max(...A.map(p=>p.x+GW))+Math.min(...B.map(p=>p.x)))/2;
+ const ys=[...A,...B].map(p=>p.cy);
+ c.beginPath();
+ if(Math.max(...ys)-Math.min(...ys)>1){c.moveTo(x,Math.min(...ys));c.lineTo(x,Math.max(...ys))}
+ A.forEach(p=>{c.moveTo(p.x+GW,p.cy);c.lineTo(x,p.cy)});
+ B.forEach(p=>{c.moveTo(x,p.cy);c.lineTo(p.x,p.cy)});
+ c.stroke()}
+
+function drawBracket(c){
+ c.setTransform(SCALE,0,0,SCALE,0,0);
+ c.fillStyle=PAPER;c.fillRect(0,0,W,H);
+ const B=bracket(),sb=B.sb,a=sb.home?T[sb.home]:null,n=sb.away?T[sb.away]:null;
+ const ch=champion(),T1=ch?T[ch]:null,tf=T1?T1.f:'#fff';
+ header(c,{tc:T1?T1.c:INK,tf,
+  items:[{logo:1,k:sb.home,y:87,size:86},
+   {text:a?a.name:'—',y:89,size:82,weight:700,lh:82,track:-2.95},
+   {text:'vs',y:100.5,size:44,weight:600,lh:59,color:fade(tf,.55),track:-.9},
+   {text:n?n.name:'—',y:89,size:82,weight:700,lh:82,track:-2.95},
+   {logo:1,k:sb.away,y:87,size:86}],
+  subX:146,subTop:183,subLh:27,subBold:'Super Bowl matchup'});
+
+ txBox(c,'Playoff bracket',40,278,{size:35,weight:700,lh:38.5,track:-1.05});
+ const cfTop=336.5,seam=34,bandH=440.7;
+ const afc=conference(c,B,'AFC',cfTop,bandH);
+ const nfc=conference(c,B,'NFC',afc.bottom+seam,bandH);
+ const fy=afc.bottom+seam/2,sbh=124,sbx=GX[2];
+ c.save();c.strokeStyle='rgba(25,25,23,.24)';c.lineWidth=1.5;
+ [afc,nfc].forEach((band,i)=>{
+  const col=r=>band.games.filter(g=>g.r===r);
+  joints(c,col(0),col(1));joints(c,col(1),col(2));
+  const cc=col(2)[0];if(!cc)return;
+  c.beginPath();c.moveTo(cc.cx,i?cc.y:cc.y+GH);
+  c.lineTo(cc.cx,i?fy+sbh/2:fy-sbh/2);c.stroke()});
+ c.restore();
+ game(c,sb,'sb',sbx,fy-sbh/2,true)}
+
+/* ---- assets ---------------------------------------------------------------
+   Every face has to be resident before the first stroke or the browser
+   silently falls back to the system sans, and drawImage on a half-loaded image
+   draws nothing and reports no error. */
+const FACES=['400 16px Sohne','500 16px Sohne','600 16px Sohne','700 16px Sohne'];
+const IMG={};
+const pic=src=>new Promise(res=>{const im=new Image();
+ im.onload=()=>res(im);im.onerror=()=>res(null);im.src=src});
+function loadArt(){
+ const jobs=TEAMS.map(t=>{const src=logoOf(t);
+  return src?pic(src).then(im=>{if(im)IMG[t.k]=im}):null}).filter(Boolean);
+ jobs.push(pic('art/lombardi.png').then(im=>{if(im)IMG['@trophy']=im}));
+ ['mvp','opoy','dpoy'].forEach(k=>{const a=S.award[k]||{};
+  const src=a.player&&shotOf(a.player);
+  if(src)jobs.push(pic(src).then(im=>{if(im)IMG['@'+shotKey(a.player)]=im}))});
+ return Promise.all(jobs)}
+let READY=null;
+const ready=()=>READY=Promise.all([
+  Promise.all(FACES.map(f=>document.fonts.load(f))).then(()=>document.fonts.ready),
+  loadArt()]).catch(()=>{});
+
 async function paint(){
- const cv=$('#card');if(!cv)return;
- cv.width=W*SCALE;cv.height=H*SCALE;
+ const one=$('#card1'),two=$('#card2');
+ if(!one||!two)return;
+ [one,two].forEach(cv=>{cv.width=W*SCALE;cv.height=H*SCALE});
  await ready();
- draw(cv.getContext('2d'));
-}
+ drawSeason(one.getContext('2d'));
+ drawBracket(two.getContext('2d'))}
+
+function download(cv,suffix){
+ const nm=(S.name||'picks').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-')
+  .replace(/^-|-$/g,'');
+ cv.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download=`nfl-2026-${nm||'picks'}-${suffix}.png`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),1000)},'image/png')}
 
 SEC.share={render(){
  return `<div class="sheet">
 <header class="phx">
-<h1>Your card</h1>
+<h1>Your cards</h1>
 </header>
 <section class="sect">
 <div class="sh"><h4>Name</h4></div>
@@ -203,25 +323,28 @@ SEC.share={render(){
  placeholder="Your name" autocomplete="name" spellcheck="false" aria-label="Your name">
 </section>
 <section class="sect">
-<div class="sh"><h4>The picture</h4></div>
-<div class="cardwrap"><canvas id="card" role="img" aria-label="Your 2026 NFL predictions"></canvas></div>
+<div class="sh"><h4>The season</h4></div>
+<div class="cardwrap"><canvas id="card1" role="img"
+ aria-label="Your 2026 conference seeding and award picks"></canvas></div>
+<div class="acts"><button class="next" id="dl1">Save the season card</button></div>
+</section>
+<section class="sect">
+<div class="sh"><h4>The playoffs</h4></div>
+<div class="cardwrap"><canvas id="card2" role="img"
+ aria-label="Your 2026 playoff bracket"></canvas></div>
 <div class="acts">
-<button class="next" id="dl">Save the picture</button>
+<button class="next" id="dl2">Save the bracket</button>
 <button class="ghost" id="again">Start over</button>
 </div>
-<p class="hint">On a phone you can also press and hold the picture to save or send it.</p>
+<p class="hint">On a phone you can also press and hold a picture to save or send it.</p>
 </section>
 </div>`},
 after(root){
  const who=root.querySelector('#who');
  who.oninput=()=>{S.name=who.value;save();paint()};
  paint();
- root.querySelector('#dl').onclick=()=>{
-  const cv=$('#card');
-  const nm=(S.name||'picks').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  cv.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement('a');
-   a.href=u;a.download=`nfl-2026-${nm||'picks'}.png`;a.click();
-   setTimeout(()=>URL.revokeObjectURL(u),1000)},'image/png')};
+ root.querySelector('#dl1').onclick=()=>download($('#card1'),'season');
+ root.querySelector('#dl2').onclick=()=>download($('#card2'),'bracket');
  root.querySelector('#again').onclick=()=>{
   if(!confirm('Clear every pick and start again?'))return;
   S=blank();save();location.hash='divisions';render()}}};

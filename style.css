@@ -379,7 +379,7 @@ h1,h2,h3,h4,p{margin:0}
 
 /* ---- the card and the buttons ------------------------------------------- */
 .cardwrap{border-radius:10px;overflow:hidden;box-shadow:var(--cardsh);background:var(--card)}
-#card{display:block;width:100%;height:auto}
+#card1,#card2{display:block;width:100%;height:auto}
 .acts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 .nextbar{margin-top:42px}
 .next{display:inline-grid;place-items:center;min-height:50px;padding:0 24px;
