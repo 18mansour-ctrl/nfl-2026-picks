@@ -103,11 +103,11 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  padding:14px 1px 6px;position:relative;z-index:1}
 .bn{flex:1;display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
  grid-template-rows:repeat(6,1fr);position:relative;z-index:1}
-/* The app's own game card: paper on a soft shadow, no border. A border plus
-   an internal rule put three lines around every pairing; the shadow lifts the
-   card off the page and leaves one. */
+/* Outlined rather than lifted: a hairline round each matchup and no shadow, so
+   the pairing is drawn once. The divider inside is a lighter grey than the
+   outline, which keeps the box reading as the stronger of the two. */
 .gm{align-self:center;background:var(--card);border-radius:12px;overflow:hidden;
- box-shadow:var(--cardsh)}
+ box-shadow:inset 0 0 0 1px var(--ln)}
 .sl{display:grid;grid-template-columns:22px 34px minmax(0,1fr);align-items:center;gap:14px;
  height:58px;padding:0 18px}
 .sl+.sl{border-top:1px solid var(--hr)}
