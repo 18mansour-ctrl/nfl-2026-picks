@@ -185,7 +185,7 @@ h1,h2,h3,h4,p{margin:0}
    the conference head has to be named here */
 .sh+.bandl{margin-top:14px}
 .seeds{display:grid;gap:6px}
-.sd{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 4px 0 12px;
+.sd{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 4px 0 10px;
  border-radius:8px;background:var(--card);box-shadow:var(--cardsh);
  transition:background 180ms var(--e-out);will-change:transform}
 .sd.full{background:var(--tc)}
@@ -199,10 +199,16 @@ h1,h2,h3,h4,p{margin:0}
 .sd.full .mark.tile{background:var(--tf)}
 .sd.full .mark.tile i{color:var(--tc)}
 .sd.open{background:rgba(25,25,23,.035);box-shadow:none}
-.sdn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;flex:none;
- font-style:normal;font-size:12px;font-weight:700;
- background:rgba(25,25,23,.08);color:var(--mut)}
-.sd.full .sdn{background:var(--tf);color:var(--tc)}
+/* The seed is the whole point of the row and it was set smaller than the
+   division badge at the other end of it. It is a numeral now rather than a
+   chip in a circle — the same move the export card makes, at the same share
+   of the row's height — which buys the size out of the box it was sitting in
+   rather than out of the row. Fixed width, so the names line up down the
+   column whatever the digit. */
+.sdn{flex:none;width:30px;text-align:center;font-style:normal;
+ font-size:30px;font-weight:700;letter-spacing:-.05em;line-height:1;
+ color:#C6C5BC;font-variant-numeric:tabular-nums}
+.sd.full .sdn{color:var(--tf)}
 .sdt{flex:1;min-width:0;text-align:left;font-size:15.5px;font-weight:600;
  letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sdt.empty{font-weight:400;color:var(--fnt);font-size:14px}
