@@ -102,16 +102,15 @@ function sortable(list){
  const off=which==='wild'?4:0;
 
  const rows=()=>[...list.children].filter(r=>r.dataset.team);
+ /* The seed number is the only thing on a row that the row's position decides.
+    The badge beside the name is the club's division, which travels with the
+    club — it used to read "bye" and belong to whatever sat at the top, and the
+    code that moved it from row to row outlived the label it was moving. */
  const commit=order=>{
   S[which][conf]=order.slice();
   reconcile();save();
   [...list.children].forEach((r,i)=>{const n=r.querySelector('.sdn');
-   if(n)n.textContent=off+i+1;r.dataset.row=off+i;
-   /* the bye follows the one seed rather than the element that started there */
-   const b=r.querySelector('.sdb');
-   if(off===0&&i===0&&!b)r.querySelector('.sdt')
-     .insertAdjacentHTML('afterend','<em class="sdb">bye</em>');
-   if(b&&!(off===0&&i===0))b.remove()});
+   if(n)n.textContent=off+i+1;r.dataset.row=off+i});
   syncChrome()};
 
  list.querySelectorAll('[data-grip]').forEach(grip=>{
