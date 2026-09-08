@@ -22,8 +22,8 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .dh{position:relative;overflow:hidden;background:var(--tc);color:var(--tf);height:248px;
  flex:none;padding:32px 40px 34px;display:flex;flex-direction:column;
  justify-content:space-between;align-items:flex-start}
-.dwm{position:absolute;right:-54px;top:50%;transform:translateY(-50%);width:330px;
- filter:brightness(0) invert(1);opacity:.12;pointer-events:none}
+.dwm{position:absolute;right:64px;top:-16px;height:318px;width:auto;fill:currentColor;
+ opacity:.13;pointer-events:none;display:block}
 .dhr{position:relative;font-size:32px;font-weight:600;letter-spacing:-.022em;opacity:.62}
 .dcw{position:relative}
 .dch{display:flex;align-items:center;gap:20px}
@@ -126,7 +126,11 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 </style></head><body>
 
 <div class="card" style="--tc:#003087;--tf:#fff">
- <header class="dh"><img class="dwm" src="logos/buf.webp" alt="">
+ <header class="dh"><svg class="dwm" viewBox="0 0 244 430" aria-hidden="true">
+   <ellipse cx="124" cy="106" rx="106" ry="67" transform="rotate(-32 124 106)"/>
+   <path d="M104 166c-6 84-24 154-46 194h128c-22-40-40-110-46-194a86 86 0 0 1-36 0Z"/>
+   <rect x="44" y="356" width="160" height="30" rx="6"/>
+   <rect x="24" y="390" width="200" height="34" rx="7"/></svg>
   <p class="dhr">My 2026 NFL predictions</p>
   <div class="dcw"><div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
     <h1>Buffalo Bills</h1></div>
