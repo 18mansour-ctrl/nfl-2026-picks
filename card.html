@@ -228,10 +228,12 @@ const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',TEN:'South',CLE:'Nort
              GB:'North',NYG:'East'};
 const smk=k=>{const l=k.toLowerCase();
  return `<span class="smk"><img src="logos/${l}.${EXT[l]||'webp'}" alt=""></span>`};
-/* The column head already says AFC and the band already says these four won
-   a division, so the line carries the one thing neither of them does: which
-   division. No conference, no crown — each fact appears once. */
-const why=(cf,k,i)=>i<4?DIVOF[k]:'';
+/* The column head already says AFC, so the line drops the conference and
+   carries the division alone, with the crown the app puts on a club that won
+   one. */
+const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
+ +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
+const why=(cf,k,i)=>i<4?`${DIVOF[k]}${CROWN}`:'';
 /* Cleveland leads with its brown, which at numeral size reads as black — the
    seed takes the club's second colour instead. Same idea as the app's c2. */
 const NUMC={CLE:'#EB3300'};
