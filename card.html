@@ -42,9 +42,10 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 /* ---- card one: the seeds ------------------------------------------------ */
 /* The ledger's restraint with the ladder's hierarchy: nothing is filled — the
    seed numeral carries the club's colour and a hairline carries the rhythm —
-   but the row height steps down by seed, so a bye is worth more of the column
-   than a wild card. The right-hand column says why a club is seeded where it
-   is, and the wild cards keep full-strength type under their own band. */
+   Every row is the same height: a seed's rank is
+   its number and its position, not the space it takes. The right-hand column
+   says why a club is seeded where it is, and the wild cards sit under their
+   own band at the same weight as everyone else. */
 .sds{flex:1;padding:32px 40px 0;display:grid;grid-template-columns:1fr 1fr;
  column-gap:34px;align-content:start;font-variant-numeric:tabular-nums}
 .dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
@@ -70,13 +71,11 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  overflow:hidden;text-overflow:ellipsis}
 .srw{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
  color:var(--fnt);white-space:nowrap;text-align:right}
-/* the slot is the seed */
-.sr.s1{height:132px}.sr.s1 .srn{font-size:64px}.sr.s1 .smk{width:62px;height:62px}
-.sr.s1 .srt{font-size:38px}.sr.s1 .srw{color:var(--mut)}
-.sr.s2{height:108px}.sr.s2 .srn{font-size:56px}.sr.s2 .smk{width:52px;height:52px}
-.sr.s2 .srt{font-size:32px}
-.sr.s3{height:90px}.sr.s3 .srn{font-size:46px}.sr.s3 .smk{width:44px;height:44px}
-.sr.s3 .srt{font-size:27px}
+.sr{height:102px}
+.srn{font-size:56px}
+.smk{width:52px;height:52px}
+.srt{font-size:32px}
+.sr.s1 .srw{color:var(--mut)}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
