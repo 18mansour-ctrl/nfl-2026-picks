@@ -99,23 +99,49 @@ h1,h2,h3,h4,p{margin:0}
 .hint.done{color:var(--fnt)}
 
 /* ---- progress rail ------------------------------------------------------- */
-/* One equal column per step, however many there are — a fixed count outlives
+/* It was called a rail and there was no rail: four dots floating in four
+   columns, with nothing to say they were a sequence or how far along it you
+   were. There is a track now, inked in as far as you have reached, and the
+   dots sit on it rather than beside each other.
+
+   One equal column per step, however many there are — a fixed count outlives
    the steps it was written for, and a five-column track holding four buttons
-   parks them all to the left of a column that is not there any more. */
-.rail{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:5px;
- padding:14px var(--pad) 0;max-width:760px;margin:0 auto}
-.rl{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 2px 9px;
- border-radius:7px;transition:background .14s}
+   parks them all to the left of a column that is not there any more. --n is
+   how many there are and --i how far the ink runs, both set by rail(). */
+.rail{--n:4;--i:0;position:relative;
+ display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;
+ padding:16px var(--pad) 2px;max-width:760px;margin:0 auto}
+/* No gap between the columns, so a dot's centre is exactly half a column in
+   from its own edge and the track can be drawn from arithmetic alone. */
+/* Behind the buttons, not over them: both are positioned children of the same
+   nav, so without a layer the later one — the track — paints across the faces
+   of the dots and strikes their numerals through. */
+.rail::before,.rail::after{content:'';position:absolute;top:32.5px;height:2px;
+ border-radius:2px;z-index:0;
+ left:calc(var(--pad) + (100% - var(--pad)*2)/var(--n)/2)}
+.rail::before{right:calc(var(--pad) + (100% - var(--pad)*2)/var(--n)/2);
+ background:var(--hr2);opacity:.45}
+.rail::after{width:calc((100% - var(--pad)*2)/var(--n)*var(--i));
+ background:var(--ink);transition:width .42s var(--e-out)}
+.rl{display:flex;flex-direction:column;align-items:center;gap:9px;padding:5px 2px 8px;
+ position:relative;z-index:1;background:none;border:0;cursor:pointer}
+/* the ring of paper is what lets the track pass behind the dots without
+   touching them, at any track colour */
 .rl i{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;
  font-style:normal;font-size:11.5px;font-weight:700;
- background:rgba(25,25,23,.07);color:var(--mut);transition:background .16s,color .16s}
-.rl span{font-size:10.5px;font-weight:500;color:var(--fnt);letter-spacing:-.005em;
- white-space:nowrap}
-.rl.ok i{background:var(--ink);color:var(--paper)}
-.rl.on i{background:var(--hl);color:var(--ink);box-shadow:0 1px 3px rgba(25,25,23,.18)}
+ background:var(--paper);color:#C6C5BC;
+ box-shadow:0 0 0 4px var(--paper),inset 0 0 0 2px var(--hr2);
+ transition:background .16s,color .16s,box-shadow .16s}
+.rl span{font-size:13px;font-weight:500;color:var(--fnt);letter-spacing:-.012em;
+ white-space:nowrap;transition:color .16s}
+.rl.ok i{background:var(--ink);color:var(--paper);
+ box-shadow:0 0 0 4px var(--paper),inset 0 0 0 2px var(--ink)}
+.rl.ok span{color:var(--mut)}
+.rl.on i{background:var(--hl);color:var(--ink);
+ box-shadow:0 0 0 4px var(--paper),inset 0 0 0 2px var(--hls),
+  0 1px 3px rgba(25,25,23,.18)}
 .rl.on span{color:var(--ink);font-weight:600}
 .rl[disabled]{cursor:default}
-.rl[disabled] i{background:rgba(25,25,23,.04);color:#C6C5BC}
 .rl[disabled] span{color:#C6C5BC}
 
 /* ---- the team's mark ------------------------------------------------------
@@ -394,11 +420,11 @@ h1,h2,h3,h4,p{margin:0}
  .bnm{font-size:15px}
  .bch{font-size:12px}
  .phx h1{font-size:38px}
- .rl span{font-size:11.5px}
+ .rl span{font-size:14px}
  .nextbar .next{width:auto;min-width:280px}
 }
 @media(max-width:400px){
- .rl span{font-size:9.5px}
+ .rl span{font-size:11.5px}
  .bkt{--bgap:16px}
  .bsl{grid-template-columns:12px auto minmax(0,1fr);gap:4px;padding:0 4px}
  .bnm{font-size:12.5px}

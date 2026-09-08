@@ -251,9 +251,22 @@ let STEP='seeds';
 const route=()=>{const k=(location.hash||'#seeds').slice(1);
  return SEC[k]&&stepOpen(k)?k:'seeds'};
 
+/* How far the ink runs. The step you are standing on at the least, so it never
+   reads as though you have not started; and past that, as far as the run of
+   finished steps carries — the run, not the count, because a bracket you have
+   not played does not stop being unplayed just because the awards after it are
+   filled in, and ink through that dot would say it did. */
+const reached=()=>{
+ let run=0;while(run<STEPS.length&&stepDone(STEPS[run][0]))run++;
+ return Math.max(STEPS.findIndex(s=>s[0]===STEP),
+  Math.min(run,STEPS.length-1))};
 function rail(){
- return `<nav class="rail" aria-label="Progress">${STEPS.map(([k,l],i)=>{
-  const on=k===STEP,ok=stepDone(k),open=stepOpen(k);
+ return `<nav class="rail" aria-label="Progress"
+ style="--n:${STEPS.length};--i:${reached()}">${STEPS.map(([k,l],i)=>{
+  /* a step you cannot reach yet does not get to look finished: the awards can
+     be filled in before the bracket is played, and a black tick sitting past
+     an unplayed round reads as a fault rather than as a fact */
+  const on=k===STEP,open=stepOpen(k),ok=stepDone(k)&&open;
   return `<button class="rl${on?' on':''}${ok?' ok':''}" ${open?'':'disabled'}
    data-step="${k}" aria-current="${on?'step':'false'}">
 <i>${ok&&!on?'✓':i+1}</i><span>${esc(l)}</span></button>`}).join('')}</nav>`}
@@ -295,11 +308,14 @@ function syncChrome(){
     because a pick deliberately does not re-render */
  const cb=root.querySelector('[data-clear-step]');
  if(cb){const h=HASPICKS[cb.dataset.clearStep];toggleCtl(cb,!!(h&&h()))}
+ const nav=root.querySelector('.rail');
+ if(nav)nav.style.setProperty('--i',reached());
  root.querySelectorAll('.rl').forEach(b=>{const k=b.dataset.step;
-  b.disabled=!stepOpen(k);
-  b.classList.toggle('ok',stepDone(k)&&k!==STEP);
+  const open=stepOpen(k),ok=stepDone(k)&&open&&k!==STEP;
+  b.disabled=!open;
+  b.classList.toggle('ok',ok);
   const i=b.querySelector('i');const idx=STEPS.findIndex(x=>x[0]===k);
-  if(i)i.textContent=(stepDone(k)&&k!==STEP)?'✓':String(idx+1)});
+  if(i)i.textContent=ok?'✓':String(idx+1)});
  const bar=root.querySelector('.nextbar');
  if(bar&&bar.dataset.for){const k=bar.dataset.for;
   const ok=stepDone(k),a=bar.firstElementChild;
