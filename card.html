@@ -20,7 +20,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    — so the band reads top to bottom in one column instead of corner to
    corner. */
 .dh{position:relative;overflow:hidden;background:var(--tc);color:var(--tf);height:248px;
- flex:none;padding:22px 40px 26px;display:flex;flex-direction:column;
+ flex:none;padding:32px 40px 20px;display:flex;flex-direction:column;
  justify-content:space-between;align-items:flex-start}
 .dwm{position:absolute;right:44px;top:-24px;height:330px;width:auto;opacity:.3;
  pointer-events:none;display:block}
@@ -39,6 +39,12 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .dcs b{font-size:26px;font-weight:700;letter-spacing:-.024em;color:var(--tf)}
 .dcs i{font-style:normal;color:color-mix(in srgb,var(--tf) 42%,transparent);padding:0 10px}
 .dvs2{font-size:44px;font-weight:600;letter-spacing:-.02em;opacity:.55;padding:0 4px}
+/* card two's header is its own: a smaller mark, the row centred on it, and a
+   sub-line that does not need the champion's emphasis */
+.p2 .dlogo{width:86px;height:86px}
+.p2 .dch{align-items:center}
+.p2 .dcs{margin-top:10px;padding-left:106px;font-size:20px}
+.p2 .dcs b{font-size:20px;font-weight:600}
 
 /* ---- card one: the seeds ------------------------------------------------ */
 /* The ledger's restraint with the ladder's hierarchy: nothing is filled — the
@@ -74,7 +80,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .srw{display:flex;align-items:center;justify-content:flex-end;gap:9px;
  font-size:16px;font-weight:500;letter-spacing:-.012em;color:var(--mut);white-space:nowrap}
 .srw svg{width:21px;height:18px;fill:var(--tc);display:block;flex:none}
-.sr{height:80px}
+.sr{height:88px}
 .srn{font-size:52px}
 .smk{width:48px;height:48px}
 .srt{font-size:31px}
@@ -113,8 +119,8 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sm .nm{font-size:36px}
 
 /* ---- the awards row, on card one ---------------------------------------- */
-.daw{flex:none;height:304px;padding:0 40px;justify-content:center;
- display:flex;flex-direction:column;gap:34px}
+.daw{flex:none;height:244px;padding:26px 40px 0;display:flex;flex-direction:column;
+ gap:34px}
 /* the app's section heading: sentence case, tight, no rule under it */
 .dawl{font-size:35px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
 /* The outer two blocks hold their column, and only the middle one moves: a
@@ -159,7 +165,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  </div>
 </div>
 
-<div class="card" style="--tc:#003087;--tf:#fff">
+<div class="card p2" style="--tc:#003087;--tf:#fff">
  <header class="dh">
   <p class="dhr">My 2026 NFL predictions</p>
   <div class="dcw"><div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
