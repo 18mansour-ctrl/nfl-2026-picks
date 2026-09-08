@@ -59,8 +59,6 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  font-size:17px;font-weight:600;letter-spacing:-.018em;color:var(--ink)}
 .bandl.wc{padding-top:22px}
 .bandl b{font-weight:600}
-.bandl em{font-style:normal;font-size:13px;font-weight:600;letter-spacing:.06em;
- text-transform:uppercase;color:var(--fnt);white-space:nowrap}
 .bandl::after{content:"";flex:1;height:1px;background:var(--hr);
  transform:translateY(-5px)}
 .sr{display:grid;grid-template-columns:66px auto minmax(0,1fr) auto;align-items:center;
@@ -73,11 +71,11 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .smk img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .srt{font-weight:600;letter-spacing:-.028em;min-width:0;white-space:nowrap;
  overflow:hidden;text-overflow:ellipsis}
-.srw{font-size:16px;font-weight:500;letter-spacing:-.012em;color:var(--mut);
- white-space:nowrap;text-align:right}
-.srw i{font-style:normal;color:var(--fnt);padding:0 8px}
-.srw u{text-decoration:none;color:var(--fnt)}
-.sr{height:96px}
+.srw{display:flex;align-items:center;justify-content:flex-end;gap:9px;
+ font-size:16px;font-weight:500;letter-spacing:-.012em;color:var(--mut);white-space:nowrap}
+.srw svg{width:21px;height:18px;fill:var(--tc);display:block;flex:none}
+.srw u{text-decoration:none;color:var(--fnt);padding-left:1px}
+.sr{height:86px}
 .srn{font-size:52px}
 .smk{width:48px;height:48px}
 .srt{font-size:30px}
@@ -187,16 +185,6 @@ const FG=k=>['PIT','NO','TEN','ARI'].includes(k)?'#fff'
  :(n=>{const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
    return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)>.42?'#191917':'#fff'})
    (parseInt(C[k].slice(1),16));
-/* the block is the division winner, so it wears a crown rather than a 1 */
-const CROWN='<svg class="crown" viewBox="0 0 24 20" aria-hidden="true">'
- +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
-const CITY={ARI:'Arizona',ATL:'Atlanta',BAL:'Baltimore',BUF:'Buffalo',CAR:'Carolina',
- CHI:'Chicago',CIN:'Cincinnati',CLE:'Cleveland',DAL:'Dallas',DEN:'Denver',DET:'Detroit',
- GB:'Green Bay',HOU:'Houston',IND:'Indianapolis',JAX:'Jacksonville',KC:'Kansas City',
- LAC:'Los Angeles',LAR:'Los Angeles',LV:'Las Vegas',MIA:'Miami',MIN:'Minnesota',
- NE:'New England',NO:'New Orleans',NYG:'New York',NYJ:'New York',PHI:'Philadelphia',
- PIT:'Pittsburgh',SEA:'Seattle',SF:'San Francisco',TB:'Tampa Bay',TEN:'Tennessee',
- WAS:'Washington'};
 const EXT={nyj:'png'};
 const img=k=>{const l=k.toLowerCase();
  return `<img src="logos/${l}.${EXT[l]||'webp'}" alt="">`};
@@ -209,20 +197,22 @@ const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',
              LAR:'West',CHI:'North',ATL:'South',PHI:'East'};
 const smk=k=>{const l=k.toLowerCase();
  return `<span class="smk"><img src="logos/${l}.${EXT[l]||'webp'}" alt=""></span>`};
-/* the conference is already the column head, so a winner's tag names the
-   division alone; the one seed's bye rides on the same line */
-const why=(k,i)=>i>3?''
- :`Won the ${DIVOF[k]}`+(i===0?'<i>&middot;</i><u>bye</u>':'');
-const seed=(k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${C[k]}">`
+/* a winner's line names its division and wears the same crown the app puts
+   on a club that won one; the top seed's bye rides after it */
+const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
+ +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
+const why=(cf,k,i)=>i>3?''
+ :`${cf} ${DIVOF[k]}${CROWN}`+(i===0?'<u>&middot; bye</u>':'');
+const seed=(cf,k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${C[k]}">`
  +`<i class="srn">${i+1}</i>${smk(k)}<span class="srt">${N[k]}</span>`
- +`<span class="srw">${why(k,i)}</span></div>`;
-const grp=(t,r)=>`<p class="bandl${r?' wc':''}"><b>${t}</b><em>${r||'Seeds 1&ndash;4'}</em></p>`;
+ +`<span class="srw">${why(cf,k,i)}</span></div>`;
+const grp=(t,wc)=>`<p class="bandl${wc?' wc':''}"><b>${t}</b></p>`;
 document.getElementById('sds').innerHTML='<p class="dawl">Conference seeding</p>'
  +['AFC','NFC'].map(cf=>`<div><div class="sdh"><b>${cf}</b></div>`
    +grp('Division winners')
-   +ORDER[cf].slice(0,4).map((k,i)=>seed(k,i)).join('')
-   +grp('Wild cards','Seeds 5&ndash;7')
-   +ORDER[cf].slice(4).map((k,i)=>seed(k,i+4)).join('')
+   +ORDER[cf].slice(0,4).map((k,i)=>seed(cf,k,i)).join('')
+   +grp('Wild cards',1)
+   +ORDER[cf].slice(4).map((k,i)=>seed(cf,k,i+4)).join('')
    +`</div>`).join('');
 
 /* ---- card two ----------------------------------------------------------- */
