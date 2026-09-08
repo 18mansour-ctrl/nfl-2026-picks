@@ -44,14 +44,14 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
    own band at the same weight as everyone else. */
 .sds{flex:1;padding:32px 40px 0;display:grid;grid-template-columns:repeat(2,472px);
  justify-content:space-between;align-content:start;font-variant-numeric:tabular-nums}
-.dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
+.dawl{font-size:35px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
 .sds>.dawl{grid-column:1/-1;margin-bottom:22px}
 .sdh{padding:0 2px 9px;border-bottom:2px solid var(--ink)}
-.sdh b{font-size:29px;font-weight:700;letter-spacing:.012em;text-transform:uppercase}
+.sdh b{font-size:25px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
 /* named rather than tagged: a band says what the group is, and the rule
    carries it across to the column's edge */
 .bandl{display:flex;align-items:baseline;gap:14px;padding:20px 2px 8px;
- font-size:19px;font-weight:600;letter-spacing:-.018em;color:var(--ink)}
+ font-size:18px;font-weight:600;letter-spacing:-.018em;color:var(--ink)}
 .bandl.wc{padding-top:30px}
 .bandl b{font-weight:600}
 .bandl::after{content:"";flex:1;height:1px;background:var(--hr);
@@ -72,7 +72,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sr{height:80px}
 .srn{font-size:52px}
 .smk{width:48px;height:48px}
-.srt{font-size:30px}
+.srt{font-size:29px}
 
 /* ---- card two: the bracket ---------------------------------------------- */
 .br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
@@ -111,7 +111,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .daw{flex:none;height:286px;padding:0 40px;justify-content:center;
  display:flex;flex-direction:column;gap:34px}
 /* the app's section heading: sentence case, tight, no rule under it */
-.dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
+.dawl{font-size:35px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
 .awrow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:28px;align-items:center}
 .aw{display:flex;align-items:center;gap:16px;min-width:0}
 .dish{flex:none;width:110px;height:110px;border-radius:50%;overflow:hidden;position:relative;
@@ -187,15 +187,16 @@ const img=k=>{const l=k.toLowerCase();
 /* seeds one to seven; the first four won a division, the last three did not */
 const ORDER={AFC:['LAC','PIT','HOU','MIA','TEN','CLE','BUF'],
              NFC:['LAR','CHI','ATL','PHI','DAL','GB','NYG']};
-const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',
-             LAR:'West',CHI:'North',ATL:'South',PHI:'East'};
+const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',TEN:'South',CLE:'North',
+             BUF:'East',LAR:'West',CHI:'North',ATL:'South',PHI:'East',DAL:'East',
+             GB:'North',NYG:'East'};
 const smk=k=>{const l=k.toLowerCase();
  return `<span class="smk"><img src="logos/${l}.${EXT[l]||'webp'}" alt=""></span>`};
 /* a winner's line names its division and wears the same crown the app puts
    on a club that won one */
 const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
  +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
-const why=(cf,k,i)=>i>3?'':`${cf} ${DIVOF[k]}${CROWN}`;
+const why=(cf,k,i)=>`${cf} ${DIVOF[k]}`+(i<4?CROWN:'');
 const seed=(cf,k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${C[k]}">`
  +`<i class="srn">${i+1}</i>${smk(k)}<span class="srt">${N[k]}</span>`
  +`<span class="srw">${why(cf,k,i)}</span></div>`;
