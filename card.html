@@ -14,30 +14,26 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
  background:var(--paper);color:var(--ink);flex:none}
 
-.dh{background:var(--tc);color:var(--tf);height:212px;flex:none;padding:0 40px 30px;
- display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
-.dhr{font-size:54px;font-weight:700;line-height:1.02;letter-spacing:-.032em;color:#fff}
-.dch{display:flex;align-items:center;justify-content:flex-end;gap:20px}
-.dlogo{width:82px;height:82px;flex:none;object-fit:contain;display:block}
-.dcw{text-align:right}
-.dcl{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:4px;
- font-size:19px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.72}
-/* the Lombardi in silhouette: the ball tipped on its stand, the flared neck,
-   the plinth */
-.dcl svg{width:25px;height:37px;fill:currentColor;display:block;flex:none;
- margin-bottom:-3px}
-.dch h1{font-size:68px;font-weight:700;line-height:1;letter-spacing:-.034em}
-/* Card two's header carried the champion, which spoiled the bracket sitting
-   directly under it. It takes the matchup instead — same lockup shape as card
-   one, a label over a mark, but two clubs facing each other rather than the
-   winner named twice. */
-.dsb{display:flex;align-items:center;gap:20px}
-.dsb img{width:66px;height:66px;object-fit:contain;display:block}
-.dsb b{font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1}
-.dsbv{font-size:19px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
- opacity:.5;padding:0 2px}
-
-.dcs{margin-top:3px;font-size:19px;font-weight:500;letter-spacing:-.012em;opacity:.66}
+/* The champion's own mark, knocked to white and run off the right edge, gives
+   the band something to be besides two blocks of type at opposite ends. The
+   type all sits left now — kicker, the name at full size, then what it means
+   — so the band reads top to bottom in one column instead of corner to
+   corner. */
+.dh{position:relative;overflow:hidden;background:var(--tc);color:var(--tf);height:236px;
+ flex:none;padding:32px 40px 34px;display:flex;flex-direction:column;
+ justify-content:space-between;align-items:flex-start}
+.dwm{position:absolute;right:-54px;top:50%;transform:translateY(-50%);width:330px;
+ filter:brightness(0) invert(1);opacity:.12;pointer-events:none}
+.dhr{position:relative;font-size:24px;font-weight:600;letter-spacing:-.012em;opacity:.6}
+.dcw{position:relative}
+.dch{display:flex;align-items:center;gap:20px}
+.dlogo{width:66px;height:66px;flex:none;object-fit:contain;display:block}
+.dch h1{font-size:82px;font-weight:700;line-height:1;letter-spacing:-.036em}
+.dcs{display:flex;align-items:center;gap:11px;margin-top:11px;font-size:20px;
+ font-weight:500;letter-spacing:-.012em;opacity:.7}
+.dcs svg{width:17px;height:25px;fill:currentColor;display:block;flex:none}
+.dcs i{font-style:normal;opacity:.5;padding:0 1px}
+.dvs2{font-size:44px;font-weight:600;letter-spacing:-.02em;opacity:.55;padding:0 4px}
 
 /* ---- card one: the seeds ------------------------------------------------ */
 /* The ledger's restraint with the ladder's hierarchy: nothing is filled — the
@@ -74,7 +70,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .srw{display:flex;align-items:center;justify-content:flex-end;gap:9px;
  font-size:16px;font-weight:500;letter-spacing:-.012em;color:var(--mut);white-space:nowrap}
 .srw svg{width:21px;height:18px;fill:var(--tc);display:block;flex:none}
-.sr{height:86px}
+.sr{height:84px}
 .srn{font-size:52px}
 .smk{width:48px;height:48px}
 .srt{font-size:30px}
@@ -113,13 +109,13 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sm .nm{font-size:36px}
 
 /* ---- the awards row, on card one ---------------------------------------- */
-.daw{flex:none;height:214px;padding:26px 40px 0;
+.daw{flex:none;height:280px;padding:0 40px;justify-content:center;
  display:flex;flex-direction:column;gap:34px}
 /* the app's section heading: sentence case, tight, no rule under it */
 .dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
 .awrow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:16px;align-items:center}
-.aw{display:flex;align-items:center;gap:17px;min-width:0}
-.dish{flex:none;width:108px;height:108px;border-radius:50%;overflow:hidden;position:relative;
+.aw{display:flex;align-items:center;gap:19px;min-width:0}
+.dish{flex:none;width:120px;height:120px;border-radius:50%;overflow:hidden;position:relative;
  background:var(--c)}
 .dish img{position:absolute;display:block;width:auto}
 .awt{min-width:0}
@@ -131,12 +127,11 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 </style></head><body>
 
 <div class="card" style="--tc:#003087;--tf:#fff">
- <header class="dh">
-  <p class="dhr">My 2026<br>NFL predictions</p>
-  <div class="dcw"><p class="dcl"><svg viewBox="0 0 16 24" aria-hidden="true"><ellipse cx="8" cy="4.7" rx="6.1" ry="3.4" transform="rotate(-22 8 4.7)"/><path d="M6.4 8.1c-.4 4.3-1.8 8.2-3.9 11h11c-2.1-2.8-3.5-6.7-3.9-11a4.7 4.7 0 0 1-3.2 0Z"/><rect x="1.1" y="19.5" width="13.8" height="3.4" rx=".7"/></svg>My Super Bowl champion</p>
-   <div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
+ <header class="dh"><img class="dwm" src="logos/buf.webp" alt="">
+  <p class="dhr">My 2026 NFL predictions</p>
+  <div class="dcw"><div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
     <h1>Buffalo Bills</h1></div>
-   <p class="dcs">over the New York Giants</p></div>
+   <p class="dcs"><svg viewBox="0 0 16 24" aria-hidden="true"><ellipse cx="8" cy="4.7" rx="6.1" ry="3.4" transform="rotate(-22 8 4.7)"/><path d="M6.4 8.1c-.4 4.3-1.8 8.2-3.9 11h11c-2.1-2.8-3.5-6.7-3.9-11a4.7 4.7 0 0 1-3.2 0Z"/><rect x="1.1" y="19.5" width="13.8" height="3.4" rx=".7"/></svg>Super Bowl champion<i>&middot;</i>over the New York Giants</p></div>
  </header>
  <div class="sds" id="sds"></div>
  <div class="daw">
@@ -157,10 +152,11 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 
 <div class="card" style="--tc:#003087;--tf:#fff">
  <header class="dh">
-  <p class="dhr">My 2026<br>NFL predictions</p>
-  <div class="dcw"><p class="dcl"><svg viewBox="0 0 16 24" aria-hidden="true"><ellipse cx="8" cy="4.7" rx="6.1" ry="3.4" transform="rotate(-22 8 4.7)"/><path d="M6.4 8.1c-.4 4.3-1.8 8.2-3.9 11h11c-2.1-2.8-3.5-6.7-3.9-11a4.7 4.7 0 0 1-3.2 0Z"/><rect x="1.1" y="19.5" width="13.8" height="3.4" rx=".7"/></svg>My Super Bowl</p>
-   <div class="dsb"><img src="logos/buf.webp" alt=""><b>Bills</b>
-    <span class="dsbv">vs</span><b>Giants</b><img src="logos/nyg.webp" alt=""></div></div>
+  <p class="dhr">My 2026 NFL predictions</p>
+  <div class="dcw"><div class="dch"><img class="dlogo" src="logos/buf.webp" alt="">
+    <h1>Bills</h1><span class="dvs2">vs</span><h1>Giants</h1>
+    <img class="dlogo" src="logos/nyg.webp" alt=""></div>
+   <p class="dcs"><svg viewBox="0 0 16 24" aria-hidden="true"><ellipse cx="8" cy="4.7" rx="6.1" ry="3.4" transform="rotate(-22 8 4.7)"/><path d="M6.4 8.1c-.4 4.3-1.8 8.2-3.9 11h11c-2.1-2.8-3.5-6.7-3.9-11a4.7 4.7 0 0 1-3.2 0Z"/><rect x="1.1" y="19.5" width="13.8" height="3.4" rx=".7"/></svg>My Super Bowl matchup</p></div>
  </header>
  <div class="br" id="br"><svg class="lines" id="lines"></svg>
   <div class="hd"><p>Wild card</p><p>Divisional</p><p>Conference</p></div>
