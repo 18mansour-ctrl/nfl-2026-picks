@@ -320,8 +320,34 @@ h1,h2,h3,h4,p{margin:0}
 .mark.xs.tile i{font-size:7px}
 
 /* ---- the card and the buttons ------------------------------------------- */
-.cardwrap{border-radius:10px;overflow:hidden;box-shadow:var(--cardsh);background:var(--card)}
+/* ---- the pictures ---------------------------------------------------------
+   A 1080px card drawn into a phone's 335px column is at 31% of its size — the
+   scale where the team name across the header still reads and the seed rows
+   under it turn to grain. The preview takes the gutters back on a narrow
+   screen, and tapping it opens the card as tall as the screen is, panned
+   sideways rather than shrunk to fit. */
+.cardwrap{overflow:hidden;box-shadow:var(--cardsh);background:var(--card);
+ cursor:zoom-in;margin:0 calc(var(--pad)*-1)}
 #card1,#card2{display:block;width:100%;height:auto}
+
+.lightbox{position:fixed;inset:0;z-index:60;background:rgba(25,25,23,.94);
+ overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+ animation:fadeIn 160ms var(--e-out)}
+/* Centring a child that is bigger than its scroll container clips the overflow
+   on the leading edge — align-items does, auto margins do not. The inner box is
+   as wide as its content and at least as wide as the screen, so the centring
+   happens inside the scrollable area rather than against it. */
+.lbin{min-width:100%;min-height:100vh;min-height:100dvh;width:max-content;display:flex}
+/* As wide as the screen, or as tall as it — whichever shows more of the card —
+   and never past 1080, which is the card. Fitting the height alone would hand a
+   short window something smaller than the preview it was opened from. */
+.lbin img{display:block;margin:auto;height:auto;max-width:none;
+ width:min(1080px,max(100vw,80vh));width:min(1080px,max(100vw,80dvh))}
+.lbx{position:fixed;top:12px;right:12px;width:38px;height:38px;border:0;
+ border-radius:50%;background:rgba(250,250,246,.14);color:var(--paper);
+ font-size:15px;line-height:1;cursor:pointer;
+ transition:background .15s var(--e-out)}
+.lbx:hover{background:rgba(250,250,246,.26)}
 .acts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 .nextbar{margin-top:42px}
 .next{display:inline-grid;place-items:center;min-height:50px;padding:0 24px;
@@ -358,6 +384,7 @@ h1,h2,h3,h4,p{margin:0}
 @media(min-width:601px){
  .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
  .pool{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .cardwrap{margin:0;border-radius:10px}
  .bkt{--bgap:40px}
  .bsl{grid-template-columns:18px auto minmax(0,1fr);min-height:44px;gap:8px}
  .bnm{font-size:15px}

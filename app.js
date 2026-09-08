@@ -2086,6 +2086,27 @@ async function paint(){
  drawSeason(one.getContext('2d'));
  drawBracket(two.getContext('2d'))}
 
+/* The preview is a thumbnail; this is the card. A data URL rather than the
+   canvas itself, so the live one keeps painting behind it — and so a phone can
+   press and hold the picture to save or send it, which is the sentence already
+   under the buttons. */
+function zoom(cv,label){
+ const box=document.createElement('div');
+ box.className='lightbox';
+ box.innerHTML=`<div class="lbin"><img alt="${esc(label)}"></div>`
+  +`<button class="lbx" type="button" aria-label="Close">\u2715</button>`;
+ const img=box.querySelector('img');
+ img.src=cv.toDataURL('image/png');
+ const key=e=>{if(e.key==='Escape')close()};
+ const close=()=>{box.remove();document.removeEventListener('keydown',key)};
+ box.onclick=e=>{if(e.target!==img)close()};
+ document.addEventListener('keydown',key);
+ document.body.appendChild(box);
+ /* open on the middle of the card rather than against its left edge — after
+    the picture has a width, or there is nothing yet to be off-centre */
+ const centre=()=>{box.scrollLeft=(box.scrollWidth-box.clientWidth)/2};
+ img.complete?centre():img.addEventListener('load',centre,{once:true})}
+
 function download(cv,suffix){
  const nm=(S.name||'picks').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-')
   .replace(/^-|-$/g,'');
@@ -2117,7 +2138,8 @@ SEC.share={render(){
 <button class="next" id="dl2">Save the bracket</button>
 <button class="ghost" id="again">Start over</button>
 </div>
-<p class="hint">On a phone you can also press and hold a picture to save or send it.</p>
+<p class="hint">Tap a picture to see it full size. On a phone you can also press
+and hold one to save or send it.</p>
 </section>
 </div>`},
 after(root){
@@ -2126,6 +2148,9 @@ after(root){
  paint();
  root.querySelector('#dl1').onclick=()=>download($('#card1'),'season');
  root.querySelector('#dl2').onclick=()=>download($('#card2'),'bracket');
+ [['#card1','The season'],['#card2','The playoffs']].forEach(([sel,label])=>{
+  const cv=root.querySelector(sel);
+  cv.parentElement.onclick=()=>zoom(cv,label)});
  root.querySelector('#again').onclick=()=>{
   if(!confirm('Clear every pick and start again?'))return;
   S=blank();save();location.hash='seeds';render()}}};
