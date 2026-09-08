@@ -134,12 +134,15 @@ h1,h2,h3,h4,p{margin:0}
  transition:background .16s,color .16s,box-shadow .16s}
 .rl span{font-size:13px;font-weight:500;color:var(--fnt);letter-spacing:-.012em;
  white-space:nowrap;transition:color .16s}
+/* Only a step still to come is drawn as an outline. A filled dot is already a
+   shape against the paper and does not need an edge to say so — a ring in its
+   own colour is either invisible or, in the highlight's case, a second gold
+   the design does not otherwise use. */
 .rl.ok i{background:var(--ink);color:var(--paper);
- box-shadow:0 0 0 4px var(--paper),inset 0 0 0 2px var(--ink)}
+ box-shadow:0 0 0 4px var(--paper)}
 .rl.ok span{color:var(--mut)}
 .rl.on i{background:var(--hl);color:var(--ink);
- box-shadow:0 0 0 4px var(--paper),inset 0 0 0 2px var(--hls),
-  0 1px 3px rgba(25,25,23,.18)}
+ box-shadow:0 0 0 4px var(--paper),0 1px 3px rgba(25,25,23,.18)}
 .rl.on span{color:var(--ink);font-weight:600}
 .rl[disabled]{cursor:default}
 .rl[disabled] span{color:#C6C5BC}

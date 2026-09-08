@@ -282,6 +282,15 @@ function rail(){
    refresh. */
 function render(){
  STEP=route();
+ /* route() can land you somewhere other than where you asked — a step that is
+    not open yet, or a hash that names nothing. The address bar has to admit
+    it. A hash left pointing at a step you are not on is a lie the next tap
+    pays for: setting it to the value it already holds fires no hashchange, so
+    the tap does nothing at all and the rail looks broken. replaceState rather
+    than assignment, which would fire one and re-enter here. */
+ if(location.hash.slice(1)!==STEP){
+  try{history.replaceState(null,'','#'+STEP)}
+  catch(e){location.hash=STEP}}
  reconcile();save();
  const root=$('#root');
  root.innerHTML=rail()+SEC[STEP].render();
