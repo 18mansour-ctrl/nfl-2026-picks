@@ -293,7 +293,11 @@ function render(){
  root.innerHTML=rail()+SEC[STEP].render();
  wire(root);
  const sheet=root.querySelector('.sheet');
- if(sheet){sheet.classList.remove('enter');void sheet.offsetWidth;sheet.classList.add('enter')}
+ /* what the step is, said in the markup, because the desktop layout is not one
+    layout: a step whose content is two peers wants two columns and a step whose
+    content is one picture wants the width to itself */
+ if(sheet){sheet.dataset.step=STEP;
+  sheet.classList.remove('enter');void sheet.offsetWidth;sheet.classList.add('enter')}
  turnMark();
  window.scrollTo(0,0);
 }

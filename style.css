@@ -524,3 +524,61 @@ h1,h2,h3,h4,p{margin:0}
  padding:7px 10px;border-radius:6px;
  background:color-mix(in srgb,var(--tf,#191917) 16%,transparent)}
 .pkx:hover{background:color-mix(in srgb,var(--tf,#191917) 28%,transparent)}
+
+/* ---- the wide screen ------------------------------------------------------
+   Everything above this is a phone's column, and on a desktop it read as one:
+   a 760px strip down the middle of a 1400px page with the two conferences
+   stacked one under the other, which is the one arrangement the card this app
+   produces never uses. So the steps take the shape of their own output — the
+   seeds are AFC beside NFC, the three awards are the row they are printed as —
+   and the two steps whose content is a single wide object, the bracket and the
+   pictures, keep one column and spend the width on the object instead.
+
+   Two tiers rather than one. The column pair arrives as soon as there is room
+   for two readable columns; the three-across award boards need a good deal
+   more — a pick sets a headshot, a name, a club and a control, and Christian
+   McCaffrey needs 166 of the 309 a third of the full sheet leaves — so they
+   wait for the width at which the sheet stops growing. Asking for both at the
+   same width would either hold the pair back or hand the boards a width they
+   cannot use. */
+@media(min-width:940px){
+ /* A thousand of content is the card's two 472s and the gutter between them,
+    inside a page margin twice the phone's. The sheet is free to be narrower
+    than that on the way up — the columns simply share whatever there is — but
+    never wider, or the rows stretch past the length a name needs and the page
+    goes back to looking like a phone that grew. */
+ .sheet{max-width:1080px;padding-left:40px;padding-right:40px}
+
+ .sheet[data-step="seeds"]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:56px;align-items:start}
+ /* the header and the button that carries you on belong to the step rather
+    than to either conference, so they span */
+ .sheet[data-step="seeds"]>.phx,.sheet[data-step="seeds"]>.nextbar{grid-column:1/-1}
+ /* every column starts on the same line, whatever the one beside it holds */
+ .sheet[data-step="seeds"]>.sect{margin-top:40px}
+ /* a conference column has half the room the whole sheet had, and its pools
+    are sized off the column rather than off the window */
+ .sheet[data-step="seeds"] .pool{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+ /* A name is a few words long however wide the page is; the field it goes in
+    should not be a thousand pixels because the picture under it is. */
+ .sheet[data-step="share"] .awin.wide{max-width:440px}
+}
+
+@media(min-width:1080px){
+ .phx h1{font-size:44px}
+ .rail{padding-top:20px}
+
+ .sheet[data-step="awards"]{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  column-gap:36px;align-items:start}
+ .sheet[data-step="awards"]>.phx,.sheet[data-step="awards"]>.nextbar{grid-column:1/-1}
+ .sheet[data-step="awards"]>.sect{margin-top:40px}
+ /* Three picks across cannot also run the name, the club and the control on
+    one line — the control takes its own, under the club it belongs to. */
+ .sheet[data-step="awards"] .pick{grid-template-areas:"m n" "m s" "m x";
+  justify-items:start;gap:1px 13px}
+ .sheet[data-step="awards"] .pkx{margin-top:9px}
+ /* three boards at once is the whole point of the arrangement; give them the
+    height the window has to spare */
+ .sheet[data-step="awards"] .cnds{max-height:420px}
+}
