@@ -92,14 +92,19 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .srt{font-size:31px}
 
 /* ---- card two: the bracket ---------------------------------------------- */
-.br{flex:1;position:relative;padding:18px 36px 16px;display:flex;flex-direction:column}
+/* Card one's system, applied here: no condensed face anywhere, a section head
+   over the block, conference heads set on their own rule, round labels as
+   small caps meta, and the seed carrying the club's colour. */
+.br{flex:1;position:relative;padding:30px 40px 16px;display:flex;flex-direction:column;
+ font-variant-numeric:tabular-nums}
+.br>.dawl{margin-bottom:20px;position:relative;z-index:1}
 .lines{position:absolute;inset:0;pointer-events:none;z-index:0}
 .hd{display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
- padding-bottom:9px;border-bottom:1px solid var(--hr)}
-.hd p{font-family:var(--cond);font-size:16px;font-weight:700;letter-spacing:.14em;
- text-transform:uppercase;color:var(--fnt)}
-.cf{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
- text-transform:uppercase;padding:14px 0 8px;position:relative;z-index:1}
+ padding:0 1px 4px;position:relative;z-index:1}
+.hd p{font-size:14px;font-weight:600;letter-spacing:.045em;text-transform:uppercase;
+ color:var(--fnt)}
+.cf{font-size:28px;font-weight:700;letter-spacing:.025em;text-transform:uppercase;
+ padding:12px 1px 10px;border-bottom:2px solid var(--ink);position:relative;z-index:1}
 .bn{flex:1;display:grid;grid-template-columns:repeat(3,292px);justify-content:space-between;
  grid-template-rows:repeat(6,1fr);position:relative;z-index:1}
 .gm{align-self:center;background:var(--card);border:1px solid var(--ln);border-radius:10px;
@@ -107,7 +112,8 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sl{display:grid;grid-template-columns:18px 32px minmax(0,1fr);align-items:center;gap:13px;
  height:54px;padding:0 15px}
 .sl+.sl{border-top:1px solid var(--ln)}
-.sd{font-style:normal;font-size:14px;font-weight:600;text-align:center;color:var(--fnt)}
+.sd{font-style:normal;font-size:18px;font-weight:700;letter-spacing:-.03em;
+ text-align:center;color:var(--tc)}
 .mk{display:grid;place-items:center;height:32px}
 .mk img{width:32px;height:32px;object-fit:contain;display:block}
 .nm{font-size:29px;font-weight:600;letter-spacing:-.024em;
@@ -115,11 +121,10 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .sl.w .nm{font-weight:700}
 .sl.out .nm{color:var(--mut);font-weight:400}
 .sl.out .mk img{opacity:.5}
-.sl.out .sd{color:#BBBAB0}
-.sm{flex:none;height:158px;display:grid;grid-template-columns:1fr 650px;align-items:center;
+.sl.out .sd{opacity:.5}
+.sm{flex:none;height:140px;display:grid;grid-template-columns:1fr 650px;align-items:center;
  position:relative;z-index:1}
-.sml{font-family:var(--cond);font-size:23px;font-weight:700;letter-spacing:.13em;
- text-transform:uppercase}
+.sml{font-size:28px;font-weight:700;letter-spacing:.025em;text-transform:uppercase}
 .sm .sl{height:70px;grid-template-columns:18px 42px minmax(0,1fr);padding:0 22px}
 .sm .mk,.sm .mk img{height:42px}.sm .mk img{width:42px}
 .sm .nm{font-size:36px}
@@ -244,7 +249,7 @@ const B={AFC:[
   [[['LAR',1],['NYG',7],1],[['DAL',5],['GB',6],1]],
   [[['GB',6],['NYG',7],1]]]};
 const SPAN=[2,3,6];
-const slot=([k,s],win)=>`<span class="sl ${win?'w':'out'}">`
+const slot=([k,s],win)=>`<span class="sl ${win?'w':'out'}" style="--tc:${NUMC[k]||C[k]}">`
  +`<i class="sd">${s}</i><span class="mk">${img(k)}</span>`
  +`<span class="nm">${N[k]}</span></span>`;
 const game=([a,b,w])=>slot(a,!w)+slot(b,!!w);
@@ -253,6 +258,9 @@ const band=cf=>`<p class="cf">${cf}</p><div class="bn" data-cf="${cf}">`
    `<div class="gm" data-g="${cf}${r}${i}" style="grid-column:${r+1};`
    +`grid-row:${i*SPAN[r]+1}/span ${SPAN[r]}">${game(g)}</div>`).join('')).join('')
  +`</div>`;
+/* .hd is in the markup, so the head goes in before it rather than after */
+document.querySelector('.br .hd')
+ .insertAdjacentHTML('beforebegin','<p class="dawl">Playoff bracket</p>');
 document.getElementById('br').insertAdjacentHTML('beforeend',
  band('AFC')
  +`<div class="sm"><p class="sml">Super Bowl</p><div class="gm" data-g="SB">`
