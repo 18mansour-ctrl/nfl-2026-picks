@@ -2018,6 +2018,9 @@ function dish(c,x,y,d,t,im,key,initialsFor){
 /* ---- the header, shared ---------------------------------------------------
    Left aligned on the card's own margin, not right — the block is as wide as
    its widest line and hangs off x=40 like everything under it. */
+/* the card is whoever filled the name in, and mine when nobody did */
+const kicker=()=>{const n=(S.name||'').trim();
+ return (n?n+'\u2019s':'My')+' 2026 NFL predictions'};
 const DH=248;
 function header(c,{tc,tf,items,gap=20,sub,subBold,subX,subTop,subLh,watermark}){
  c.fillStyle=tc;c.fillRect(0,0,W,DH);
@@ -2027,8 +2030,7 @@ function header(c,{tc,tf,items,gap=20,sub,subBold,subX,subTop,subLh,watermark}){
   const w=im.naturalWidth*(h/im.naturalHeight);
   c.save();c.beginPath();c.rect(0,0,W,DH);c.clip();
   c.globalAlpha=.3;c.drawImage(im,W-44-w,-24,w,h);c.restore()}
- txBox(c,'My 2026 NFL predictions',40,32,
-  {size:32,weight:600,lh:42,color:fade(tf,.62),track:-.7});
+ txBox(c,kicker(),40,32,{size:32,weight:600,lh:42,color:fade(tf,.62),track:-.7});
  let x=40;
  items.forEach(it=>{
   if(it.logo){logo(c,T[it.k]||null,x,it.y,it.size);x+=it.size+gap;return}
