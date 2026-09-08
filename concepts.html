@@ -8,12 +8,14 @@
  --mut:#605F58;--fnt:#9C9B92;--hr:rgba(25,25,23,.09);--ln:rgba(25,25,23,.13);
  --cardsh:0 1px 1px rgba(25,25,23,.04),0 6px 16px -10px rgba(25,25,23,.3)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#D8D8D2;padding:14px;font-family:var(--sans);
- display:grid;grid-template-columns:1fr 1fr;gap:14px;zoom:.35}
+body{background:#D8D8D2;padding:14px 14px 40px;font-family:var(--sans);
+ display:grid;grid-template-columns:1fr 1fr;gap:56px 14px;zoom:.35}
 .wrap{position:relative}
-.tag{position:absolute;top:-34px;left:2px;font-size:30px;font-weight:700;color:#5C5B54}
+.tag{position:absolute;top:-40px;left:2px;font-size:30px;font-weight:700;color:#5C5B54}
 .card{width:1080px;height:1350px;overflow:hidden;display:flex;flex-direction:column;
  background:var(--paper);color:var(--ink)}
+/* every seed numeral is a figure, so they must not shift width by digit */
+.card{font-variant-numeric:tabular-nums}
 
 .dh{background:var(--tc);color:var(--tf);height:212px;flex:none;padding:0 40px 30px;
  display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
@@ -27,85 +29,88 @@ body{background:#D8D8D2;padding:14px;font-family:var(--sans);
 .dch h1{font-size:68px;font-weight:700;line-height:1;letter-spacing:-.034em}
 .dcs{margin-top:3px;font-size:19px;font-weight:500;letter-spacing:-.012em;opacity:.66}
 
-.sec{flex:1;padding:30px 40px 0}
-.h2{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1;margin-bottom:20px}
-.cfh{font-size:19px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
- padding-left:3px;margin-bottom:12px}
-.two{display:grid;grid-template-columns:1fr 1fr;column-gap:30px}
-.band{padding-left:3px;padding-bottom:7px;font-size:14px;font-weight:600;
- letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+.sec{flex:1;padding:32px 40px 0;display:flex;flex-direction:column}
+.h2{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1;margin-bottom:22px}
+.two{flex:1;display:grid;grid-template-columns:1fr 1fr;column-gap:34px;align-content:start}
+/* a conference head sits on its own rule, the way a section head does */
+.cfh{display:flex;align-items:baseline;justify-content:space-between;
+ padding:0 2px 11px;border-bottom:2px solid var(--ink);margin-bottom:4px}
+.cfh b{font-size:31px;font-weight:700;letter-spacing:.035em;text-transform:uppercase}
+.cfh span{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--fnt)}
+/* a mark box, so clubs with wide logos and tall logos still line up */
+.mk{display:grid;place-items:center;flex:none}
+.mk img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 
-/* ---- A: the ladder — the higher the seed, the more of the card it holds --- */
-.A .col{display:flex;flex-direction:column;gap:7px}
-.A .r{display:flex;align-items:center;gap:14px;padding:0 18px;border-radius:10px;
+/* ---- 1 · ledger --------------------------------------------------------- */
+/* No fills anywhere: the seed itself carries the club's colour, and the only
+   other ink is a hairline. The right-hand column says why a club is seeded
+   where it is, which is the one fact a seeding list owes you. */
+.L .bnd{display:flex;align-items:center;gap:13px;padding:19px 2px 8px;
+ font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--mut)}
+.L .bnd::after{content:"";flex:1;height:1px;background:var(--hr)}
+.L .r{display:grid;grid-template-columns:62px 50px minmax(0,1fr) auto;align-items:center;
+ gap:0 18px;height:88px;border-bottom:1px solid var(--hr)}
+.L .r:last-child{border-bottom:0}
+.L .r.brk{border-bottom:0}
+.L .s{font-style:normal;font-size:54px;font-weight:700;letter-spacing:-.045em;
+ line-height:1;color:var(--tc);text-align:center}
+.L .mk{width:50px;height:50px}
+.L .n{font-size:31px;font-weight:600;letter-spacing:-.026em;min-width:0;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.L .w{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--fnt);white-space:nowrap;text-align:right}
+.L .r.bye .w{color:var(--mut)}
+
+/* ---- 2 · ladder --------------------------------------------------------- */
+/* The slot is the seed: a bye is worth a block, a wild card is worth a line.
+   Wild cards keep full-strength type — the size difference already ranks
+   them, so fading them as well would just make three of the seven hard to
+   read. */
+.D .col{display:flex;flex-direction:column;gap:7px}
+.D .r{display:flex;align-items:center;gap:16px;padding:0 20px;border-radius:11px;
  background:var(--card);box-shadow:var(--cardsh);min-width:0}
-.A .r.f{background:var(--tc)}
-.A .r.f .n{color:var(--tf);font-weight:700}
-.A .r.f .s{background:var(--tf);color:var(--tc)}
-.A .s{display:grid;place-items:center;border-radius:50%;flex:none;font-style:normal;
- font-weight:700;background:rgba(25,25,23,.07);color:var(--fnt)}
-.A .n{font-weight:600;letter-spacing:-.026em;min-width:0;white-space:nowrap;
+.D .r.f{background:var(--tc);box-shadow:none}
+.D .r.f .n{color:var(--tf);font-weight:700}
+.D .r.f .s{color:var(--tf);opacity:.62}
+.D .r.o{box-shadow:inset 0 0 0 1px var(--ln);background:transparent;position:relative;
+ padding-left:24px}
+.D .r.o::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+ border-radius:11px 0 0 11px;background:var(--tc)}
+.D .s{font-style:normal;font-weight:700;letter-spacing:-.04em;color:var(--fnt);flex:none;
+ text-align:center}
+.D .n{font-weight:600;letter-spacing:-.028em;min-width:0;white-space:nowrap;
  overflow:hidden;text-overflow:ellipsis}
-.A .r1{height:124px}.A .r1 img{width:64px;height:64px}.A .r1 .n{font-size:38px}
-.A .r1 .s{width:40px;height:40px;font-size:18px}
-.A .r2{height:88px}.A .r2 img{width:48px;height:48px}.A .r2 .n{font-size:30px}
-.A .r2 .s{width:34px;height:34px;font-size:16px}
-.A .r3{height:64px}.A .r3 img{width:34px;height:34px}.A .r3 .n{font-size:23px}
-.A .r3 .s{width:28px;height:28px;font-size:14px}
-.A img{object-fit:contain;display:block;flex:none}
-.A .bye{margin-left:auto;font-size:15px;font-weight:600;letter-spacing:.05em;
- text-transform:uppercase;opacity:.7}
+.D .r1{height:152px}.D .r1 .mk{width:76px;height:76px}.D .r1 .n{font-size:42px}
+.D .r1 .s{font-size:30px;width:34px}
+.D .r2{height:98px}.D .r2 .mk{width:52px;height:52px}.D .r2 .n{font-size:31px}
+.D .r2 .s{font-size:24px;width:30px}
+.D .r3{height:76px}.D .r3 .mk{width:40px;height:40px}.D .r3 .n{font-size:26px}
+.D .r3 .s{font-size:20px;width:26px}
+.D .bye{margin-left:auto;font-size:14px;font-weight:600;letter-spacing:.06em;
+ text-transform:uppercase;color:var(--tf);opacity:.7;white-space:nowrap}
 
-/* ---- B: one strip a conference, seven marks across --------------------- */
-.B .strip{display:grid;grid-template-columns:repeat(4,1fr) 20px repeat(3,1fr);gap:8px}
-.B .t{border-radius:10px;background:var(--tc);color:var(--tf);height:150px;position:relative;
- display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
- padding:10px 6px}
-.B .t.o{background:var(--card);color:var(--mut);box-shadow:inset 0 0 0 1px var(--ln)}
-.B .t i{position:absolute;top:8px;left:11px;font-style:normal;font-size:19px;font-weight:700;
- opacity:.6}
-.B .t.o i{color:#C3C2B8;opacity:1}
-.B .t img{width:52px;height:52px;object-fit:contain;display:block}
-.B .t.o img{opacity:.5}
-.B .t span{font-size:17px;font-weight:600;letter-spacing:-.018em;text-align:center;
+/* ---- 3 · board ---------------------------------------------------------- */
+/* Seven marks a conference, read left to right. The break after the fourth is
+   a gap rather than a label, and the colour bar under a wild card is the same
+   colour its winner's tile is filled with. */
+.B .strip{display:grid;grid-template-columns:repeat(4,1fr) 22px repeat(3,1fr);gap:9px;
+ margin-bottom:30px}
+.B .t{border-radius:11px;height:196px;position:relative;overflow:hidden;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+ padding:18px 8px;background:var(--tc);color:var(--tf)}
+.B .t.o{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--ln)}
+.B .t.o::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;
+ background:var(--tc)}
+.B .t i{position:absolute;top:12px;left:15px;font-style:normal;font-size:23px;
+ font-weight:700;letter-spacing:-.03em;opacity:.55}
+.B .t.o i{color:var(--fnt);opacity:1}
+.B .t .mk{width:62px;height:62px}
+.B .t span{font-size:21px;font-weight:600;letter-spacing:-.022em;text-align:center;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .B .gap{grid-column:5}
-.B .cfh{margin-top:26px}
-.B .cfh:first-of-type{margin-top:0}
 
-/* ---- C: editorial — the number is the graphic, colour is an edge -------- */
-.C .col{display:flex;flex-direction:column}
-.C .r{display:grid;grid-template-columns:74px 42px minmax(0,1fr) auto;align-items:center;
- gap:16px;height:82px;border-bottom:1px solid var(--hr);position:relative;padding-left:14px}
-.C .r::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;
- border-radius:2px;background:var(--tc)}
-.C .s{font-style:normal;font-size:50px;font-weight:700;letter-spacing:-.04em;
- color:#D2D1C7;line-height:1}
-.C .r.f .s{color:var(--tc)}
-.C img{width:42px;height:42px;object-fit:contain;display:block}
-.C .n{font-size:30px;font-weight:600;letter-spacing:-.026em;min-width:0;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.C .w{font-size:14px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
- color:var(--fnt);white-space:nowrap}
-
-/* ---- D: tiles, four across then three ---------------------------------- */
-.D .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.D .t{border-radius:10px;background:var(--tc);color:var(--tf);height:132px;position:relative;
- display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
- padding:10px 6px}
-.D .t.o{background:var(--card);color:var(--mut);box-shadow:inset 0 0 0 1px var(--ln)}
-.D .t i{position:absolute;top:8px;left:11px;font-style:normal;font-size:18px;font-weight:700;
- opacity:.6}
-.D .t.o i{color:#C3C2B8;opacity:1}
-.D .t img{width:46px;height:46px;object-fit:contain;display:block}
-.D .t.o img{opacity:.5}
-.D .t span{font-size:16px;font-weight:600;letter-spacing:-.018em;text-align:center;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.D .band{padding-top:16px}
-.D .cfh{margin-top:26px}
-.D .col>.cfh:first-child{margin-top:0}
-
-/* ---- the awards row, shared ------------------------------------------- */
 .daw{flex:none;height:214px;padding:26px 40px 0;display:flex;flex-direction:column;gap:34px}
 .dawl{font-size:27px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
 .awrow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:16px;align-items:center}
@@ -119,21 +124,19 @@ body{background:#D8D8D2;padding:14px;font-family:var(--sans);
 .awm{margin-top:5px;font-size:15px;font-weight:500;color:var(--mut);letter-spacing:-.004em}
 .awm i{font-style:normal;font-weight:400;color:var(--fnt);padding:0 7px}
 </style></head><body id="b"></body><script>
-const N={ARI:'Cardinals',ATL:'Falcons',BAL:'Ravens',BUF:'Bills',CAR:'Panthers',
- CHI:'Bears',CIN:'Bengals',CLE:'Browns',DAL:'Cowboys',DEN:'Broncos',DET:'Lions',
- GB:'Packers',HOU:'Texans',IND:'Colts',JAX:'Jaguars',KC:'Chiefs',LAC:'Chargers',
- LAR:'Rams',LV:'Raiders',MIA:'Dolphins',MIN:'Vikings',NE:'Patriots',NO:'Saints',
- NYG:'Giants',NYJ:'Jets',PHI:'Eagles',PIT:'Steelers',SEA:'Seahawks',SF:'49ers',
- TB:'Buccaneers',TEN:'Titans',WAS:'Commanders'};
+const N={BUF:'Bills',MIA:'Dolphins',PIT:'Steelers',CLE:'Browns',HOU:'Texans',
+ TEN:'Titans',LAC:'Chargers',PHI:'Eagles',DAL:'Cowboys',NYG:'Giants',CHI:'Bears',
+ GB:'Packers',ATL:'Falcons',LAR:'Rams'};
 const C={BUF:'#003087',MIA:'#008C95',PIT:'#FFB81C',CLE:'#311D00',HOU:'#E4002B',
  TEN:'#418FDE',LAC:'#0072CE',PHI:'#004851',DAL:'#0C2340',NYG:'#001E62',
- CHI:'#091F2C',GB:'#203731',ATL:'#A71930',LAR:'#003594',MIN:'#582C83'};
-const FG=k=>['PIT'].includes(k)?'#fff'
+ CHI:'#091F2C',GB:'#203731',ATL:'#A71930',LAR:'#003594'};
+const FG=k=>k==='PIT'?'#fff'
  :(n=>{const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
    return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)>.42?'#191917':'#fff'})
    (parseInt(C[k].slice(1),16));
 const EXT={nyj:'png'};
-const img=k=>{const l=k.toLowerCase();return `<img src="logos/${l}.${EXT[l]||'webp'}" alt="">`};
+const mk=k=>{const l=k.toLowerCase();
+ return `<span class="mk"><img src="logos/${l}.${EXT[l]||'webp'}" alt=""></span>`};
 const DIVOF={LAC:'West',PIT:'North',HOU:'South',MIA:'East',
              LAR:'West',CHI:'North',ATL:'South',PHI:'East'};
 const ORDER={AFC:['LAC','PIT','HOU','MIA','TEN','CLE','BUF'],
@@ -152,45 +155,38 @@ const AWARDS=`<div class="daw"><p class="dawl">Award predictions</p><div class="
   +`<span class="dish"><img src="headshots/${f}.webp" alt=""></span>`
   +`<span><p class="awl">${l}</p><p class="awn">${n}</p>`
   +`<p class="awm">${p}<i>|</i>${t}</p></span></div>`).join('')+`</div></div>`;
+const head=cf=>`<div class="cfh"><b>${cf}</b><span>Seeds 1&ndash;7</span></div>`;
 
-/* ---- A ---- */
-const A=`<div class="sec A"><p class="h2">Conference seeding</p><div class="two">`
- +['AFC','NFC'].map(cf=>`<div><p class="cfh">${cf}</p><div class="col">`
-   +ORDER[cf].map((k,i)=>{const cls=i===0?'r1':i<4?'r2':'r3';
-     return `<div class="r ${cls}${i<4?' f':''}" style="--tc:${C[k]};--tf:${FG(k)}">`
-      +`<i class="s">${i+1}</i>${img(k)}<span class="n">${N[k]}</span>`
+/* 1 · ledger */
+const L=`<div class="sec L"><p class="h2">Conference seeding</p><div class="two">`
+ +['AFC','NFC'].map(cf=>`<div>${head(cf)}`
+   +ORDER[cf].map((k,i)=>(i===4?'<p class="bnd">Wild cards</p>':'')
+     +`<div class="r${i===3?' brk':''}${i===0?' bye':''}" `
+     +`style="--tc:${C[k]}"><i class="s">${i+1}</i>${mk(k)}`
+     +`<span class="n">${N[k]}</span>`
+     +`<span class="w">${i===0?'First-round bye':i<4?cf+' '+DIVOF[k]:''}</span>`
+     +`</div>`).join('')+`</div>`).join('')+`</div></div>`;
+
+/* 2 · ladder */
+const D=`<div class="sec D"><p class="h2">Conference seeding</p><div class="two">`
+ +['AFC','NFC'].map(cf=>`<div>${head(cf)}<div class="col" style="margin-top:9px">`
+   +ORDER[cf].map((k,i)=>{const c=i===0?'r1 f':i<4?'r2 f':'r3 o';
+     return `<div class="r ${c}" style="--tc:${C[k]};--tf:${FG(k)}">`
+      +`<i class="s">${i+1}</i>${mk(k)}<span class="n">${N[k]}</span>`
       +(i===0?`<span class="bye">Bye</span>`:'')+`</div>`}).join('')
    +`</div></div>`).join('')+`</div></div>`;
 
-/* ---- B ---- */
+/* 3 · board */
 const B=`<div class="sec B"><p class="h2">Conference seeding</p>`
- +['AFC','NFC'].map(cf=>`<p class="cfh">${cf}</p><div class="strip">`
+ +['AFC','NFC'].map(cf=>head(cf)+`<div class="strip" style="margin-top:9px">`
    +ORDER[cf].map((k,i)=>(i===4?'<span class="gap"></span>':'')
      +`<div class="t${i<4?'':' o'}" style="--tc:${C[k]};--tf:${FG(k)}"><i>${i+1}</i>`
-     +`${img(k)}<span>${N[k]}</span></div>`).join('')+`</div>`).join('')+`</div>`;
+     +`${mk(k)}<span>${N[k]}</span></div>`).join('')+`</div>`).join('')+`</div>`;
 
-/* ---- C ---- */
-const C2=`<div class="sec C"><p class="h2">Conference seeding</p><div class="two">`
- +['AFC','NFC'].map(cf=>`<div><p class="cfh">${cf}</p><div class="col">`
-   +ORDER[cf].map((k,i)=>`<div class="r${i<4?' f':''}" style="--tc:${C[k]}">`
-     +`<i class="s">${i+1}</i>${img(k)}<span class="n">${N[k]}</span>`
-     +`<span class="w">${i<4?cf+' '+DIVOF[k]:'Wild card'}</span></div>`).join('')
-   +`</div></div>`).join('')+`</div></div>`;
-
-/* ---- D ---- */
-const D=`<div class="sec D"><p class="h2">Conference seeding</p>`
- +['AFC','NFC'].map(cf=>`<div class="col"><p class="cfh">${cf}</p>`
-   +`<p class="band" style="padding-top:0">Division winners</p><div class="grid">`
-   +ORDER[cf].slice(0,4).map((k,i)=>`<div class="t" style="--tc:${C[k]};--tf:${FG(k)}">`
-     +`<i>${i+1}</i>${img(k)}<span>${N[k]}</span></div>`).join('')+`</div>`
-   +`<p class="band">Wild cards</p><div class="grid">`
-   +ORDER[cf].slice(4).map((k,i)=>`<div class="t o" style="--tc:${C[k]}">`
-     +`<i>${i+5}</i>${img(k)}<span>${N[k]}</span></div>`).join('')+`</div></div>`).join('')
- +`</div>`;
-
-const LABELS=['A · the ladder','B · one strip a conference','C · editorial',
-              'D · tiles, four then three'];
-document.getElementById('b').innerHTML=[A,B,C2,D].map((sec,i)=>
+const LABELS=['1 · ledger — the numeral carries the colour, nothing is filled',
+              '2 · ladder — the slot is the seed',
+              '3 · board — seven marks a conference'];
+document.getElementById('b').innerHTML=[L,D,B].map((sec,i)=>
  `<div class="wrap"><p class="tag">${LABELS[i]}</p>`
  +`<div class="card" style="--tc:#003087;--tf:#fff">${HEAD}${sec}${AWARDS}</div></div>`).join('');
 
