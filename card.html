@@ -71,24 +71,26 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
 .bandl b{font-weight:600}
 .bandl::after{content:"";flex:1;height:1px;background:var(--hr);
  transform:translateY(-5px)}
-.sr{display:grid;grid-template-columns:44px auto minmax(0,1fr) auto;align-items:center;
+.sr{display:grid;grid-template-columns:44px auto minmax(0,1fr);align-items:center;
  gap:0 20px;padding:0 20px;border-bottom:1px solid var(--hr)}
+.srb{min-width:0}
 .sr:last-child{border-bottom:0}
 .sr.brk{border-bottom:0}
 .srn{font-style:normal;font-weight:700;letter-spacing:-.045em;line-height:1;
  color:var(--tc);text-align:left}
 .smk{display:grid;place-items:center;flex:none}
 .smk img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-.srt{font-weight:600;letter-spacing:-.028em;min-width:0;white-space:nowrap;
- overflow:hidden;text-overflow:ellipsis}
+.srt{display:block;font-weight:600;letter-spacing:-.028em;min-width:0;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* The tag is one unit, so the mark takes the text's colour rather than the
    club's — four differently coloured crowns down a column read as noise, and
    Pittsburgh's gold barely holds on cream. Team colour stays on the numeral,
    which is the one place it earns its keep. */
-.srw{display:flex;align-items:center;justify-content:flex-end;gap:8px;
- font-size:14px;font-weight:600;letter-spacing:.045em;text-transform:uppercase;
- color:var(--fnt);white-space:nowrap}
-.srw svg{width:17px;height:15px;fill:currentColor;display:block;flex:none}
+/* hung under the name, the way the awards hang a position and a club under a
+   player, rather than set as a tag at the far end of the row */
+.srw{display:flex;align-items:center;gap:8px;margin-top:3px;font-size:15px;
+ font-weight:500;letter-spacing:-.008em;color:var(--mut);white-space:nowrap}
+.srw svg{width:16px;height:14px;fill:var(--fnt);display:block;flex:none}
 .sr{height:84px}
 .srn{font-size:52px}
 .smk{width:48px;height:48px}
@@ -155,7 +157,7 @@ body{zoom:.5} /* review only — each card is authored at 1080x1350 */
  background:var(--c)}
 .dish img{position:absolute;display:block;width:auto}
 .awt{min-width:0}
-.awl{font-size:16.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+.awl{font-size:19px;font-weight:700;letter-spacing:.045em;text-transform:uppercase;
  color:var(--mut)}
 .awn{margin-top:6px;font-size:27px;font-weight:700;letter-spacing:-.032em;line-height:1.07}
 .awm{margin-top:5px;font-size:15px;font-weight:500;color:var(--mut);letter-spacing:-.004em}
@@ -233,13 +235,15 @@ const smk=k=>{const l=k.toLowerCase();
    one. */
 const CROWN='<svg viewBox="0 0 24 20" aria-hidden="true">'
  +'<path d="M1.6 17.6V5.1l6.1 4.4L12 2.6l4.3 6.9 6.1-4.4v12.5z"/></svg>';
-const why=(cf,k,i)=>i<4?`${DIVOF[k]}${CROWN}`:'';
+const why=(cf,k,i)=>i<4?`${cf} ${DIVOF[k]}${CROWN}`:'';
 /* Cleveland leads with its brown, which at numeral size reads as black — the
    seed takes the club's second colour instead. Same idea as the app's c2. */
 const NUMC={CLE:'#EB3300'};
 const seed=(cf,k,i)=>`<div class="sr${i===3?' brk':''}" style="--tc:${NUMC[k]||C[k]}">`
- +`<i class="srn">${i+1}</i>${smk(k)}<span class="srt">${N[k]}</span>`
- +`<span class="srw">${why(cf,k,i)}</span></div>`;
+ +`<i class="srn">${i+1}</i>${smk(k)}<span class="srb">`
+ +`<span class="srt">${N[k]}</span>`
+ +(i<4?`<span class="srw">${why(cf,k,i)}</span>`:'')
+ +`</span></div>`;
 const grp=(t,wc)=>`<p class="bandl${wc?' wc':''}"><b>${t}</b></p>`;
 document.getElementById('sds').innerHTML='<p class="dawl">Conference seeding</p>'
  +['AFC','NFC'].map(cf=>`<div><div class="sdh"><b>${cf}</b></div>`
