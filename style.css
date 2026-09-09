@@ -574,10 +574,15 @@ h1,h2,h3,h4,p{margin:0}
  .sheet[data-step="awards"]>.phx,.sheet[data-step="awards"]>.nextbar{grid-column:1/-1}
  .sheet[data-step="awards"]>.sect{margin-top:40px}
  /* Three picks across cannot also run the name, the club and the control on
-    one line — the control takes its own, under the club it belongs to. */
- .sheet[data-step="awards"] .pick{grid-template-areas:"m n" "m s" "m x";
-  justify-items:start;gap:1px 13px}
- .sheet[data-step="awards"] .pkx{margin-top:9px}
+    one line, so the control takes its own — held to the card's right edge
+    rather than left under the club. The cut-out is absolutely positioned and
+    stands on the bottom edge, so it is at its widest exactly where that third
+    line sits: started from the left the button lands on the player's shoulder,
+    and it lands somewhere different on each of the three. Against the right
+    edge it clears every one of them and the three agree with each other. */
+ .sheet[data-step="awards"] .pick{grid-template-areas:"m n" "m s" "m x";gap:1px 13px}
+ .sheet[data-step="awards"] .pkx{justify-self:end;margin-top:9px;
+  position:relative;z-index:1}
  /* three boards at once is the whole point of the arrangement; give them the
     height the window has to spare */
  .sheet[data-step="awards"] .cnds{max-height:420px}

@@ -293,11 +293,7 @@ function render(){
  root.innerHTML=rail()+SEC[STEP].render();
  wire(root);
  const sheet=root.querySelector('.sheet');
- /* what the step is, said in the markup, because the desktop layout is not one
-    layout: a step whose content is two peers wants two columns and a step whose
-    content is one picture wants the width to itself */
- if(sheet){sheet.dataset.step=STEP;
-  sheet.classList.remove('enter');void sheet.offsetWidth;sheet.classList.add('enter')}
+ if(sheet){sheet.classList.remove('enter');void sheet.offsetWidth;sheet.classList.add('enter')}
  turnMark();
  window.scrollTo(0,0);
 }
@@ -314,6 +310,14 @@ function turnMark(){
  if(was===null||was===STEP)return;
  m.classList.remove('turn');void m.offsetWidth;m.classList.add('turn')}
 function wire(root){
+ /* What the step is, said in the markup, because the desktop layout is not one
+    layout: a step whose content is two peers wants two columns and a step whose
+    content is one picture wants the width to itself. It goes on here rather
+    than in render, because repaint builds the sheet too — writing it in only
+    one of the two places meant the wide layout survived until your first pick
+    and then quietly collapsed back to a phone's column. */
+ const sheet=root.querySelector('.sheet');
+ if(sheet)sheet.dataset.step=STEP;
  root.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.step});
  if(SEC[STEP].after)SEC[STEP].after(root);
  wireClear(root)}

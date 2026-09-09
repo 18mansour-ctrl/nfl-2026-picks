@@ -59,7 +59,7 @@ SEC.awards={render(){
  return `<div class="sheet">
 <header class="phx">
 ${clearBtn("awards")}
-<h1>Three awards</h1>
+<h1>Award predictions</h1>
 </header>
 ${AWARDS.map(block).join('')}
 ${nextBar('awards','See your card','#share')}
