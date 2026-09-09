@@ -232,7 +232,7 @@ h1,h2,h3,h4,p{margin:0}
 .sd.full .sdb{color:var(--tc);background:var(--tf)}
 .sd.full .sdx{color:var(--tf);background:rgba(255,255,255,.16)}
 .sd.full .sdx:hover{background:rgba(255,255,255,.3)}
-.sd.full .gripd{background:var(--tf);opacity:.5}
+.sd.full .gripd{background:var(--tf);opacity:.72}
 .sd.full .grip:hover{background:rgba(255,255,255,.16)}
 .sd.full .grip:hover .gripd{opacity:.85}
 .sd.full .mark.tile{background:var(--tf)}
@@ -261,11 +261,13 @@ h1,h2,h3,h4,p{margin:0}
  white-space:nowrap}
 
 /* the grip, and the two states a drag puts a row into */
+/* A handle nobody notices is a handle nobody uses — but the fix is contrast in
+   the dots themselves, not a box drawn around every row. */
 .grip{flex:none;display:grid;grid-template-columns:repeat(2,4px);gap:3px;
  justify-content:center;align-content:center;width:34px;height:38px;border-radius:6px;
  cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;
  transition:background .15s var(--e-out)}
-.gripd{width:4px;height:4px;border-radius:50%;background:rgba(25,25,23,.3)}
+.gripd{width:4px;height:4px;border-radius:50%;background:rgba(25,25,23,.42)}
 .grip:hover{background:rgba(25,25,23,.07)}
 .grip:hover .gripd{background:rgba(25,25,23,.5)}
 .grip:active{cursor:grabbing}
@@ -526,7 +528,7 @@ h1,h2,h3,h4,p{margin:0}
    push the card taller, which is what a bigger one did. An empty cell holds the
    column open for it instead. */
 .pkfw{grid-area:m;width:99px}
-.pkf{position:absolute;left:14px;bottom:0;height:91%;width:auto;
+.pkf{position:absolute;left:0;bottom:0;height:91%;width:auto;
  object-fit:contain;object-position:50% 100%;display:block;background:none}
 .pkn{grid-area:n;font-size:19px;font-weight:700;letter-spacing:-.026em;align-self:end;
  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -575,8 +577,12 @@ h1,h2,h3,h4,p{margin:0}
  .sheet[data-step="seeds"] .pool{grid-template-columns:repeat(2,minmax(0,1fr))}
 
  /* A name is a few words long however wide the page is; the field it goes in
-    should not be a thousand pixels because the picture under it is. */
+    should not be a thousand pixels because the picture under it is. And the
+    picture is a preview: at the full width of the sheet the two of them ran
+    the page to three thousand pixels, and neither was any more readable for
+    it — what the card is actually read at is full size, which is a tap away. */
  .sheet[data-step="share"] .awin.wide{max-width:440px}
+ .sheet[data-step="share"]>.sect{max-width:520px}
 }
 
 @media(min-width:1080px){

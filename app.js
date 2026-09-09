@@ -1319,6 +1319,10 @@ const hole=(i,txt,conf)=>`<div class="sd open" data-row="${i}"
  data-flip="hole:${conf}:${i}"><i class="sdn">${i+1}</i>
 <span class="sdt empty">${esc(txt)}</span></div>`;
 
+/* Said on both bands, not just the first: the wild cards reorder exactly the
+   same way and had nothing on the page to say so. */
+const DRAG=' <em>drag to reorder</em>';
+
 const chip=(t,attr)=>`<button class="tm" ${attr} data-flip="tm:${t.k}"
  style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span>
 <span class="tnm">${esc(t.name)}</span></button>`;
@@ -1339,11 +1343,12 @@ function conference(conf){
  const pool=confTeams(conf).filter(t=>!taken.has(t.k));
  return `<section class="sect" data-flip="sect:${conf}">
 <div class="sh"><h4>${conf}</h4></div>
-<p class="bandl">Division winners${ord.length>1?' <em>drag to order</em>':''}</p>
+<p class="bandl">Division winners${ord.length>1?DRAG:''}</p>
 <div class="seeds" data-band="${conf}:ord">${[0,1,2,3]
  .map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Pick a division winner below',conf)).join('')}</div>
 ${divPools(conf)}
-${done?`<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards</p>
+${done?`<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards${
+ wild.length>1?DRAG:''}</p>
 <div class="seeds" data-band="${conf}:wild">${[0,1,2]
  .map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4,'Wild card — tap a team below',conf)).join('')}</div>
 ${wild.length<3?`<div class="tms pool" data-flip="pool:${conf}">${pool
@@ -1944,6 +1949,13 @@ const NAMEW=680;
 /* the card is whoever filled the name in, and mine when nobody did */
 const kicker=()=>{const n=(S.name||'').trim();
  return (n?n+'\u2019s':'My')+' 2026 NFL predictions'};
+/* When the picks were made, which is the thing a season card stops being able
+   to say for itself the moment the season starts answering it. Written long,
+   and short when a long name has already spent the room — the trophy starts at
+   892 and the line is not allowed to run under it. */
+const dated=long=>new Date().toLocaleDateString('en-US',long
+ ?{month:'long',day:'numeric',year:'numeric'}
+ :{month:'numeric',day:'numeric',year:'numeric'});
 const DH=248;
 function header(c,{tc,tf,items,gap=20,sub,subBold,subX,subTop,subLh,watermark}){
  c.fillStyle=tc;c.fillRect(0,0,W,DH);
@@ -1953,7 +1965,22 @@ function header(c,{tc,tf,items,gap=20,sub,subBold,subX,subTop,subLh,watermark}){
   const w=im.naturalWidth*(h/im.naturalHeight);
   c.save();c.beginPath();c.rect(0,0,W,DH);c.clip();
   c.globalAlpha=.3;c.drawImage(im,W-44-w,-24,w,h);c.restore()}
- txBox(c,kicker(),40,32,{size:32,weight:600,lh:42,color:fade(tf,.62),track:-.7});
+ /* The line the card is signed with: whose it is, then when. The pipe is the
+    same divider the line under the team name uses, and the date sits a shade
+    behind the name so the name still leads. Both clear the trophy, which
+    starts at 892 — the longest name in the league leaves it 100px of room. */
+ /* Set on the kicker's own baseline rather than centred in its line, because
+    the date is smaller than it and two sizes centred in one band do not sit on
+    anything. */
+ {const kb=32+baseOf(c,32,600,42);
+  const kw=measure(c,kicker(),{size:32,weight:600,track:-.7});
+  const pw=measure(c,'|',{size:23,weight:400});
+  const fits=d=>40+kw+13+pw+13+measure(c,d,{size:24,weight:500,track:-.3})<=880;
+  const d=fits(dated(1))?dated(1):dated(0);
+  let kx=40+tx(c,kicker(),40,kb,{size:32,weight:600,color:fade(tf,.62),track:-.7});
+  tx(c,'|',kx+13,kb,{size:23,weight:400,color:fade(tf,.34)});
+  kx+=13+pw+13;
+  tx(c,d,kx,kb,{size:24,weight:500,color:fade(tf,.52),track:-.3});}
  let x=40;
  items.forEach(it=>{
   if(it.logo){logo(c,T[it.k]||null,x,it.y,it.size);x+=it.size+gap;return}
@@ -2092,8 +2119,13 @@ function joints(c,A,B){
 function drawBracket(c,s){
  c.setTransform(s,0,0,s,0,0);
  c.fillStyle=PAPER;c.fillRect(0,0,W,H);
- const B=bracket(),sb=B.sb,a=sb.home?T[sb.home]:null,n=sb.away?T[sb.away]:null;
+ const B=bracket(),sb=B.sb;
  const ch=champion(),T1=ch?T[ch]:null,tf=T1?T1.f:'#fff';
+ /* The winner leads. The bracket puts the higher seed on the home line, which
+    is who the game was between rather than who won it — and this row is read
+    after the fact, by someone who already knows. */
+ const wk=ch||sb.home,lk=ch?(sb.home===ch?sb.away:sb.home):sb.away;
+ const a=wk?T[wk]:null,n=lk?T[lk]:null;
  /* Two marks, two names, a vs and four gaps have to cross the card: Commanders
     against Buccaneers runs off the right edge at the size Bills against Jets
     sits at comfortably. Both names come down together and by the same step, or
@@ -2104,11 +2136,11 @@ function drawBracket(c,s){
  while(ns>44&&measure(c,an,{size:ns,weight:700,track:-.036*ns})
   +measure(c,nn,{size:ns,weight:700,track:-.036*ns})>room)ns-=1;
  header(c,{tc:T1?T1.c:INK,tf,
-  items:[{logo:1,k:sb.home,y:87,size:86},
+  items:[{logo:1,k:wk,y:87,size:86},
    {text:an,y:89,size:ns,weight:700,lh:82,track:-.036*ns},
    {text:'vs',y:100.5,size:40,weight:600,lh:59,color:fade(tf,.55),track:-.82},
    {text:nn,y:89,size:ns,weight:700,lh:82,track:-.036*ns},
-   {logo:1,k:sb.away,y:87,size:86}],
+   {logo:1,k:lk,y:87,size:86}],
   subX:146,subTop:183,subLh:27,subBold:'Super Bowl matchup'});
 
  txBox(c,'Playoff bracket',40,278,{size:35,weight:700,lh:38.5,track:-1.05});

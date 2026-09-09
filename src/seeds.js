@@ -30,6 +30,10 @@ const hole=(i,txt,conf)=>`<div class="sd open" data-row="${i}"
  data-flip="hole:${conf}:${i}"><i class="sdn">${i+1}</i>
 <span class="sdt empty">${esc(txt)}</span></div>`;
 
+/* Said on both bands, not just the first: the wild cards reorder exactly the
+   same way and had nothing on the page to say so. */
+const DRAG=' <em>drag to reorder</em>';
+
 const chip=(t,attr)=>`<button class="tm" ${attr} data-flip="tm:${t.k}"
  style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span>
 <span class="tnm">${esc(t.name)}</span></button>`;
@@ -50,11 +54,12 @@ function conference(conf){
  const pool=confTeams(conf).filter(t=>!taken.has(t.k));
  return `<section class="sect" data-flip="sect:${conf}">
 <div class="sh"><h4>${conf}</h4></div>
-<p class="bandl">Division winners${ord.length>1?' <em>drag to order</em>':''}</p>
+<p class="bandl">Division winners${ord.length>1?DRAG:''}</p>
 <div class="seeds" data-band="${conf}:ord">${[0,1,2,3]
  .map(i=>ord[i]?row(conf,ord[i],i):hole(i,'Pick a division winner below',conf)).join('')}</div>
 ${divPools(conf)}
-${done?`<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards</p>
+${done?`<p class="bandl wc" data-flip="band:${conf}:wild">Wild cards${
+ wild.length>1?DRAG:''}</p>
 <div class="seeds" data-band="${conf}:wild">${[0,1,2]
  .map(i=>wild[i]?row(conf,wild[i],i+4):hole(i+4,'Wild card — tap a team below',conf)).join('')}</div>
 ${wild.length<3?`<div class="tms pool" data-flip="pool:${conf}">${pool
