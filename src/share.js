@@ -13,7 +13,16 @@
    real marks and the real names; changing one in isolation will usually break
    an alignment that was measured rather than guessed. */
 (()=>{
-const W=1080,H=1350,SCALE=2;
+/* The card is authored at 1080x1350 and drawn through a scale, so the same
+   code makes the thumbnail on the page and the picture you keep. Two numbers,
+   not one: the preview only has to look right at a few hundred pixels across
+   and pays for its size in memory the whole time the step is open, while the
+   file wants every pixel the artwork can actually carry. Three is that
+   ceiling — the marks are 500 square and the cut-outs 342 to 436 tall, so the
+   header mark lands at 360 and a dish at 300 with the source still ahead of
+   them, and 3240x4050 stays under the sixteen-megapixel canvas that iOS will
+   hand back blank. */
+const W=1080,H=1350,PREVIEW=2,EXPORT=3;
 const PAPER='#FAFAF6',CARD='#FFFDF7',INK='#191917',MUT='#605F58',FNT='#9C9B92';
 const HR='rgba(25,25,23,.09)',LN='rgba(25,25,23,.13)';
 const SANS='Sohne';
@@ -198,8 +207,8 @@ function awardsRow(c){
    if(b.meta[1]){mx+=txBox(c,'|',mx,1263.9,{size:15,weight:400,lh:20,color:FNT})+7;
     txBox(c,b.meta[1],mx,1263.9,{size:15,weight:500,lh:20,color:MUT})}}})}
 
-function drawSeason(c){
- c.setTransform(SCALE,0,0,SCALE,0,0);
+function drawSeason(c,s){
+ c.setTransform(s,0,0,s,0,0);
  c.fillStyle=PAPER;c.fillRect(0,0,W,H);
  const B=bracket(),ch=champion(),T1=ch?T[ch]:null;
  const other=ch?(B.sb.home===ch?B.sb.away:B.sb.home):null,T2=other?T[other]:null;
@@ -261,8 +270,8 @@ function joints(c,A,B){
  B.forEach(p=>{c.moveTo(x,p.cy);c.lineTo(p.x,p.cy)});
  c.stroke()}
 
-function drawBracket(c){
- c.setTransform(SCALE,0,0,SCALE,0,0);
+function drawBracket(c,s){
+ c.setTransform(s,0,0,s,0,0);
  c.fillStyle=PAPER;c.fillRect(0,0,W,H);
  const B=bracket(),sb=B.sb,a=sb.home?T[sb.home]:null,n=sb.away?T[sb.away]:null;
  const ch=champion(),T1=ch?T[ch]:null,tf=T1?T1.f:'#fff';
@@ -322,10 +331,20 @@ const ready=()=>READY=Promise.all([
 async function paint(){
  const one=$('#card1'),two=$('#card2');
  if(!one||!two)return;
- [one,two].forEach(cv=>{cv.width=W*SCALE;cv.height=H*SCALE});
+ [one,two].forEach(cv=>{cv.width=W*PREVIEW;cv.height=H*PREVIEW});
  await ready();
- drawSeason(one.getContext('2d'));
- drawBracket(two.getContext('2d'))}
+ drawSeason(one.getContext('2d'),PREVIEW);
+ drawBracket(two.getContext('2d'),PREVIEW)}
+
+/* Drawn again rather than scaled up from the preview: every line, every letter
+   and every rule is redrawn at the export size, so the file is genuinely three
+   times the card rather than a two-times card enlarged. */
+const DRAW={card1:drawSeason,card2:drawBracket};
+function render1(id,scale){
+ const cv=document.createElement('canvas');
+ cv.width=W*scale;cv.height=H*scale;
+ DRAW[id](cv.getContext('2d'),scale);
+ return cv}
 
 /* The preview is a thumbnail; this is the card. A data URL rather than the
    canvas itself, so the live one keeps painting behind it — and so a phone can
@@ -337,7 +356,10 @@ function zoom(cv,label){
  box.innerHTML=`<div class="lbin"><img alt="${esc(label)}"></div>`
   +`<button class="lbx" type="button" aria-label="Close">\u2715</button>`;
  const img=box.querySelector('img');
- img.src=cv.toDataURL('image/png');
+ /* press and hold on a phone saves whatever this holds, so it is the export
+    rather than the preview — the other door out of the app leads to the same
+    picture. */
+ img.src=render1(cv.id,EXPORT).toDataURL('image/png');
  const key=e=>{if(e.key==='Escape')close()};
  const close=()=>{box.remove();document.removeEventListener('keydown',key)};
  box.onclick=e=>{if(e.target!==img)close()};
@@ -348,9 +370,11 @@ function zoom(cv,label){
  const centre=()=>{box.scrollLeft=(box.scrollWidth-box.clientWidth)/2};
  img.complete?centre():img.addEventListener('load',centre,{once:true})}
 
-function download(cv,suffix){
+async function download(id,suffix){
  const nm=(S.name||'picks').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-')
   .replace(/^-|-$/g,'');
+ await ready();
+ const cv=render1(id,EXPORT);
  cv.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement('a');
   a.href=u;a.download=`nfl-2026-${nm||'picks'}-${suffix}.png`;a.click();
   setTimeout(()=>URL.revokeObjectURL(u),1000)},'image/png')}
@@ -387,8 +411,8 @@ after(root){
  const who=root.querySelector('#who');
  who.oninput=()=>{S.name=who.value;save();paint()};
  paint();
- root.querySelector('#dl1').onclick=()=>download($('#card1'),'season');
- root.querySelector('#dl2').onclick=()=>download($('#card2'),'bracket');
+ root.querySelector('#dl1').onclick=()=>download('card1','season');
+ root.querySelector('#dl2').onclick=()=>download('card2','bracket');
  [['#card1','The season'],['#card2','The playoffs']].forEach(([sel,label])=>{
   const cv=root.querySelector(sel);
   cv.parentElement.onclick=()=>zoom(cv,label)});
