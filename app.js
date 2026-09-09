@@ -1321,7 +1321,7 @@ const hole=(i,txt,conf)=>`<div class="sd open" data-row="${i}"
 
 /* Said on both bands, not just the first: the wild cards reorder exactly the
    same way and had nothing on the page to say so. */
-const DRAG=' <em>drag to reorder</em>';
+const DRAG='<em>drag to reorder playoff seeding</em>';
 
 const chip=(t,attr)=>`<button class="tm" ${attr} data-flip="tm:${t.k}"
  style="--tc:${t.c}">${mark(t)}<span class="tct">${esc(t.city)}</span>

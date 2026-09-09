@@ -216,8 +216,12 @@ h1,h2,h3,h4,p{margin:0}
    sheet. */
 .bandl{margin:0;padding-left:3px;padding-bottom:3px;
  font-size:14.5px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+/* Divided from the label by the same pipe the card sets its own sub-line with,
+   and set in the muted ink rather than the faintest — it is telling you what
+   the order is for, which is worth reading. */
 .bandl em{font-family:var(--sans);font-style:normal;font-size:12.5px;font-weight:400;
- letter-spacing:-.005em;text-transform:none;color:var(--fnt);margin-left:10px}
+ letter-spacing:-.005em;text-transform:none;color:var(--mut)}
+.bandl em::before{content:'|';margin:0 9px;color:var(--fnt)}
 .bandl+.seeds{margin-top:10px}
 .bandl.wc{margin-top:24px}
 /* .bandl's own margin:0 outranks .sh+* at equal specificity, so the gap under

@@ -4,6 +4,9 @@
 # "data didn't load" state.
 set -eu
 cd "$(dirname "$0")"
-PORT="${1:-8137}"
-echo "HUB on http://localhost:$PORT/  (append ?demo for data-demo.json)"
+# An argument wins, then whatever the harness assigned, then the default — so
+# `./serve.sh 8145` still means 8145 and a tool that hands us a free port in
+# $PORT is not ignored into a collision with the one already running.
+PORT="${1:-${PORT:-8137}}"
+echo "2026 NFL Predictions on http://localhost:$PORT/"
 exec python3 -m http.server "$PORT" --bind 127.0.0.1
