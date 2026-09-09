@@ -2185,17 +2185,17 @@ SEC.share={render(){
  placeholder="Your name" autocomplete="name" spellcheck="false" aria-label="Your name">
 </section>
 <section class="sect">
-<div class="sh"><h4>The season</h4><span>See it full size</span></div>
+<div class="sh act"><h4>The season</h4>
+<button class="dlb" id="dl1">Save picture</button></div>
 <div class="cardwrap"><canvas id="card1" role="img"
  aria-label="Your 2026 conference seeding and award picks"></canvas></div>
-<div class="acts"><button class="next" id="dl1">Save the season card</button></div>
 </section>
 <section class="sect">
-<div class="sh"><h4>The playoffs</h4><span>See it full size</span></div>
+<div class="sh act"><h4>The playoffs</h4>
+<button class="dlb" id="dl2">Save picture</button></div>
 <div class="cardwrap"><canvas id="card2" role="img"
  aria-label="Your 2026 playoff bracket"></canvas></div>
 <div class="acts">
-<button class="next" id="dl2">Save the bracket</button>
 <button class="ghost" id="again">Start over</button>
 </div>
 <p class="hint">Click a picture to see it whole. On a phone you can also press

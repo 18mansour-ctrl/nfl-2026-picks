@@ -81,8 +81,22 @@ h1,h2,h3,h4,p{margin:0}
 .sheet{padding:0 var(--pad) 40px;max-width:760px;margin:0 auto}
 .sect{margin-top:42px}
 .sh{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+/* baselines line up two pieces of writing; a control has none worth aligning */
+.sh.act{align-items:center}
 .sh h4{font-size:21px;font-weight:700;letter-spacing:-.028em;line-height:1.1}
 .sh>span{font-size:12.5px;color:var(--mut);flex:none}
+/* The picture's own control, on the picture's own line. The full pill under a
+   card sat a page-scroll away from the thing it saves once the card is as tall
+   as the card is; up here it arrives with the heading that names it, and it is
+   sized as the one action in a section rather than as the one action on the
+   page. */
+.dlb{flex:none;padding:9px 15px;border-radius:8px;
+ background:var(--ink);color:var(--paper);
+ font-size:13.5px;font-weight:600;letter-spacing:-.012em;
+ box-shadow:0 1px 3px rgba(25,25,23,.18);
+ transition:transform .12s var(--e-out),background .14s var(--e-out)}
+.dlb:hover{background:var(--body)}
+.dlb:active{transform:scale(.98)}
 .sh+*{margin-top:14px}
 
 /* The rail above already numbers the steps, so the header is the headline and
@@ -284,7 +298,7 @@ h1,h2,h3,h4,p{margin:0}
 .bgs{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:14px}
 .bgm{display:grid;border-radius:8px;background:var(--card);overflow:hidden;
  box-shadow:var(--cardsh);min-width:0}
-.bsl{display:grid;grid-template-columns:15px auto minmax(0,1fr);align-items:center;gap:6px;
+.bsl{display:grid;grid-template-columns:17px auto minmax(0,1fr);align-items:center;gap:6px;
  min-height:42px;padding:0 9px;text-align:left;min-width:0;
  transition:background 180ms var(--e-out),opacity 180ms var(--e-out)}
 .bsl+.bsl{border-top:1px solid var(--hr)}
@@ -295,7 +309,7 @@ h1,h2,h3,h4,p{margin:0}
 .bsl.held{cursor:default}
 .bsl.held .bnm,.bsl.held .bsd{color:var(--mut)}
 .bsl.held .mark{opacity:.55}
-.bsd{font-style:normal;font-size:10px;font-weight:600;color:var(--fnt);text-align:center}
+.bsd{font-style:normal;font-size:12px;font-weight:600;color:var(--fnt);text-align:center}
 .bnm{font-size:13.5px;font-weight:600;letter-spacing:-.01em;min-width:0;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bsl .mark{opacity:.8}
@@ -450,7 +464,7 @@ h1,h2,h3,h4,p{margin:0}
  .tms{grid-template-columns:repeat(4,minmax(0,1fr))}
  .pool{grid-template-columns:repeat(4,minmax(0,1fr))}
  .bkt{--bgap:40px}
- .bsl{grid-template-columns:18px auto minmax(0,1fr);min-height:44px;gap:8px}
+ .bsl{grid-template-columns:20px auto minmax(0,1fr);min-height:44px;gap:8px}
  .bnm{font-size:15px}
  .bch{font-size:12px}
  .phx h1{font-size:38px}
@@ -460,7 +474,7 @@ h1,h2,h3,h4,p{margin:0}
 @media(max-width:400px){
  .rl span{font-size:11.5px}
  .bkt{--bgap:16px}
- .bsl{grid-template-columns:12px auto minmax(0,1fr);gap:4px;padding:0 4px}
+ .bsl{grid-template-columns:14px auto minmax(0,1fr);gap:4px;padding:0 4px}
  .bnm{font-size:12.5px}
  .awt{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
